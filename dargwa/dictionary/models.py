@@ -39,6 +39,9 @@ class Link(models.Model):
     word = models.ForeignKey('Word', on_delete=models.CASCADE)
     link_word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='link_word')
 
+    def __str__(self):
+        return self.word.word + ' - ' + self.link_word.word
+
 
 class Idiom(models.Model):
     idiom = models.CharField(max_length=45, unique=True)

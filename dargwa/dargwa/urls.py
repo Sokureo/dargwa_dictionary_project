@@ -18,10 +18,9 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.urls import path
 
-from dictionary.views import UploadDictionaryView, UpdateLinkView
+from dictionary.views import UploadDictionaryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^import/$', UploadDictionaryView.as_view(), name='upload_dict'),
-    url(r'^update_links/$', UpdateLinkView.as_view(), name='update_links'),
 ]

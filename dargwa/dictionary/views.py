@@ -257,15 +257,3 @@ class UploadDictionaryView(TemplateView):
                 return class_words, class_words_tr
         else:
             return orth_words, class_words_tr
-
-
-class UpdateLinkView(TemplateView):
-    def post(self):
-        words = Word.objects.filter(link_word_isnull=False)
-        for word in words:
-            link_word = Word.objects.filter(
-                Q(word=word.link_word_str) | Q(transcription=word.link_word_str)). \
-                filter(pos=word.pos, idiom=word.idiom).first()
-            if link_word and not Link.objects.filter(word=word, link_word=link_word).exists():
-                Link.objects.create(word=word, link_word=link_word)
-        return redirect('admin:index')

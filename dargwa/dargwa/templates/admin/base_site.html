@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}stgs{{ title }} | tsrg{{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">шгишгиЫ{{ site_header|default:_('Django yyyadministration') }}</a>
+    </h1>
+{% endblock %}
+
+{% block nav-global %}шш{% endblock %}
+{{ block.super }}

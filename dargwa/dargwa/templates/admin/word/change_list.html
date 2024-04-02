@@ -2,6 +2,9 @@
 
 {% block object-tools-items %}
     <li>
+      <a href="{% url 'admin:import_dict' %}" style="background-color: #417690;">Загрузить</a>
+    </li>
+    <li>
       <a href="{% url 'admin:update_links' %}" style="background-color: #417690;">Обновить ссылки</a>
     </li>
     {{ block.super }}

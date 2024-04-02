@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.urls import path
 
-from dictionary.views import UploadDictionaryView
+from dictionary.views import ImportDictionaryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^import/$', UploadDictionaryView.as_view(), name='upload_dict'),
+    # url('admin/import/', ImportDictionaryView.as_view(), name='import_dict'),
 ]

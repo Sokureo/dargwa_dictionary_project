@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('word', models.CharField(max_length=45)),
-                ('link_word_str', models.CharField(max_length=45)),
+                ('link_word_str', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
                 ('transcription', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
                 ('trans_ru', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
                 ('trans_eng', models.CharField(blank=True, db_index=True, max_length=45, null=True)),

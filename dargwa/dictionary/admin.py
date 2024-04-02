@@ -1,9 +1,11 @@
 from django.conf.urls import url
 from django.contrib import admin, messages
+from django.contrib.admin import AdminSite
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from .views import ImportDictionaryView
 from .models import (
     Word,
     Idiom,
@@ -22,9 +24,14 @@ from .models import (
 )
 
 
-@admin.register(Link)
+admin.site.site_header = 'Лексикографическая база даргинских идиомов'
+
+
 class LinkAdmin(admin.ModelAdmin):
     pass
+
+
+admin.site.register(Link, LinkAdmin)
 
 
 class WordAdmin(admin.ModelAdmin):
@@ -66,69 +73,96 @@ class WordAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.update_links),
                 name='update_links',
             ),
+            url(r'^import/$',
+                self.admin_site.admin_view(ImportDictionaryView.as_view()),
+                name='import_dict',
+                ),
         ]
         return my_urls + urls
-
 
 
 admin.site.register(Word, WordAdmin)
 
 
-@admin.register(Idiom)
 class IdiomAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(PartOfSpeech)
+admin.site.register(Idiom, IdiomAdmin)
+
+
 class PartOfSpeechAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(GrammClass)
+admin.site.register(PartOfSpeech, PartOfSpeechAdmin)
+
+
 class GrammClassAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Grammems)
+admin.site.register(GrammClass, GrammClassAdmin)
+
+
 class GrammemsAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ArgumentStructure)
+admin.site.register(Grammems, GrammemsAdmin)
+
+
 class ArgumentStructureAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Root)
+admin.site.register(ArgumentStructure, ArgumentStructureAdmin)
+
+
 class RootAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Source)
+admin.site.register(Root, RootAdmin)
+
+
 class SourceAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Irregularity)
+admin.site.register(Source, SourceAdmin)
+
+
 class IrregularityAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Origin)
+admin.site.register(Irregularity, IrregularityAdmin)
+
+
 class OriginAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Polysemy)
+admin.site.register(Origin, OriginAdmin)
+
+
 class PolysemyAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Morpheme)
+admin.site.register(Polysemy, PolysemyAdmin)
+
+
 class MorphemeAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(WordForm)
+admin.site.register(Morpheme, MorphemeAdmin)
+
+
 class WordFormAdmin(admin.ModelAdmin):
     pass
+
+
+admin.site.register(WordForm, WordFormAdmin)

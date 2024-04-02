@@ -7,3 +7,11 @@
         <a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a>
     </h1>
 {% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="excel_file">
+    <button type="submit">Загрузить словарь</button>
+</form>
+{% endblock %}

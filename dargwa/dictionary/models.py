@@ -3,7 +3,7 @@ from django.db import models
 
 class Word(models.Model):
     word = models.CharField(max_length=45)
-    link_word_str = models.CharField(max_length=45)
+    link_word_str = models.CharField(max_length=45, null=True, blank=True, db_index=True)
     transcription = models.CharField(max_length=45, null=True, blank=True, db_index=True)
     trans_ru = models.CharField(max_length=45, null=True, blank=True, db_index=True)
     trans_eng = models.CharField(max_length=45, null=True, blank=True, db_index=True)

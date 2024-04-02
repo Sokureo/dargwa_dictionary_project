@@ -1,8 +1,9 @@
 import pandas as pd
 
-from django.db.models import Q
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
+
 from .models import (
     Word,
     Idiom,
@@ -22,8 +23,8 @@ from .models import (
 from .scripts import transcr, drg_cyr
 
 
-class UploadDictionaryView(TemplateView):
-    template_name = 'import_form.html'
+class ImportDictionaryView(TemplateView):
+    template_name = 'admin/word/import_dict.html'
     # form_class = DisposalFilterForm
     # success_url = reverse_lazy('bank_disposal_print')
 
@@ -34,6 +35,10 @@ class UploadDictionaryView(TemplateView):
            '́': '',
            'í': 'i',
            'ú': 'u'}
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(request=request, **kwargs)
+    #     self.request = request
 
     def post(self, request):
         excel_file = request.FILES['excel_file']
@@ -75,7 +80,8 @@ class UploadDictionaryView(TemplateView):
                     self.create_morphemes(df, indx, word_obj)
                     self.create_wordforms(df, indx, word_obj)
 
-        return redirect('upload_dict')
+        messages.success(request, 'Словарь загружен')
+        return redirect('admin:dictionary_word_changelist')
 
     def create_morphemes(self, sheet, indx, word):
         morphs = [

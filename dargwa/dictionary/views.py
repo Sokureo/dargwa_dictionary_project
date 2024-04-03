@@ -1,9 +1,16 @@
+from datetime import datetime
+from io import BytesIO
 import pandas as pd
+from wsgiref.util import FileWrapper
+import zipfile
 
 from django.contrib import messages
-from django.shortcuts import redirect, render
-from django.views.generic import TemplateView
+from django.db.models import Q
+from django.http import HttpResponse, StreamingHttpResponse
+from django.shortcuts import redirect
+from django.views.generic import TemplateView, FormView
 
+from .forms import IdiomPosForm
 from .models import (
     Word,
     Idiom,
@@ -16,29 +23,119 @@ from .models import (
     Irregularity,
     Origin,
     Polysemy,
-    Link,
     WordForm,
     Morpheme,
 )
 from .scripts import transcr, drg_cyr
 
 
+wordforms = {
+    'verb': (
+        'inf_ipfv',
+        'inf_ipfv_trans',
+        'aorist',
+        'aorist_trans',
+    ),
+    'noun': (
+
+    ),
+}
+
+
+class DeleteDictionaryView(FormView):
+    template_name = 'admin/delete_dict.html'
+    form_class = IdiomPosForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            idiom = form.cleaned_data.get('idiom')
+            pos = form.cleaned_data.get('pos')
+            query = Q(word__isnull=False)
+            if idiom:
+                query &= Q(idiom=idiom)
+            if pos:
+                query &= Q(pos=pos)
+            words = Word.objects.filter(query)
+            if words:
+                words.delete()
+                messages.success(request, 'Слова удалены')
+            else:
+                messages.error(request, 'Слова не найдены')
+            return redirect('admin:dictionary_word_changelist')
+        else:
+            return self.form_invalid(form)
+
+
+class ExportDictionaryView(FormView):
+    template_name = 'admin/export_dict.html'
+    form_class = IdiomPosForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            idiom = form.cleaned_data.get('idiom')
+            pos = form.cleaned_data.get('pos')
+            query = Q(idiom__isnull=False)
+            if idiom:
+                query &= Q(idiom=idiom)
+            idioms = Idiom.objects.filter(query)
+            query = Q(pos__isnull=False)
+            if pos:
+                query &= Q(pos=pos)
+            poss = PartOfSpeech.objects.filter(query)
+            idiom_files = [self.write_idiom_excel(idiom, poss) for idiom in idioms]
+
+            if len(idiom_files) > 1:
+                archivename = f'lexicons_{datetime.now().strftime("%d.%m.%Y")}.zip'
+                with BytesIO() as b:
+                    with zipfile.ZipFile(b, 'w', zipfile.ZIP_DEFLATED) as zipObj:
+                        for idiom_file in idiom_files:
+                            zipObj.writestr(idiom_file['filename'], idiom_file['data'])
+                    response = HttpResponse(
+                        b.getvalue(),
+                        content_type="application/zip",
+                    )
+                    response['Content-Disposition'] = f'attachment; filename={archivename}'
+            else:
+                response = HttpResponse(
+                    idiom_files[0]['data'],
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                )
+                response['Content-Disposition'] = f'attachment; filename={idiom_files[0]["filename"]}'
+            return response
+        else:
+            return self.form_invalid(form)
+
+    def write_idiom_excel(self, idiom, poss):
+        with BytesIO() as b:
+            with pd.ExcelWriter(b) as writer:
+                for pos in poss:
+                    words_df = pd.DataFrame(list(Word.objects.filter(idiom=idiom, pos=pos).values()))
+                    words_df.to_excel(
+                        writer,
+                        sheet_name=f'{idiom.idiom}_{pos.pos}',
+                        index=False,
+                    )
+            filename = f'{idiom.idiom}_{datetime.now().strftime("%d.%m.%Y")}.xlsx'
+            return {
+                'data': b.getvalue(),
+                'filename': filename,
+            }
+
+
 class ImportDictionaryView(TemplateView):
-    template_name = 'admin/word/import_dict.html'
-    # form_class = DisposalFilterForm
-    # success_url = reverse_lazy('bank_disposal_print')
+    template_name = 'admin/import_dict.html'
 
-    dia = {'ý': 'у',
-           'ó': 'о',
-           'á': 'а',
-           'é': 'е',
-           '́': '',
-           'í': 'i',
-           'ú': 'u'}
-
-    # def __init__(self, **kwargs):
-    #     super().__init__(request=request, **kwargs)
-    #     self.request = request
+    dia = {
+        'ý': 'у',
+        'ó': 'о',
+        'á': 'а',
+        'é': 'е',
+        'í': 'i',
+        'ú': 'u',
+        '́': '',
+    }
 
     def post(self, request):
         excel_file = request.FILES['excel_file']

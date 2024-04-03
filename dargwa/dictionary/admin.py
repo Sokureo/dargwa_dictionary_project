@@ -5,7 +5,11 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from .views import ImportDictionaryView
+from .views import (
+    DeleteDictionaryView,
+    ExportDictionaryView,
+    ImportDictionaryView,
+)
 from .models import (
     Word,
     Idiom,
@@ -72,10 +76,18 @@ class WordAdmin(admin.ModelAdmin):
                 r'^update_links/$',
                 self.admin_site.admin_view(self.update_links),
                 name='update_links',
-            ),
+                ),
             url(r'^import/$',
                 self.admin_site.admin_view(ImportDictionaryView.as_view()),
                 name='import_dict',
+                ),
+            url(r'^delete/$',
+                self.admin_site.admin_view(DeleteDictionaryView.as_view()),
+                name='delete_dict',
+                ),
+            url(r'^export/$',
+                self.admin_site.admin_view(ExportDictionaryView.as_view()),
+                name='export_dict',
                 ),
         ]
         return my_urls + urls

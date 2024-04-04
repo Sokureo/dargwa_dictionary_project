@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 11 01:45:33 2018
-
-@author: oleg
-"""
-
 import re
 import string
 
@@ -23,6 +16,15 @@ E = re.compile(r'\be|e(?=[aouei])', re.I)  # контексты, где e -> э
 
 # glot = 'ʔ'
 
+dia = {
+    'ý': 'у',
+    'ó': 'о',
+    'á': 'а',
+    'é': 'е',
+    'í': 'i',
+    'ú': 'u',
+    '́': '',
+}
 
 drg_cyr = {'a': 'а',
             'á': 'а́',
@@ -91,9 +93,6 @@ drg_cyr = {'a': 'а',
 
 
 def transcr(drg_text):
-    # print(drg_text)
-    cyr = ''
-    # try:
     J = {'ja': 'я',
          'ju': 'ю'}
 
@@ -110,19 +109,15 @@ def transcr(drg_text):
     if 'aˤː' in drg_text:
         drg_text = drg_text.replace('aˤː', 'яя')    
 
-
     drg_text = J_VJ.sub(lambda match: J[match.group()], drg_text)
-    # drg_text = E.sub(r'э', drg_text)
     drg_text = FAR.sub(lambda match: drg_cyr.get(match.groups()[0],
                                                  match.group(2) + '1'), drg_text)
     drg_text = ABR.sub(lambda match: drg_cyr.get(match.groups()[0],
                                                  match.group(2) + '1'), drg_text)
     drg_text = HEM.sub(lambda match: drg_cyr[match.group(2)] * 2, drg_text)
-    # print(drg_text)
     cyr = ''
     i = 0
     while i < len(drg_text) - 1:
-        # extra_artic = False
         s = drg_text[i]
         if (not s.isalpha()) or (s in drg_cyr.values()) or (s in J.values()) or s in digr:
             cyr += drg_text[i]
@@ -132,19 +127,11 @@ def transcr(drg_text):
             if next_letter not in {"'", '’', 'ʼ', 'ː', 'ː', 'ː', 'ˤ', 'ˁ', ':'}:
                 next_letter = ''
             else:
-                # extra_artic = True
                 i += 1
-            # print(cyr)
-            # if letter + next_letter == 'ː':
-            #     cyr += cyr[-1]
-            # else:
             cyr += drg_cyr[letter + next_letter]
         i += 1
     cyr += drg_cyr.get(drg_text[-1], drg_text[-1]) if drg_text[-1].isalnum() else ''
-    # isalnum для случаев типа к1#'
 
-    # except: pass
-    # cyr = cyr.replace('1', 'I')
     return cyr
 
 ##########################################################################
@@ -325,3 +312,74 @@ def palochka(word):
     word = word.replace('1', 'I')
     return word
 
+
+def make_gender_words(word, transcription):
+    for letter in dia:
+        if transcription and letter in transcription:
+            transcription = transcription.replace(letter, dia[letter])
+        if letter in word:
+            word = word.replace(letter, dia[letter])
+
+    tr_markers = ['b', 'w', 'r', 'd', '']
+    markers = ['б', 'в', 'р', 'д', '']
+    class_words_tr = list()
+
+    if transcription:
+        for tr_marker in tr_markers:
+            class_words_tr.append(transcription.replace('CL', tr_marker).replace('-', ''))
+    drg = list(drg_cyr.keys())
+    cyr = list(drg_cyr.values())
+    drg += ['CL', 'č’', 'k’', 'tː', 'sː', 'c’', 'ja', 'p’', 't’']
+    cyr += ['к1']
+    cyr_letters = list()
+    word = word.replace('-', '')
+    indx = 0
+    while indx < len(word) - 1:
+        letter = word[indx]
+        next_letter = word[indx + 1]
+        if letter + next_letter in cyr:
+            indx += 1
+            cyr_letters.append(letter + next_letter)
+        elif letter not in ['1', '(', ')', ' ']:
+            cyr_letters.append(letter)
+        indx += 1
+    if word[-1] not in cyr_letters[-1]:
+        cyr_letters.append(word[-1])
+
+    orth_words = [transcr(z.replace('-', '')) for z in class_words_tr]
+    if word not in orth_words and word.replace('у1', 'ю') not in orth_words:
+        drg_letters = list()
+        transcription = transcription.replace('-', '') if transcription else None
+        indx = 0
+        if transcription and 'aʔi' in transcription:
+            transcription = transcription.replace('aʔi', 'ai')
+        if transcription:
+            while indx < len(transcription) - 1:
+                letter = transcription[indx]
+                next_letter = transcription[indx + 1]
+                if letter + next_letter in drg:
+                    indx += 1
+                    drg_letters.append(letter + next_letter)
+                elif letter not in [' ']:
+                    drg_letters.append(letter)
+                indx += 1
+            if transcription[-1] not in drg_letters[-1]:
+                drg_letters.append(transcription[-1])
+
+        cl_index = [i for i, x in enumerate(drg_letters) if x == 'CL']
+        class_words = list()
+        try:
+            cyr_markers = [cyr_letters[y] for y in cl_index]
+            for mark in markers:
+                for cl in cl_index:
+                    cyr_letters[cl] = mark
+                class_words.append(''.join(cyr_letters))
+        except:
+            cyr_markers = list()
+        if cyr_markers != ['б'] and cyr_markers != ['д'] and cyr_markers != ['б', 'б'] \
+                and cyr_markers != ['п', 'п']:
+            return list(), class_words_tr
+        else:
+            return class_words, class_words_tr
+    else:
+        return orth_words, class_words_tr

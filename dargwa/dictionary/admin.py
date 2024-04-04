@@ -1,6 +1,5 @@
 from django.conf.urls import url
 from django.contrib import admin, messages
-from django.contrib.admin import AdminSite
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -26,6 +25,7 @@ from .models import (
     WordForm,
     Morpheme,
 )
+from .scripts import make_gender_words
 
 
 admin.site.site_header = 'Лексикографическая база даргинских идиомов'
@@ -57,6 +57,13 @@ class WordAdmin(admin.ModelAdmin):
     )
     list_max_show_all = 1000
     change_list_template = 'admin/word/change_list.html'
+
+    def save_model(self, request, obj, form, change):
+        obj.class_words, obj.class_words_trans = make_gender_words(
+            obj.word,
+            obj.transcription,
+        )
+        super(WordAdmin, self).save_model(request, obj, form, change)
 
     def update_links(self, request):
         words = Word.objects.filter(link_word_str__isnull=False)

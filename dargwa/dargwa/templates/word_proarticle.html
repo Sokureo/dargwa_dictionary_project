@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<head>
+  <meta charset="utf-8">
+  <title>DargwaDict | Dargwa Dictionary Project</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <meta property="og:title" content="">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="">
+	<meta property="og:site_name" content="">
+	<meta property="og:description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}" >
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+
+
+  <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <script src="js/modernizr-2.7.1.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+   <script>
+    $(function() {
+            $('#SearchSyn').click(function(){
+            $.ajax({
+              url: "/prosearch",
+              data: {
+                dialect_choice: "0",
+                searched_word: "{{ word.word }}",
+                prochoice: "2",
+                pos: "0",
+                method: 'ajax'
+              },
+              dataType: 'JSON',
+              type: 'POST',
+              success: function(response){
+                alert('hh');
+                reload();}
+            });
+        });
+        });
+    </script>
+
+</head>
+
+
+
+<body>
+
+<section id="search">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="row margin-50"></div>
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div class="col-xs-6">
+          <!---<a class="logo" href="index"><img src="static/img/DD-logo-book.svg" alt="Logo"></a>--->
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href={{ url_for("index")}}>Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <!-- <li><a href="../index#contact" class="scroll">Contact</a></li> -->
+            <li><a href="admin">Admin</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="container">
+   `    <div class="row pad-sm">
+          <div class="col-sm-4">
+            <a href={{ url_for("prosearch")}}><button type="submit" class="btn btn-primary btn-lg">Вернуться к поиску</button></a>
+
+        </div>
+        </div>
+            <div class="row">
+
+			        <div class="col-sm-5 wow fadeIn" data-wow-delay="0.4s">
+
+                        {% if word.dialect.dialect == 'tanti' %}
+                        Тантынский
+                        {% elif word.dialect.dialect == 'kadar' %}
+                        Кадарский
+                        {% elif word.dialect.dialect == 'aqusha' %}
+                        Акушинский
+                        {% elif word.dialect.dialect == 'muira' %}
+                        Муиринский
+                        {% elif word.dialect.dialect == 'icari' %}
+                        Ицаринский
+                        {% endif %}
+
+				        <hr class="line purple">
+                     <b> {{ word.word }}</b>&nbsp<i>{{ word.pos.pos }}</i>&nbsp&nbsp
+                     
+
+                        <p><ol>{% for translation in translations %}
+                        <li>{{ translation }}
+                        {% endfor %}
+                            </ol>
+
+                        {% if word.pos.pos == "verb" %}
+
+                        {% if word.link %}
+                        <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(vid.id)) }}>{{ vid.word }}</a> (сов. вид) / {{ word.word }} (несов. в.)
+                        {% elif vid %}
+                        {{ word.word }} (сов. в.) / <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(vid.id)) }}>{{ vid.word }}</a> (несов. в.)
+                        {% else %}
+                        {{ word.word }} (сов. в.)
+                        {% endif %}
+
+                        <br>
+                        {% if word.translation_eng != "" %}
+                        <br>Перевод (англ.): {{ word.translation_eng }}
+                        {% endif %}
+                        {% if word.aorist %}
+                        <br>Аорист: {{ word.aorist }} 
+                        {% endif %}
+                        {% if word.aorist_trans %}
+                        <br>Аорист (транс.): {{ word.aorist_trans }}
+                        {% endif %}
+                        {% if word.present %}
+                        <br>Настоящее время: {{ word.present }} 
+                        {% endif %}
+                        {% if word.present_trans %}
+                        <br>Настоящее время (транс.): {{ word.present_trans }} 
+                        {% endif %}
+                        {% if word.imperfect %}
+                        <br>Имперфект: {{ word.imperfect }}
+                        {% endif %}
+                        {% if word.imperfect_trans %}
+                        <br>Имперфект (транс.): {{ word.imperfect_trans }}
+                        {% endif %}
+                        {% if word.transcription != "" %}
+                        <br>Транскрипция: {{ word.transcription }}
+                        {% endif %}
+                        {% if word.present_converb %}
+                        <br>Конверб настоящего времени: {{ word.present_converb }}
+                        {% endif %}
+                        {% if word.present_converb_trans %}
+                        <br>Конверб настоящего времени (транс.): {{ word.present_converb_trans }}
+                        {% endif %}
+                        {% if word.morph_1 %}
+                        <br>Морфема 1: {{ word.morph_1 }}
+                        {% endif %}
+                        {% if word.morph_2 %}
+                        <br>Морфема 2: {{ word.morph_2 }}
+                        {% endif %}
+                        {% if word.morph_3 %}
+                        <br>Морфема 3: {{ word.morph_3 }}
+                        {% endif %}
+                        {% if word.morph_4 %}
+                        <br>Морфема 4: {{ word.morph_4 }}
+                        {% endif %}
+                        {% if word.morph_5 %}
+                        <br>Морфема 5: {{ word.morph_5 }}
+                        {% endif %}
+                        {% if word.stem_pfv %}
+                        <br>Основа (сов. в.): {{ word.stem_pfv }}
+                        {% endif %}
+                        {% if word.stem_ipfv %}
+                        <br>Основа (несов. в.): {{ word.stem_ipfv }}
+                        {% endif %}
+                        {% if word.class_id != 0 %}
+                        <br>Класс: {{ word._class }}
+                        {% endif %}
+                        {% if word.irregularities_id != 0 %}
+                        <br>Нерегулярности: {{ word.irregularities.irregularities }}
+                        {% endif %}
+                        {% if word.government %}
+                        <br>Модель управления: {{ word.government }}
+                        {% endif %}
+                        {% endif %}
+
+                        {% if synonims %}
+
+                        <br><br><b>Близкие слова: </b><br>
+                    {% for synonim in synonims %}
+                        {% if word.id != synonim.id %}
+                        <a style="color:#70cbce" href={{ url_for('word', input=synonim.word) }}>{{ synonim.word }}</a> | "{{ synonim.translation_rus.translation }}" <br>
+
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <br>
+
+                        {% if word.pos.pos == "noun" %}
+                        {% if word.translation_eng != "" %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Перевод (англ.): </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.translation_eng }}</p>
+                        {% endif %}
+                        {% if word.plural %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Множественное число: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.plural }}</p>
+                        {% endif %}
+                        {% if word.origin %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Происхождение: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.origin }}</p>
+                        {% endif %}
+                        {% if word.ABS %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Абсолютив: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.ABS }}</p>
+                        {% endif %}
+                        {% if word.ABS_PL %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Абсолютив множественного числа: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.ABS_PL }}</p>
+                        {% endif %}
+                        {% if word.ERG %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Эргатив: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.ERG }}</p>
+                        {% endif %}
+                        {% if word.GEN %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Генитив: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.GEN }}</p>
+                        {% endif %}
+                        {% if word.DAT %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Датив: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.DAT }}</p>
+                        {% endif %}
+                        {% if word.LOC %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Локатив: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.LOC }}</p>
+                        {% endif %}
+                        {% if word.morph_1 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Морфема 1: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.morph_1 }}</p>
+                        {% endif %}
+                        {% if word.morph_2 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Морфема 2: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.morph_2}}</p>
+                        {% endif %}
+                        {% if word.morph_3 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Морфема 3: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.morph_3 }}</p>
+                        {% endif %}
+                        {% if word.morph_4 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Морфема 4: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.morph_4 }}</p>
+                        {% endif %}
+                        {% if word.class_id != 0 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Класс: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word._class }}</p>
+                        {% endif %}
+                        {% if word.irregularities_id != 0 %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Нерегулярности: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.irregularities.irregularities }}</p>
+                        {% endif %}
+                        {% if word.variant %}
+                        <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Вариант: </p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.variant }}</p>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if word.pos.pos == "adj" %}
+                        {% if word.translation_eng != "" %}
+                        <br>Перевод (англ.): {{ word.translation_eng }}
+                        {% endif %}
+                        {% if word.morph_1 %}
+                        <br>Морфема 1: {{ word.morph_1 }}
+                        {% endif %}
+                        {% if word.morph_2 %}
+                        <br>Морфема 2: {{ word.morph_2 }}
+                        {% endif %}
+                        {% if word.morph_3 %}
+                        <br>Морфема 3: {{ word.morph_3 }}
+                        {% endif %}
+                        {% if word.morph_4 %}
+                        <br>Морфема 4: {{ word.morph_4 }}
+                        {% endif %}
+                        {% if word.irregularities_id != 0 %}
+                        <br>Нерегулярности: {{ word.irregularities.irregularities }}
+                        {% endif %}
+                        {% if word.variant %}
+                        <br>Вариант: {{ word.variant }}
+                        {% endif %}
+                        {% endif %}
+                        <br>
+                        {% if word.pos.pos == "adv" %}
+                        {% if word.translation_eng != "" %}
+                        <br>Перевод (англ.): {{ word.translation_eng }}
+                        {% endif %}
+                        {% if word.morph_1 %}
+                        <br>Морфема 1: {{ word.morph_1 }}
+                        {% endif %}
+                        {% if word.morph_2 %}
+                        <br>Морфема 2: {{ word.morph_2 }}
+                        {% endif %}
+                        {% if word.morph_3 %}
+                        <br>Морфема 3: {{ word.morph_3 }}
+                        {% endif %}
+                        {% if word.morph_4 %}
+                        <br>Морфема 4: {{ word.morph_4 }}
+                        {% endif %}
+                        {% if word.irregularities_id != 0 %}
+                        <br>Нерегулярности: {{ word.irregularities.irregularities }}
+                        {% endif %}
+                        {% if word.variant %}
+                        <br>Вариант: {{ word.variant }}
+                        {% endif %}
+                        {% endif %}
+
+                        {% if word.pos.pos == "num" %}
+                        {% if word.translation_eng != "" %}
+                        <br>Перевод (англ.): {{ word.translation_eng }}
+                        {% endif %}
+                        {% if word.morph_1 %}
+                        <br>Морфема 1: {{ word.morph_1 }}
+                        {% endif %}
+                        {% if word.morph_2 %}
+                        <br>Морфема 2: {{ word.morph_2 }}
+                        {% endif %}
+                        {% endif %}
+
+                        <br>
+                        <br>
+                        {% if word.source.source != "None" %}
+                        <b>Источник:</b> {{ word.source.source }}
+                        {% endif %}
+                        <br>
+                        <br>
+                        {% if polysemy_words %}
+                        Полисемия:
+                        <br>
+                        {% for polysemy in polysemy_words %}
+                        <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(polysemy.id)) }}>{{ polysemy.word }}</a>
+                        <br>
+                        {% endfor %}
+                        {% endif %}
+<!--                         <button class="btn btn-success" id="SearchSyn">Поиск по синонимам</button>
+                        <form action="/prosearch" method="post">
+                            <button name="SearchSyn" type="submit" pos="0">Forward</button>
+                        </form> -->
+                        
+
+                    </div>
+                        <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
+                            <hr class="line blue">
+                        <img width=200px src={{ url_for('download_file', filename='{}.jpg'.format(word.id)) }} alt="img">
+                        <br>
+                        <br>
+                        <audio controls>
+                                <source src={{ url_for('music_file', filename='test.wav') }}>
+                            </audio>
+                        </div>
+        </div>
+            </div>
+    </div>
+</section>
+</body>
+
+<footer class="pad-xs">
+
+      <div class="container">
+
+
+
+      </div>
+    </footer>

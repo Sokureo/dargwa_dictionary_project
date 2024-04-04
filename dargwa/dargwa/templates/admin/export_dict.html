@@ -1,5 +1,18 @@
 {% extends "admin/base.html" %}
 
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+        &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        <a href="{% url 'admin:export_dict' %}" style="margin-left: 400px">Скачать</a>
+        <a href="{% url 'admin:import_dict' %}" style="margin-left: 40px">Загрузить</a>
+        <a href="{% url 'admin:delete_dict' %}" style="margin-left: 40px">Удалить</a>
+    </div>
+{% endblock %}
+
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
 {% block branding %}
@@ -9,9 +22,15 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+<h1>Скачивание словаря</h1>
+<form class="dict-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form }}
-    <button type="submit">Скачать словарь</button>
+    <div>
+        {{ form }}
+    </div>
+    <br>
+    <div class="submit-row">
+        <input type="submit" value="Скачать словарь" />
+    </div>
 </form>
 {% endblock %}

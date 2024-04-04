@@ -1,0 +1,188 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<head>
+  <meta charset="utf-8">
+  <title>DargwaDict | Dargwa Dictionary Project</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <meta property="og:title" content="">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="">
+	<meta property="og:site_name" content="">
+	<meta property="og:description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}" >
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+
+
+  <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <script src="js/modernizr-2.7.1.js"></script>
+
+</head>
+
+
+
+<body>
+
+<section id="search">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="row margin-50"></div>
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div class="col-xs-6">
+          <!---<a class="logo" href="index"><img src="static/img/DD-logo-book.svg" alt="Logo"></a>--->
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href={{ url_for("index")}}>Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+              <!-- <li><a href="../index#contact" class="scroll">Contact</a></li> -->
+            <li><a href="admin">Admin</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="container">
+   `    <div class="row pad-sm">
+          <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+
+         <form method="post" role="form">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_errors(form, hiddens="only") }}
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                     <div class="form-row-align-items-center">
+                        <div class="form-group col-md-6">
+                            <div class="input-group-text">
+                            {{ wtf.form_field(form.searched_word, placeholder="Russian or Dargwa") }}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <form class="form-inline align-items-center">
+                                {{ wtf.form_field(form.dialect) }}
+
+                            </form>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Искать</button>
+
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+        <div class="container">
+            {% if form.searched_word.data %}
+            <p>Вы искали <b class="black">{{ form.searched_word.data }}</b>; найдено {{num}} слов(о/а) </p>
+            {% endif %}
+
+		        {% for word in words %}
+                <div class="row">
+
+			        <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
+
+				        <hr class="line purple">
+				        <h2 class="black">{{ transcr(word.word) }}</h2>
+                        <p style="background-color:#70cbce"> {{ word.dialect.dialect }}</p>
+                        <p> id: {{ word.id }} </p>
+                        <p> {{ word.pos.pos }}</p>
+
+                    </div>
+
+			        <div class="col-sm-4 wow fadeIn" data-wow-delay="0.8s">
+
+                        <hr  class="line blue">
+
+                        {% if word.pos.pos == "noun" %}
+
+                            <p> {{ transcr(word.word) }}&nbsp
+
+                            {% for wordform in wordforms[word.id] %} &nbsp|&nbsp
+                                {{ transcr(wordform.form) }}&nbsp({{ wordform.gram.grammem }})&nbsp)
+
+
+                            {% endfor %}
+                        </p>
+                        <p> {{ word.pos.type }} </p>
+                        <p> "{{ word.translation_rus.translation }}" </p>
+
+                    {% else %}
+
+                    <p> {{ word.word }}&nbsp (INF) &nbsp</p>
+
+                            {% for wordform in wordforms[word.id] %}
+                    <p>|&nbsp{{ wordform.word_id }} | {{ wordform.id }} | {{ replace_class(wordform.form) }} ({{ wordform.gram.grammem }})</p>
+
+
+                            {% endfor %}
+
+                    <p> "{{ word.translation_rus.translation }}" </p>
+                    {% endif %}
+
+                        {% if word.comment == "True"%}
+                        <p> Комментарий: {{ word.comment }} </p>
+                        {% endif %}
+
+
+                    {% if synonims %}
+                    <h3>Близкие слова: </h3>
+                    {% for synonim in synonims %}
+                        {% if word.id != synonim.id %}
+                    <p><a style="color:#70cbce" href={{ url_for('word', input=synonim.word) }}>{{ transcr(synonim.word) }}</a> | "{{ synonim.translation_rus.translation }}" | Гиперлексема: {{ synonim.hyperlexeme.hyperlexeme }}
+
+                        {% if synonim.word == word.word and synonim.hyperlexeme == word.hyperlexeme %}
+                        (полисемия)</p>
+                        {% endif %}
+
+                        {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <h3 style="color:#70cbce"><a href={{ url_for('word', input="{}/article".format(word.word)) }}>К статье слова</a></h3>
+                    <br>
+                </div>
+
+                </div>
+                {% endfor %}
+
+
+
+</div>
+
+
+</div>
+
+</section>
+</body>
+
+<footer class="pad-xs">
+
+      <div class="container">
+
+      </div>
+    </footer>

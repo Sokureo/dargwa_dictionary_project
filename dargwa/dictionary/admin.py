@@ -1,10 +1,12 @@
+from django import forms
 from django.conf.urls import url
 from django.contrib import admin, messages
+from django.db import models
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from .views import (
+from .views_admin import (
     DeleteDictionaryView,
     ExportDictionaryView,
     ImportDictionaryView,
@@ -38,6 +40,21 @@ class LinkAdmin(admin.ModelAdmin):
 admin.site.register(Link, LinkAdmin)
 
 
+class WordInline(admin.TabularInline):
+    extra = 1
+    formfield_overrides = {
+        models.CharField: {'widget': forms.TextInput(attrs={'rows': 1, 'cols': 60})},
+    }
+
+
+class MorphemeInline(WordInline):
+    model = Morpheme
+
+
+class WordFormsInline(WordInline):
+    model = WordForm
+
+
 class WordAdmin(admin.ModelAdmin):
     list_display = (
         'word',
@@ -54,6 +71,10 @@ class WordAdmin(admin.ModelAdmin):
     list_filter = (
         'pos',
         'idiom',
+    )
+    inlines = (
+        MorphemeInline,
+        WordFormsInline,
     )
     list_max_show_all = 1000
     change_list_template = 'admin/word/change_list.html'

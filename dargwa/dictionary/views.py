@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, FormView
 
-from .forms import IdiomPosForm
+from .forms import IdiomPosForm, SearchForm, ContactForm
 from .serializers import NounSerializer, VerbSerializer
 from .models import (
     Word,
@@ -44,3 +44,9 @@ wordforms = {
 
 class StartPageView(TemplateView):
     template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(StartPageView, self).get_context_data(**kwargs)
+        context['search_form'] = SearchForm
+        context['contact_form'] = ContactForm
+        return context

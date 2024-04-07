@@ -1,0 +1,72 @@
+{% extends "dar_base.html" %}
+
+{% block content %}
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="row margin-50"></div>
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div class="col-xs-6">
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="container">
+       <div class="row pad-sm">
+          <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+
+
+        </div>
+
+
+          <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+            <h3 class="black">По вашему запросу найдено {{ result_list.length }} слов(а)</h3><br>
+
+     <div class="table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="col-sm-3">Слово</th>
+              <th scope="col" class="col-sm-3">Перевод</th>
+              <th scope="col" class="col-sm-2">Часть речи</th>
+              <th scope="col" class="col-sm-2">Идиом</th>
+            </tr>
+          </thead>
+
+
+<tbody>
+{% for word in result_list %}
+    <tr>
+        <td class="col-sm-3"><a style="color:#70cbce" href="{% url 'dictionary:word_page' word.id %}">{{ word.word }}</a></td>
+        <td class="col-sm-3">{{ word.trans_ru }}</td>
+        <td class="col-sm-2">{{ word.pos }}</td>
+        <td class="col-sm-2">{{ word.idiom }}</td>
+    </tr>
+{% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+    </div>
+</div>
+</section>
+</body>
+
+{% endblock %}

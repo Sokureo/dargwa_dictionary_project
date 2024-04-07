@@ -1,34 +1,6 @@
-<!DOCTYPE html>
+{% extends "dar_base.html" %}
 
-{% load static %}
-
-<head>
-    <meta charset="utf-8">
-    <title>DargwaDict | Dargwa Dictionary Project</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <meta property="og:title" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="">
-    <meta property="og:site_name" content="">
-    <meta property="og:description" content="">
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}" >
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'site.webmanifest' %}">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <script src="{% static 'js/modernizr-2.7.1.js' %}"></script>
-</head>
-
+{% block content %}
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-collapse collapse">
@@ -57,11 +29,11 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                         <div class="row">
-                            <div class="col-xs-6 text-right wow fadeInUp" data-wow-delay="1s">
+                            <div class="col-xs-6 text-right">
                                 <a href="#about" class="btn btn-secondary btn-lg scroll">О проекте</a>
                             </div>
-                            <div class="col-xs-6 text-left wow fadeInUp" data-wow-delay="1.4s">
-                                <a href="" class="btn btn-primary btn-lg scroll">Искать в базе</a>
+                            <div class="col-xs-6 text-left">
+                                <a href="{% url 'dictionary:search' %}" class="btn btn-primary btn-lg">Искать в базе</a>
                             </div>
                         </div><!--End Button Row-->
                     </div>
@@ -104,9 +76,9 @@
 
                 <div class="form">
                     <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                        <form role="form">
+                        <form method="post" enctype="multipart/form-data">
                             <div class="form-group row">
-                                {{ contact_form }}
+                                {{ form }}
                                 <button type="submit" formmethod="post" class="btn btn-primary btn-lg">Отправить</button>
                             </div>
                         </form>
@@ -118,10 +90,4 @@
 </section>
 </html>
 
-<!-- Javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "dar_base.html" %}
+
+{% block content %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="row margin-50"></div>
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div class="col-xs-6">
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="container">
+       <div class="row pad-sm">
+        <div class="col-sm-11 col-sm-offset-1 text-center margin-30"><h1>Форма поиска</h1></div>
+          <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
+         <form method="POST" role="form">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                     <div class="form-row-align-items-center">
+                        <div class="form-group col-md-6">
+                            <div class="input-group-text">
+                                {% csrf_token %}
+                                {{ form }}
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-inline align-items-center">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Искать</button>
+
+                        </div>
+                     </div>
+
+                    <div class="form-row-align-items-center">
+
+                            <div class="form-group col-md-4">
+                                <h3>
+                                </h3>
+                            </div>
+                        <div class="form-group col-md-4">
+                                <h3>
+                                </h3>
+                            </div>
+
+                            </div>
+
+                            </div>
+
+                     </div>
+         </form>
+
+
+        </div>
+    </div>
+    </div>
+        <div class="container">
+</div>
+</div>
+{% endblock %}

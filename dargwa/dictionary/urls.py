@@ -15,10 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.urls import path
 
-from .views import StartPageView
+from .views import StartPageView, SearchView, WordPageView
 
+app_name = 'dictionary'
 
 urlpatterns = [
-    url('', StartPageView.as_view(), name='start_page'),
+    path('', StartPageView.as_view(), name='start_page'),
+    path('search/', SearchView.as_view(), name='search'),
+    url(r'^word/(?P<word_id>\d+)/$', WordPageView.as_view(), name='word_page'),
 ]

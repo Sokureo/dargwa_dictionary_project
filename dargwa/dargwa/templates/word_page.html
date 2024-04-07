@@ -1,37 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-{% import 'bootstrap/wtf.html' as wtf %}
+{% extends "dar_base.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <title>DargwaDict | Dargwa Dictionary Project</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+{% block content %}
 
-  <meta property="og:title" content="">
-	<meta property="og:type" content="website">
-	<meta property="og:url" content="">
-	<meta property="og:site_name" content="">
-	<meta property="og:description" content="">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}" >
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-
-
-  <!-- Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}">
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
-
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
-  <script src="js/modernizr-2.7.1.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script>
    <script>
     $(function() {
@@ -60,9 +30,6 @@
 
 
 <body>
-
-<section id="search">
-
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
           <div class="row margin-50"></div>
@@ -73,16 +40,14 @@
             <span class="icon-bar"></span>
           </button>
                 <div class="col-xs-6">
-          <!---<a class="logo" href="index"><img src="static/img/DD-logo-book.svg" alt="Logo"></a>--->
                     <ul class="nav navbar-nav navbar-left">
-                    <li><a href={{ url_for("index")}}>Home</a></li>
+                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
                     </ul>
                 </div>
             </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-              <!-- <li><a href="../index#contact" class="scroll">Contact</a></li> -->
-            <li><a href="admin">Admin</a></li>
+            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
           </ul>
         </div>
       </div>
@@ -92,7 +57,7 @@
     <div class="container">
    `    <div class="row pad-sm">
           <div class="col-sm-4">
-            <a href={{ url_for("prosearch")}}><button type="submit" class="btn btn-primary btn-lg">Вернуться к поиску</button></a>
+            <a href="{% url 'dictionary:search' %}"><button type="submit" class="btn btn-primary btn-lg">Вернуться к поиску</button></a>
 
         </div>
         </div>
@@ -124,9 +89,9 @@
                         {% if word.pos.pos == "verb" %}
 
                         {% if word.link %}
-                        <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(vid.id)) }}>{{ vid.word }}</a> (сов. вид) / {{ word.word }} (несов. в.)
+                        <a style="color:#70cbce" href=""</a> (сов. вид) / {{ word.word }} (несов. в.)
                         {% elif vid %}
-                        {{ word.word }} (сов. в.) / <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(vid.id)) }}>{{ vid.word }}</a> (несов. в.)
+                        {{ word.word }} (сов. в.) / <a style="color:#70cbce" href=""</a> (несов. в.)
                         {% else %}
                         {{ word.word }} (сов. в.)
                         {% endif %}
@@ -184,7 +149,7 @@
                         <br>Основа (несов. в.): {{ word.stem_ipfv }}
                         {% endif %}
                         {% if word.class_id != 0 %}
-                        <br>Класс: {{ word._class }}
+                        <br>Класс: {{ word.class }}
                         {% endif %}
                         {% if word.irregularities_id != 0 %}
                         <br>Нерегулярности: {{ word.irregularities.irregularities }}
@@ -199,7 +164,7 @@
                         <br><br><b>Близкие слова: </b><br>
                     {% for synonim in synonims %}
                         {% if word.id != synonim.id %}
-                        <a style="color:#70cbce" href={{ url_for('word', input=synonim.word) }}>{{ synonim.word }}</a> | "{{ synonim.translation_rus.translation }}" <br>
+                        <a style="color:#70cbce" href=""></a><br>
 
                         {% endif %}
                         {% endfor %}
@@ -261,7 +226,7 @@
                         {% endif %}
                         {% if word.class_id != 0 %}
                         <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Класс: </p>
-                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word._class }}</p>
+                        <p style="text-align: left; width:50%;  display: inline-block; color: black; font-size: 94%;">{{ word.class }}</p>
                         {% endif %}
                         {% if word.irregularities_id != 0 %}
                         <p style="text-align: right; width:49%; display: inline-block; color: black; font-size: 94%;">Нерегулярности: </p>
@@ -344,7 +309,7 @@
                         Полисемия:
                         <br>
                         {% for polysemy in polysemy_words %}
-                        <a style="color:#70cbce" href={{ url_for('word', input="{}/proarticle".format(polysemy.id)) }}>{{ polysemy.word }}</a>
+                        <a style="color:#70cbce" href=""></a>
                         <br>
                         {% endfor %}
                         {% endif %}
@@ -357,11 +322,11 @@
                     </div>
                         <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
                             <hr class="line blue">
-                        <img width=200px src={{ url_for('download_file', filename='{}.jpg'.format(word.id)) }} alt="img">
+                        <img width=200px src="" alt="img">
                         <br>
                         <br>
                         <audio controls>
-                                <source src={{ url_for('music_file', filename='test.wav') }}>
+                                <source src="">
                             </audio>
                         </div>
         </div>
@@ -370,11 +335,4 @@
 </section>
 </body>
 
-<footer class="pad-xs">
-
-      <div class="container">
-
-
-
-      </div>
-    </footer>
+{% endblock %}

@@ -85,7 +85,6 @@ drg_cyr = {'a': 'а',
            's:': 'сс',
            'k:': 'кк',
            'c:': 'цц',
-           'q:': 'къ',
            'č:': 'чч',
            't:': 'тт',
            'š:': 'щ',
@@ -285,23 +284,6 @@ def imperative(aorist):
     except:
       return ""
 
-def prohibitive(imperfect):
-    prohib_sg = prohib_pl = None
-    try:
-        verbroot = "".join(re.findall(r"(.*)-un", imperfect))
-        if transitivity == 'tr':
-            prohib_sg = "ma" + verbroot + "it(it:a)"
-            prohib_pl = "ma" + verbroot + "it:aja"
-        elif transitivity == 'itr':
-            prohib_sg = "ma" + verbroot + "ut(ut:a)"
-            prohib_pl = "ma" + verbroot + "ut:aja"
-
-    except:
-        pass
-    try:
-      return ", ".join([string for string in (prohib_sg, prohib_pl)])
-    except:
-      return ""
 
 def replace_class(verb):
     verb = verb.replace("꞊", "b")
@@ -314,12 +296,12 @@ def palochka(word):
 
 
 def make_gender_words(word, transcription):
+    transcription = transcription.replace('с', 'c')
     for letter in dia:
         if transcription and letter in transcription:
             transcription = transcription.replace(letter, dia[letter])
         if letter in word:
             word = word.replace(letter, dia[letter])
-
     tr_markers = ['b', 'w', 'r', 'd', '']
     markers = ['б', 'в', 'р', 'д', '']
     class_words_tr = list()
@@ -378,8 +360,8 @@ def make_gender_words(word, transcription):
             cyr_markers = list()
         if cyr_markers != ['б'] and cyr_markers != ['д'] and cyr_markers != ['б', 'б'] \
                 and cyr_markers != ['п', 'п']:
-            return list(), class_words_tr
+            return list(), set(class_words_tr)
         else:
-            return class_words, class_words_tr
+            return set(class_words), set(class_words_tr)
     else:
-        return orth_words, class_words_tr
+        return set(orth_words), set(class_words_tr)

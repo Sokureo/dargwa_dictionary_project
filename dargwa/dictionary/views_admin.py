@@ -10,34 +10,52 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView, FormView
 
 from .forms import IdiomPosForm
-from .serializers import NounSerializer, VerbSerializer
+from .serializers import NounSerializer, VerbSerializer, OtherSerializer
 from .models import (
     Word,
     Idiom,
     PartOfSpeech,
-    GrammClass,
+    SyntacticClass,
+    Gender,
     Grammems,
-    ArgumentStructure,
-    Root,
+    CaseFrame,
+    Structure,
     Source,
-    Irregularity,
+    Irregularities,
     Origin,
     Polysemy,
+    Link,
     WordForm,
     Morpheme,
+    MorphemeType,
+    MorphemeNumber,
 )
 from .scripts import make_gender_words
 
 
 wordforms = {
-    'verb': (
-        'inf_ipfv',
-        'inf_ipfv_trans',
-        'aorist',
-        'aorist_trans',
+    'v': (
+        'INFINITIVE_IPFV_CYR',
+        'INFINITIVE_IPFV_LAT',
+        'PRET_PFV_CYR',
+        'PRET_IPFV_CYR',
+        'CVB_IPFV_CYR',
+        'CVB_IPFV_LAT',
+        'PRET_PFV_LAT',
+        'PRET_IPFV_LAT',
+        'IMP_PFV',
+        'IMP_IPFV',
+        'PROH',
+        'STEM_PFV',
+        'STEM_IPFV',
     ),
-    'noun': (
-
+    'n': (
+        'ABS_PL_CYR',
+        'ABS_PL_LAT',
+        'ERG_SG_LAT',
+        'GEN_SG_LAT',
+        'DAT_SG_LAT',
+        'LOC_SG_LAT',
     ),
 }
 
@@ -51,12 +69,15 @@ class DeleteDictionaryView(FormView):
         if form.is_valid():
             idiom = form.cleaned_data.get('idiom')
             pos = form.cleaned_data.get('pos')
-            query = Q(word__isnull=False)
+            words = Word.objects.all()
             if idiom:
-                query &= Q(idiom=idiom)
+                words = Word.objects.filter(idiom=idiom)
             if pos:
-                query &= Q(pos=pos)
-            words = Word.objects.filter(query)
+                if pos == 'other':
+                    words = words.exclude(pos__in=['v', 'n'])
+                else:
+                    words = words.filter(pos=pos)
+
             if words:
                 words.delete()
                 messages.success(request, 'Слова удалены')
@@ -83,14 +104,18 @@ class ExportDictionaryView(FormView):
         if form.is_valid():
             idiom = form.cleaned_data.get('idiom')
             pos = form.cleaned_data.get('pos')
-            query = Q(idiom__isnull=False)
             if idiom:
-                query &= Q(idiom=idiom)
-            idioms = Idiom.objects.filter(query)
-            query = Q(pos__isnull=False)
+                idioms = Idiom.objects.filter(idiom=idiom)
+            else:
+                idioms = Idiom.objects.all()
             if pos:
-                query &= Q(pos=pos)
-            poss = PartOfSpeech.objects.filter(query)
+                if pos == 'other':
+                    poss = PartOfSpeech.objects.exclude(pos__in=['v', 'n'])
+                else:
+                    poss = PartOfSpeech.objects.filter(pos=pos)
+            else:
+                poss = PartOfSpeech.objects.all()
+
             idiom_files = [self.write_idiom_excel(idiom, poss) for idiom in idioms]
 
             if len(idiom_files) > 1:
@@ -119,9 +144,15 @@ class ExportDictionaryView(FormView):
             with pd.ExcelWriter(b) as writer:
                 for pos in poss:
                     words_df = pd.DataFrame(self.get_lexicon_sheet(idiom, pos))
+                    if pos.pos == 'n':
+                        pos_name = 'nouns'
+                    elif pos.pos == 'v':
+                        pos_name = 'verbs'
+                    else:
+                        pos_name = 'other'
                     words_df.to_excel(
                         writer,
-                        sheet_name=f'{idiom.idiom}_{pos.pos}',
+                        sheet_name=f'{idiom.idiom}_{pos_name}',
                         index=False,
                     )
             filename = f'{idiom.idiom}_{datetime.now().strftime("%d.%m.%Y")}.xlsx'
@@ -132,12 +163,12 @@ class ExportDictionaryView(FormView):
 
     def get_lexicon_sheet(self, idiom, pos):
         words = Word.objects.filter(idiom=idiom, pos=pos)
-        if pos.pos == 'verb':
+        if pos.pos == 'v':
             data = VerbSerializer(words, many=True).data
-        elif pos.pos == 'noun':
+        elif pos.pos == 'n':
             data = NounSerializer(words, many=True).data
         else:
-            data = [{}]
+            data = OtherSerializer(words, many=True).data
         return data
 
     def get_context_data(self, **kwargs):
@@ -157,34 +188,36 @@ class ImportDictionaryView(TemplateView):
         for sheet in excel_reader.sheet_names:
             df = excel_reader.parse(sheet)
             df = df.fillna('')
-            if sheet.lower() in ['verb', 'verbs', 'глагол', 'глаголы']:
-                for indx, word in enumerate(df.get('word')):
-                    transcription = self.get_field('transcription', df, indx)
-                    class_words, class_words_trans = make_gender_words(
+            idiom = sheet.split('_')[0]
+            for indx, word in enumerate(df.get('ENTRY_CYR')):
+                if word:
+                    entry_lat = self.get_field('ENTRY_LAT', df, indx)
+                    if entry_lat:
+                        entry_lat = entry_lat.replace('с', 'c')
+                    class_words_cyr, class_words_lat = make_gender_words(
                         word,
-                        transcription,
+                        entry_lat,
                     )
                     word_obj = Word.objects.create(
-                        word=word,
-                        link_word_str=self.get_field('link', df, indx),
-                        transcription=transcription,
-                        trans_ru=self.get_field('translation_ru', df, indx),
-                        trans_eng=self.get_field('translation_eng', df, indx),
-                        gloss=self.get_field('gloss', df, indx),
-                        comment=self.get_field('comment', df, indx),
-                        example=self.get_field('example', df, indx),
-                        variant=self.get_field('variant', df, indx),
-                        class_words=class_words,
-                        class_words_trans=class_words_trans,
-                        sound=self.get_field('sound', df, indx),
-                        img=self.get_field('img', df, indx),
+                        entry_cyr=word,
+                        link_cyr=self.get_field('LINK_CYR', df, indx),
+                        entry_lat=entry_lat,
+                        meaning_rus=self.get_field('MEANING_RUS', df, indx),
+                        meaning_eng=self.get_field('MEANING_ENG', df, indx),
+                        gloss=self.get_field('GLOSS', df, indx),
+                        comments=self.get_field('COMMENTS', df, indx),
+                        class_words_cyr=class_words_cyr,
+                        class_words_lat=class_words_lat,
+                        sound=self.get_field('SOUND', df, indx),
+                        # img=self.get_field('img', df, indx),
                         pos=self.get_pos(df, indx),
-                        idiom=self.get_idiom(df, indx),
-                        gramm_class=self.get_gramm_class(df, indx),
-                        argument_structure=self.get_argument_structure(df, indx),
-                        root_id=self.get_root_id(df, indx),
+                        idiom=self.get_idiom(idiom),
+                        syntactic_class=self.get_syntactic_class(df, indx),
+                        gender=self.get_gender(df, indx),
+                        case_frame=self.get_case_frame(df, indx),
+                        structure=self.get_structure(df, indx),
                         source=self.get_source(df, indx),
-                        irregularity=self.get_irregularity(df, indx),
+                        irregularities=self.get_irregularities(df, indx),
                         origin=self.get_origin(df, indx),
                         polysemy=self.get_polysemy(df, indx),
                     )
@@ -196,110 +229,130 @@ class ImportDictionaryView(TemplateView):
 
     def create_morphemes(self, sheet, indx, word):
         morphs = [
-            self.get_field('morph_1', sheet, indx),
-            self.get_field('morph_2', sheet, indx),
-            self.get_field('morph_3', sheet, indx),
-            self.get_field('morph_4', sheet, indx),
-            self.get_field('morph_5', sheet, indx),
+            self.get_field('MORPHEME_1', sheet, indx),
+            self.get_field('MORPHEME_2', sheet, indx),
+            self.get_field('MORPHEME_3', sheet, indx),
+            self.get_field('MORPHEME_4', sheet, indx),
+            self.get_field('MORPHEME_5', sheet, indx),
         ]
 
         for indx, morph in enumerate(morphs):
             if morph:
-                morpheme, type, number = morph.split(':')
+                morph = morph.strip(':')
+                if ':' not in morph and morph.startswith('N'):
+                    morpheme = word.entry_cyr
+                    morph_type = 'R'
+                    morph_number = morph
+                else:
+                    morph_data = morph.rsplit(':', 2)
+                    if len(morph_data) == 2:
+                        morpheme, morph_type, morph_number = [morph_data[0], morph_data[1], None]
+                    elif len(morph_data) == 3:
+                        morpheme, morph_type, morph_number = [morph_data[0], morph_data[1], morph_data[2]]
+                    else:
+                        morpheme = morph
+                        morph_type = None
+                        morph_number = None
+                if morph_type:
+                    morph_type_obj, _ = MorphemeType.objects.get_or_create(morph_type=morph_type)
+                else:
+                    morph_type_obj = None
+                if morph_number:
+                    morph_number_obj, _ = MorphemeNumber.objects.get_or_create(morph_number=morph_number)
+                else:
+                    morph_number_obj = None
                 Morpheme.objects.create(
                     word=word,
                     morpheme=morpheme,
-                    type=type,
-                    number=number,
+                    morph_type=morph_type_obj,
+                    morph_number=morph_number_obj,
                     order_id=indx+1,
                 )
 
     def create_wordforms(self, sheet, indx, word):
-        wordforms = [
-            'inf_ipfv',
-            'inf_ipfv_trans',
-            'aorist',
-            'aorist_trans',
-        ]
-        for grammem in wordforms:
-            wordform = self.get_field(grammem, sheet, indx)
-            if wordform:
-                grammem_obj, _ = Grammems.objects.get_or_create(
-                    grammem=grammem,
-                    pos=word.pos,
-                )
-                WordForm.objects.create(
-                    word=word,
-                    wordform=wordform,
-                    grammem=grammem_obj,
-                )
+        pos = word.pos
+        if pos and pos.pos in ['n', 'v']:
+            for grammem in wordforms[pos.pos]:
+                wordform = self.get_field(grammem, sheet, indx)
+                if wordform:
+                    grammem_obj, _ = Grammems.objects.get_or_create(
+                        grammem=grammem,
+                        pos=pos,
+                    )
+                    WordForm.objects.create(
+                        word=word,
+                        wordform=wordform,
+                        grammem=grammem_obj,
+                    )
 
     def get_field(self, field_name, sheet, indx):
         field = sheet.get(field_name)
         return field[indx] if field is not None else None
 
     def get_pos(self, sheet, indx):
-        pos = self.get_field('pos', sheet, indx)
-        pos = 'verb'
+        pos = self.get_field('WORD_CLASS', sheet, indx)
         if pos:
             pos_obj, _ = PartOfSpeech.objects.get_or_create(pos=pos)
             return pos_obj
         return None
 
-    def get_idiom(self, sheet, indx):
-        idiom = self.get_field('idiom', sheet, indx)
-        idiom = 'aqusha'
-        if idiom:
-            idiom_obj, _ = Idiom.objects.get_or_create(idiom=idiom)
-            return idiom_obj
+    def get_idiom(self, idiom):
+        idiom_obj, _ = Idiom.objects.get_or_create(idiom=idiom)
+        return idiom_obj
+
+    def get_syntactic_class(self, sheet, indx):
+        syntactic_class = self.get_field('SYNTACTIC_CLASS', sheet, indx)
+        if syntactic_class:
+            syntactic_class_obj, _ = SyntacticClass.objects.get_or_create(syntactic_class=syntactic_class)
+            return syntactic_class_obj
         return None
 
-    def get_gramm_class(self, sheet, indx):
-        gramm_class = self.get_field('synt_class', sheet, indx)
-        if gramm_class:
-            gramm_class_obj, _ = GrammClass.objects.get_or_create(gramm_class=gramm_class)
-            return gramm_class_obj
+    def get_gender(self, sheet, indx):
+        gender = self.get_field('GENDER', sheet, indx)
+        if gender:
+            gender_obj, _ = Gender.objects.get_or_create(gender=gender)
+            return gender_obj
         return None
 
-    def get_argument_structure(self, sheet, indx):
-        argument_structure = self.get_field('argument_structure', sheet, indx)
-        if argument_structure:
-            argument_structure_obj, _ = ArgumentStructure.objects.get_or_create(
-                argument_structure=argument_structure,
+    def get_case_frame(self, sheet, indx):
+        case_frame = self.get_field('CASE_FRAME', sheet, indx)
+        if case_frame:
+            case_frame_obj, _ = CaseFrame.objects.get_or_create(
+                case_frame=case_frame,
             )
-            return argument_structure_obj
+            return case_frame_obj
         return None
 
-    def get_root_id(self, sheet, indx):
-        root_id = self.get_field('root_id', sheet, indx)
-        if root_id:
-            root_id_obj, _ = Root.objects.get_or_create(root_id=root_id)
-            return root_id_obj
+    def get_structure(self, sheet, indx):
+        structure = self.get_field('STRUCTURE', sheet, indx)
+        if structure:
+            structure_obj, _ = Structure.objects.get_or_create(structure=structure)
+            return structure_obj
         return None
 
     def get_source(self, sheet, indx):
-        source = self.get_field('source', sheet, indx)
+        source = self.get_field('SOURCE', sheet, indx)
         if source:
             source_obj, _ = Source.objects.get_or_create(source=source)
             return source_obj
         return None
 
-    def get_irregularity(self, sheet, indx):
-        irregularity = self.get_field('irregularities', sheet, indx)
-        if irregularity:
-            irregularity_obj, _ = Irregularity.objects.get_or_create(irregularity=irregularity)
-            return irregularity_obj
+    def get_irregularities(self, sheet, indx):
+        irregularities = self.get_field('IRREGULARITIES', sheet, indx)
+        if irregularities:
+            irregularities_obj, _ = Irregularities.objects.get_or_create(irregularity=irregularities)
+            return irregularities_obj
         return None
 
     def get_origin(self, sheet, indx):
-        origin = self.get_field('origin', sheet, indx)
+        origin = self.get_field('ORIGIN', sheet, indx)
         if origin:
             origin_obj, _ = Origin.objects.get_or_create(origin=origin)
             return origin_obj
         return None
 
     def get_polysemy(self, sheet, indx):
-        polysemy = self.get_field('polysemy', sheet, indx)
+        polysemy = self.get_field('POLYSEMY', sheet, indx)
         if polysemy:
             polysemy_obj, _ = Polysemy.objects.get_or_create(polysemy=polysemy)
             return polysemy_obj

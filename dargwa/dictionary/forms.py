@@ -14,10 +14,14 @@ class IdiomPosForm(forms.Form):
             'style': 'margin: 10px;'
         })
     )
-    pos = forms.ModelChoiceField(
+    pos = forms.ChoiceField(
         label='Часть речи',
-        queryset=PartOfSpeech.objects.all(),
-        empty_label='Все части речи',
+        choices=[
+            ('', 'Все части речи'),
+            ('n', 'nouns'),
+            ('v', 'verbs'),
+            ('other', 'other'),
+        ],
         required=False,
         widget=forms.Select(attrs={
             'style': 'margin: 10px;'

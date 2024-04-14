@@ -8,26 +8,9 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, FormView
-from django.urls import reverse
 
 from .forms import IdiomPosForm, SearchForm, ContactForm
-from .serializers import NounSerializer, VerbSerializer
-from .models import (
-    Word,
-    Idiom,
-    PartOfSpeech,
-    GrammClass,
-    Grammems,
-    ArgumentStructure,
-    Root,
-    Source,
-    Irregularity,
-    Origin,
-    Polysemy,
-    WordForm,
-    Morpheme,
-)
-from .scripts import make_gender_words
+from .models import Word
 
 
 class StartPageView(FormView):
@@ -51,14 +34,14 @@ class SearchView(FormView):
             if search_type == '0':
                 print(1434)
                 q &= Q(
-                    Q(word__contains=search_word) | Q(class_words__contains=search_word) |
-                    Q(class_words_trans__contains=search_word) |
-                    Q(trans_ru__contains=search_word) | Q(trans_eng__contains=search_word)
+                    Q(entry_cyr__contains=search_word) | Q(class_words_cyr__contains=search_word) |
+                    Q(class_words_lat__contains=search_word) |
+                    Q(meaning_rus__contains=search_word) | Q(meaning_eng__contains=search_word)
                 )
             elif search_type == '1':
                 q &= Q(gloss=search_word)
             elif search_type == '2':
-                q &= Q(root_id=search_word)
+                q &= Q(structure=search_word)
             print(q)
             words = Word.objects.filter(q)
             print(words)

@@ -52,8 +52,8 @@
 <tbody>
 {% for word in result_list %}
     <tr>
-        <td class="col-sm-3"><a style="color:#70cbce" href="{% url 'dictionary:word_page' word.id %}">{{ word.word }}</a></td>
-        <td class="col-sm-3">{{ word.trans_ru }}</td>
+        <td class="col-sm-3"><a style="color:#70cbce" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr }}</a></td>
+        <td class="col-sm-3">{{ word.meaning_rus }}</td>
         <td class="col-sm-2">{{ word.pos }}</td>
         <td class="col-sm-2">{{ word.idiom }}</td>
     </tr>

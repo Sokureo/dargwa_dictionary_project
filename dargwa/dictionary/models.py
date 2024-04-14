@@ -2,37 +2,31 @@ from django.db import models
 
 
 class Word(models.Model):
-    word = models.CharField(max_length=45)
-    link_word_str = models.CharField(max_length=45, null=True, blank=True, db_index=True)
-    transcription = models.CharField(max_length=45, null=True, blank=True, db_index=True)
-    trans_ru = models.CharField(max_length=45, null=True, blank=True, db_index=True)
-    trans_eng = models.CharField(max_length=45, null=True, blank=True, db_index=True)
+    entry_cyr = models.CharField(max_length=45)
+    entry_lat = models.CharField(max_length=45, null=True, blank=True, db_index=True)
+    link_cyr = models.CharField(max_length=45, null=True, blank=True, db_index=True)
+    meaning_rus = models.CharField(max_length=250, null=True, blank=True, db_index=True)
+    meaning_eng = models.CharField(max_length=250, null=True, blank=True, db_index=True)
     gloss = models.CharField(max_length=45, null=True, blank=True, db_index=True)
-    pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE)
-    idiom = models.ForeignKey('Idiom', on_delete=models.CASCADE)
-    gramm_class = models.ForeignKey('GrammClass', on_delete=models.CASCADE, null=True, blank=True)
-    argument_structure = models.ForeignKey(
-        'ArgumentStructure',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    root_id = models.ForeignKey('Root', on_delete=models.CASCADE, null=True, blank=True)
-    source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True, blank=True)
-    comment = models.CharField(max_length=200, null=True, blank=True)
-    example = models.CharField(max_length=200, null=True, blank=True)
-    irregularity = models.ForeignKey('Irregularity', on_delete=models.CASCADE, null=True, blank=True)
-    variant = models.CharField(max_length=50, null=True, blank=True)
-    # список словоформ по родам + в транскрипции
-    class_words = models.CharField(max_length=256, null=True, blank=True)
-    class_words_trans = models.CharField(max_length=256, null=True, blank=True)
-    origin = models.ForeignKey('Origin', on_delete=models.CASCADE, null=True, blank=True)
     polysemy = models.ForeignKey('Polysemy', on_delete=models.CASCADE, null=True, blank=True)
+    structure = models.ForeignKey('Structure', on_delete=models.CASCADE, null=True, blank=True)
+    origin = models.ForeignKey('Origin', on_delete=models.CASCADE, null=True, blank=True)
+    pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE, related_name='word_class', null=True, blank=True)
+    idiom = models.ForeignKey('Idiom', on_delete=models.CASCADE)
+    syntactic_class = models.ForeignKey('SyntacticClass', on_delete=models.CASCADE, null=True, blank=True)
+    gender = models.ForeignKey('Gender', on_delete=models.CASCADE, null=True, blank=True)
+    irregularities = models.ForeignKey('Irregularities', on_delete=models.CASCADE, null=True, blank=True)
+    case_frame = models.ForeignKey('CaseFrame', on_delete=models.CASCADE, null=True, blank=True)
+    source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True, blank=True)
+    comments = models.CharField(max_length=200, null=True, blank=True)
     sound = models.CharField(max_length=50, null=True, blank=True)
     img = models.CharField(max_length=50, null=True, blank=True)
+    # список словоформ по родам на кириллице и латыни
+    class_words_cyr = models.CharField(max_length=256, null=True, blank=True)
+    class_words_lat = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
-        return self.word
+        return self.entry_cyr
 
 
 class Link(models.Model):
@@ -40,7 +34,7 @@ class Link(models.Model):
     link_word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='link_word')
 
     def __str__(self):
-        return self.word.word + ' - ' + self.link_word.word
+        return self.word.entry_cyr + ' - ' + self.link_word.entry_cyr
 
 
 class Idiom(models.Model):
@@ -59,40 +53,48 @@ class WordForm(models.Model):
         return self.wordform
 
 
-# транзитивность или род
-class GrammClass(models.Model):
-    gramm_class = models.CharField(max_length=45, unique=True)
+# синтаксический класс глагола
+class SyntacticClass(models.Model):
+    syntactic_class = models.CharField(max_length=45, unique=True)
 
     def __str__(self):
-        return self.gramm_class
+        return self.syntactic_class
+
+
+# род существительных
+class Gender(models.Model):
+    gender = models.CharField(max_length=45, unique=True)
+
+    def __str__(self):
+        return self.gender
 
 
 class Morpheme(models.Model):
     morpheme = models.CharField(max_length=45, db_index=True)
     order_id = models.IntegerField()
-    type = models.CharField(max_length=45, db_index=True)
-    number = models.CharField(max_length=45, db_index=True)
+    morph_type = models.ForeignKey('MorphemeType', on_delete=models.CASCADE, null=True, blank=True)
+    morph_number = models.ForeignKey('MorphemeNumber', on_delete=models.CASCADE, null=True, blank=True)
     word = models.ForeignKey('Word', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.morpheme
 
 
-# class MorphemeType(models.Model):
-#     morph_type = models.CharField(max_length=20)
-#
-#     def __str__(self):
-#         return self.morph_type
-#
-#
-# class MorphemeNumber(models.Model):
-#     morph_number = models.CharField(max_length=20, db_index=True)
-#
-#     def __str__(self):
-#         return self.morph_number
+class MorphemeType(models.Model):
+    morph_type = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.morph_type
 
 
-# граммемы типа aorist, stem_pfv
+class MorphemeNumber(models.Model):
+    morph_number = models.CharField(max_length=20, db_index=True)
+
+    def __str__(self):
+        return self.morph_number
+
+
+# граммемы типа abs_pl_cyr, infinitive_ipfv_lat
 class Grammems(models.Model):
     grammem = models.CharField(max_length=20, unique=True)
     pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE)
@@ -102,14 +104,14 @@ class Grammems(models.Model):
 
 
 # модель управления
-class ArgumentStructure(models.Model):
-    argument_structure = models.CharField(max_length=200, unique=True)
+class CaseFrame(models.Model):
+    case_frame = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
-        return self.argument_structure
+        return self.case_frame
 
 
-class Irregularity(models.Model):
+class Irregularities(models.Model):
     irregularity = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
@@ -126,6 +128,9 @@ class Origin(models.Model):
 class Polysemy(models.Model):
     polysemy = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.polysemy
+
 
 class PartOfSpeech(models.Model):
     pos = models.CharField(max_length=20, unique=True)
@@ -134,12 +139,12 @@ class PartOfSpeech(models.Model):
         return self.pos
 
 
-# номер корня для поиска когнатов
-class Root(models.Model):
-    root_id = models.CharField(max_length=20, unique=True)
+# NONDER - непроизводное слово, DER - производное слово
+class Structure(models.Model):
+    structure = models.CharField(max_length=20, unique=True)
 
     def __str__(self):
-        return self.root_id
+        return self.structure
 
 
 class Source(models.Model):

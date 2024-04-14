@@ -15,17 +15,20 @@ from .models import (
     Word,
     Idiom,
     PartOfSpeech,
-    GrammClass,
+    SyntacticClass,
+    Gender,
     Grammems,
-    ArgumentStructure,
-    Root,
+    CaseFrame,
+    Structure,
     Source,
-    Irregularity,
+    Irregularities,
     Origin,
     Polysemy,
     Link,
     WordForm,
     Morpheme,
+    MorphemeType,
+    MorphemeNumber,
 )
 from .scripts import make_gender_words
 
@@ -57,15 +60,15 @@ class WordFormsInline(WordInline):
 
 class WordAdmin(admin.ModelAdmin):
     list_display = (
-        'word',
-        'transcription',
+        'entry_cyr',
+        'entry_lat',
         'pos',
         'idiom',
         'gloss',
     )
     search_fields = (
-        'word',
-        'transcription',
+        'entry_lat',
+        'entry_lat',
         'gloss',
     )
     list_filter = (
@@ -80,9 +83,9 @@ class WordAdmin(admin.ModelAdmin):
     change_list_template = 'admin/word/change_list.html'
 
     def save_model(self, request, obj, form, change):
-        obj.class_words, obj.class_words_trans = make_gender_words(
-            obj.word,
-            obj.transcription,
+        obj.class_words_cyr, obj.class_words_lat = make_gender_words(
+            obj.entry_cyr,
+            obj.entry_lat,
         )
         super(WordAdmin, self).save_model(request, obj, form, change)
 
@@ -138,11 +141,18 @@ class PartOfSpeechAdmin(admin.ModelAdmin):
 admin.site.register(PartOfSpeech, PartOfSpeechAdmin)
 
 
-class GrammClassAdmin(admin.ModelAdmin):
+class SyntacticClassAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(GrammClass, GrammClassAdmin)
+admin.site.register(SyntacticClass, SyntacticClassAdmin)
+
+
+class GenderAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Gender, GenderAdmin)
 
 
 class GrammemsAdmin(admin.ModelAdmin):
@@ -152,18 +162,18 @@ class GrammemsAdmin(admin.ModelAdmin):
 admin.site.register(Grammems, GrammemsAdmin)
 
 
-class ArgumentStructureAdmin(admin.ModelAdmin):
+class CaseFrameAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(ArgumentStructure, ArgumentStructureAdmin)
+admin.site.register(CaseFrame, CaseFrameAdmin)
 
 
-class RootAdmin(admin.ModelAdmin):
+class StructureAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Root, RootAdmin)
+admin.site.register(Structure, StructureAdmin)
 
 
 class SourceAdmin(admin.ModelAdmin):
@@ -173,11 +183,11 @@ class SourceAdmin(admin.ModelAdmin):
 admin.site.register(Source, SourceAdmin)
 
 
-class IrregularityAdmin(admin.ModelAdmin):
+class IrregularitiesAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Irregularity, IrregularityAdmin)
+admin.site.register(Irregularities, IrregularitiesAdmin)
 
 
 class OriginAdmin(admin.ModelAdmin):
@@ -206,3 +216,17 @@ class WordFormAdmin(admin.ModelAdmin):
 
 
 admin.site.register(WordForm, WordFormAdmin)
+
+
+class MorphemeTypeAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(MorphemeType, MorphemeTypeAdmin)
+
+
+class MorphemeNumberAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(MorphemeNumber, MorphemeNumberAdmin)

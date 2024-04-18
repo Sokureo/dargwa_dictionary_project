@@ -45,12 +45,21 @@ class Idiom(models.Model):
 
 
 class WordForm(models.Model):
-    word = models.ForeignKey('Word', on_delete=models.CASCADE)
+    word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='wordforms')
     wordform = models.CharField(max_length=45, db_index=True)
     grammem = models.ForeignKey('Grammems', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.wordform
+
+
+# граммемы типа abs_pl_cyr, infinitive_ipfv_lat
+class Grammems(models.Model):
+    grammem = models.CharField(max_length=20, unique=True)
+    pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.grammem
 
 
 # синтаксический класс глагола
@@ -92,15 +101,6 @@ class MorphemeNumber(models.Model):
 
     def __str__(self):
         return self.morph_number
-
-
-# граммемы типа abs_pl_cyr, infinitive_ipfv_lat
-class Grammems(models.Model):
-    grammem = models.CharField(max_length=20, unique=True)
-    pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.grammem
 
 
 # модель управления

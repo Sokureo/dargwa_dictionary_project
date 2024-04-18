@@ -67,7 +67,7 @@ class WordAdmin(admin.ModelAdmin):
         'gloss',
     )
     search_fields = (
-        'entry_lat',
+        'entry_cyr',
         'entry_lat',
         'gloss',
     )

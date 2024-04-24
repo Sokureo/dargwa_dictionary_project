@@ -59,7 +59,6 @@ class WordSerializer(serializers.ModelSerializer):
             return morph.morph_number.morph_number
         return self.make_morph(morph)
 
-
     def get_morpheme_2(self, obj):
         morph = Morpheme.objects.filter(word=obj, order_id=2).first()
         return self.make_morph(morph)

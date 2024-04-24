@@ -17,7 +17,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.urls import path
 
-from .views import StartPageView, SearchView, WordPageView
+from .views import (
+    StartPageView,
+    SearchView,
+    WordPageView,
+    SearchCognatesView,
+)
 
 app_name = 'dictionary'
 
@@ -25,4 +30,5 @@ urlpatterns = [
     path('', StartPageView.as_view(), name='start_page'),
     path('search/', SearchView.as_view(), name='search'),
     url(r'^word/(?P<word_id>\d+)/$', WordPageView.as_view(), name='word_page'),
+    url(r'^search/cognates/(?P<word_id>\d+)/$', SearchCognatesView.as_view(), name='search_cognates'),
 ]

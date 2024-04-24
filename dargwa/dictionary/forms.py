@@ -33,9 +33,9 @@ class SearchForm(forms.Form):
     search_word = forms.CharField()
     search_type = forms.ChoiceField(
         choices=(
-            ('0', u'Искать слово/перевод'),
+            ('0', u'Искать слово'),
             ('1', u'Искать синонимы'),
-            ('2', u'Искать когнаты'),
+            # ('2', u'Искать семантическое поле'),
         ),
     )
 

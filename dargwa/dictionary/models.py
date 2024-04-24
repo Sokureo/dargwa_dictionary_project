@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Word(models.Model):
-    entry_cyr = models.CharField(max_length=45)
+    entry_cyr = models.CharField(max_length=45, db_index=True)
     entry_lat = models.CharField(max_length=45, null=True, blank=True, db_index=True)
     link_cyr = models.CharField(max_length=45, null=True, blank=True, db_index=True)
     meaning_rus = models.CharField(max_length=250, null=True, blank=True, db_index=True)
@@ -19,19 +19,26 @@ class Word(models.Model):
     case_frame = models.ForeignKey('CaseFrame', on_delete=models.CASCADE, null=True, blank=True)
     source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True, blank=True)
     comments = models.CharField(max_length=200, null=True, blank=True)
-    sound = models.CharField(max_length=50, null=True, blank=True)
-    img = models.CharField(max_length=50, null=True, blank=True)
+    sound = models.CharField(max_length=50, null=True, blank=True, db_index=True)
+    img = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     # список словоформ по родам на кириллице и латыни
-    class_words_cyr = models.CharField(max_length=256, null=True, blank=True)
-    class_words_lat = models.CharField(max_length=256, null=True, blank=True)
+    class_words_cyr = models.CharField(max_length=256, null=True, blank=True, db_index=True)
+    class_words_lat = models.CharField(max_length=256, null=True, blank=True, db_index=True)
 
     def __str__(self):
         return self.entry_cyr
 
+    @property
+    def omonyms(self):
+        return Word.objects.filter(
+            polysemy__isnull=False,
+            polysemy=self.polysemy
+        ).distinct().values_list('meaning_rus', flat=True).order_by('meaning_rus')
+
 
 class Link(models.Model):
-    word = models.ForeignKey('Word', on_delete=models.CASCADE)
-    link_word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='link_word')
+    word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='link_word')
+    link_word = models.ForeignKey('Word', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.word.entry_cyr + ' - ' + self.link_word.entry_cyr
@@ -59,7 +66,7 @@ class Grammems(models.Model):
     pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.grammem
+        return self.grammem.lower().replace('_', ' ')
 
 
 # синтаксический класс глагола
@@ -80,24 +87,24 @@ class Gender(models.Model):
 
 class Morpheme(models.Model):
     morpheme = models.CharField(max_length=45, db_index=True)
-    order_id = models.IntegerField()
+    order_id = models.IntegerField(db_index=True)
     morph_type = models.ForeignKey('MorphemeType', on_delete=models.CASCADE, null=True, blank=True)
     morph_number = models.ForeignKey('MorphemeNumber', on_delete=models.CASCADE, null=True, blank=True)
-    word = models.ForeignKey('Word', on_delete=models.CASCADE)
+    word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='morphemes')
 
     def __str__(self):
         return self.morpheme
 
 
 class MorphemeType(models.Model):
-    morph_type = models.CharField(max_length=20)
+    morph_type = models.CharField(max_length=20, unique=True)
 
     def __str__(self):
         return self.morph_type
 
 
 class MorphemeNumber(models.Model):
-    morph_number = models.CharField(max_length=20, db_index=True)
+    morph_number = models.CharField(max_length=20, unique=True)
 
     def __str__(self):
         return self.morph_number
@@ -125,6 +132,7 @@ class Origin(models.Model):
         return self.origin
 
 
+# омонимы, ROW132
 class Polysemy(models.Model):
     polysemy = models.CharField(max_length=50, unique=True)
 

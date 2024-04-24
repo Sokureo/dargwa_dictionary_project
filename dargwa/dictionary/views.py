@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, FormView
 
 from .forms import IdiomPosForm, SearchForm, ContactForm
-from .models import Word
+from .models import Word, WordForm, Morpheme, MorphemeType
 
 
 class StartPageView(FormView):
@@ -32,19 +32,13 @@ class SearchView(FormView):
 
             q = Q(idiom__in=idiom) & Q(pos__in=pos)
             if search_type == '0':
-                print(1434)
                 q &= Q(
-                    Q(entry_cyr__contains=search_word) | Q(class_words_cyr__contains=search_word) |
-                    Q(class_words_lat__contains=search_word) |
-                    Q(meaning_rus__contains=search_word) | Q(meaning_eng__contains=search_word)
+                    Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
+                    Q(class_words_cyr__contains=search_word) | Q(class_words_lat__contains=search_word)
                 )
             elif search_type == '1':
-                q &= Q(gloss=search_word)
-            elif search_type == '2':
-                q &= Q(structure=search_word)
-            print(q)
+                q &= Q(Q(meaning_rus__icontains=search_word) | Q(meaning_eng__icontains=search_word))
             words = Word.objects.filter(q)
-            print(words)
             return render(request, 'result_list.html', {'result_list': words})
         else:
             return self.form_invalid(form)
@@ -53,18 +47,28 @@ class SearchView(FormView):
 class WordPageView(TemplateView):
     template_name = 'word_page.html'
 
-    # def __init__(self, **kwargs):
-    #     print(*kwargs)
-    #     self.result_list = result_list
-    #     super(SearchResultsView, self).__init__(**kwargs)
-    #
-    # def get(self, request, *args, **kwargs):
-    #     print(request.sessiont.get('result_list'))
-    #     context = self.get_context_data(**kwargs)
-    #     return self.render_to_response(context)
-    #
-    # def get_context_data(self, **kwargs):
-    #     print(*kwargs)
-    #     context = super(SearchResultsView, self).get_context_data(**kwargs)
-    #     # context['result_list'] = self.result_list
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super(WordPageView, self).get_context_data(**kwargs)
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        if word:
+            context['word'] = word
+            return context
+        # else:
+
+
+class SearchCognatesView(TemplateView):
+    template_name = 'result_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchCognatesView, self).get_context_data(**kwargs)
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        morph_R = MorphemeType.objects.filter(morph_type='R').first()
+        root_morph = word.morphemes.filter(morph_type=morph_R).first()
+        root_number = root_morph.morph_number if root_morph else None
+        if root_number:
+            cognates = Word.objects.prefetch_related('morphemes').filter(
+                morphemes__morph_type=morph_R,
+                morphemes__morph_number=root_number,
+            ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
+            context['result_list'] = cognates
+        return context

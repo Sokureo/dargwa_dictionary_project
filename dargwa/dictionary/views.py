@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, FormView
 
 from .forms import IdiomPosForm, SearchForm, ContactForm
-from .models import Word, WordForm, Morpheme, MorphemeType
+from .models import Word, WordForm, Morpheme, MorphemeType, MorphemeNumber
 
 
 class StartPageView(FormView):
@@ -62,13 +62,10 @@ class SearchCognatesView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SearchCognatesView, self).get_context_data(**kwargs)
         word = Word.objects.filter(id=kwargs['word_id']).first()
-        morph_R = MorphemeType.objects.filter(morph_type='R').first()
-        root_morph = word.morphemes.filter(morph_type=morph_R).first()
-        root_number = root_morph.morph_number if root_morph else None
-        if root_number:
-            cognates = Word.objects.prefetch_related('morphemes').filter(
-                morphemes__morph_type=morph_R,
-                morphemes__morph_number=root_number,
-            ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
-            context['result_list'] = cognates
+        root_id = MorphemeNumber.objects.filter(morph_number=kwargs['root_id']).first()
+        cognates = Word.objects.prefetch_related('morphemes').filter(
+            morphemes__morph_type=MorphemeType.root(),
+            morphemes__morph_number=root_id,
+        ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
+        context['result_list'] = cognates
         return context

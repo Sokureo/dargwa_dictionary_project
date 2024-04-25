@@ -102,12 +102,13 @@
                         <br>
 
                         <p>Synonyms</p>
-                        <p><a style="color:#70cbce" href="{% url 'dictionary:search_cognates' word.id %}">Cognates</a></p>
-<!--                         <button class="btn btn-success" id="SearchSyn">Поиск по синонимам</button>
-                        <form action="/prosearch" method="post">
-                            <button name="SearchSyn" type="submit" pos="0">Forward</button>
-                        </form> -->
-                        
+
+                        {% for root in word.roots.all %}
+                        {% if root.morph_number %}
+                        <br><br><a style="color:#70cbce" href="{% url 'dictionary:search_cognates' word.id root.morph_number.id %}">Cognates for root {{ root }}</a>
+                        {% endif %}
+                        {% endfor %}
+                        <br>
 
                     </div>
                         <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">

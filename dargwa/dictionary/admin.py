@@ -205,7 +205,21 @@ admin.site.register(Polysemy, PolysemyAdmin)
 
 
 class MorphemeAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        'morpheme',
+        'morph_number__morph_number',
+    )
+    list_display = (
+        'morpheme',
+        'order_id',
+        'morph_type',
+        'morph_number',
+        'word',
+    )
+    list_filter = (
+        'morph_type',
+        'order_id',
+    )
 
 
 admin.site.register(Morpheme, MorphemeAdmin)

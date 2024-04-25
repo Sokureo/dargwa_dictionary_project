@@ -35,6 +35,9 @@ class Word(models.Model):
             polysemy=self.polysemy
         ).distinct().values_list('meaning_rus', flat=True).order_by('meaning_rus')
 
+    def roots(self):
+        return self.morphemes.filter(morph_type=MorphemeType.root())
+
 
 class Link(models.Model):
     word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='link_word')
@@ -101,6 +104,10 @@ class MorphemeType(models.Model):
 
     def __str__(self):
         return self.morph_type
+
+    @classmethod
+    def root(cls):
+        return cls.objects.filter(morph_type='R').first()
 
 
 class MorphemeNumber(models.Model):

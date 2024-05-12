@@ -21,6 +21,8 @@ class StartPageView(FormView):
 class SearchView(FormView):
     template_name = 'search.html'
     form_class = SearchForm
+    meaning_regex = r'(\(.+\))*(^|[ ,)]){}([ ,;]|$)'
+    # meaning_regex = r'(?:\(.+?\))*?(?:^|[ ,)]){}(?:[ ,;]|$)'
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -37,7 +39,10 @@ class SearchView(FormView):
                     Q(class_words_cyr__contains=search_word) | Q(class_words_lat__contains=search_word)
                 )
             elif search_type == '1':
-                q &= Q(Q(meaning_rus__icontains=search_word) | Q(meaning_eng__icontains=search_word))
+                q &= Q(
+                    Q(meaning_rus__iregex=self.meaning_regex.format(search_word)) |
+                    Q(meaning_eng__iregex=self.meaning_regex.format(search_word))
+                )
             words = Word.objects.filter(q)
             return render(request, 'result_list.html', {'result_list': words})
         else:
@@ -62,10 +67,25 @@ class SearchCognatesView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SearchCognatesView, self).get_context_data(**kwargs)
         word = Word.objects.filter(id=kwargs['word_id']).first()
-        root_id = MorphemeNumber.objects.filter(morph_number=kwargs['root_id']).first()
+        root_id = MorphemeNumber.objects.filter(id=kwargs['root_id']).first()
         cognates = Word.objects.prefetch_related('morphemes').filter(
             morphemes__morph_type=MorphemeType.root(),
             morphemes__morph_number=root_id,
         ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
         context['result_list'] = cognates
+        return context
+
+
+class SearchSynonymsView(TemplateView):
+    template_name = 'result_list.html'
+    meaning_regex = r'(\(.+\))*(^|[ ,)]){}([ ,;]|$)'
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchSynonymsView, self).get_context_data(**kwargs)
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        synonyms = Word.objects.filter(
+            Q(meaning_rus__iregex=self.meaning_regex.format(word.meaning_rus)) |
+            Q(meaning_eng__iregex=self.meaning_regex.format(word.meaning_eng))
+        )
+        context['result_list'] = synonyms
         return context

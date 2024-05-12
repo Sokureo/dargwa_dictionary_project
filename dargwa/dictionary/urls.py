@@ -22,6 +22,7 @@ from .views import (
     SearchView,
     WordPageView,
     SearchCognatesView,
+    SearchSynonymsView,
 )
 
 app_name = 'dictionary'
@@ -31,4 +32,5 @@ urlpatterns = [
     path('search/', SearchView.as_view(), name='search'),
     url(r'^word/(?P<word_id>\d+)/$', WordPageView.as_view(), name='word_page'),
     url(r'^search/cognates/(?P<word_id>\d+)/(?P<root_id>\d+)/$', SearchCognatesView.as_view(), name='search_cognates'),
+    url(r'^search/synonyms/(?P<word_id>\d+)/$', SearchSynonymsView.as_view(), name='search_synonyms'),
 ]

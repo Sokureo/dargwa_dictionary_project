@@ -64,11 +64,15 @@ class WordAdmin(admin.ModelAdmin):
         'entry_lat',
         'pos',
         'idiom',
+        'meaning_rus',
+        'meaning_eng',
         'gloss',
     )
     search_fields = (
         'entry_cyr',
         'entry_lat',
+        'meaning_rus',
+        'meaning_eng',
         'gloss',
     )
     list_filter = (

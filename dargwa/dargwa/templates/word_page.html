@@ -97,7 +97,7 @@
                         {% endfor %}
 
                         {% for morpheme in word.morphemes.all %}
-                        <br><br>Other words with {{ morpheme }}
+                        <br><br>Other words with <a style="color:#70cbce" href="{% url 'dictionary:search_morphemes' morpheme.id %}">{{ morpheme }}</a>
                         {% endfor %}
                         <br>
 

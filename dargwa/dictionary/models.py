@@ -18,7 +18,7 @@ class Word(models.Model):
     irregularities = models.ForeignKey('Irregularities', on_delete=models.CASCADE, null=True, blank=True)
     case_frame = models.ForeignKey('CaseFrame', on_delete=models.CASCADE, null=True, blank=True)
     source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True, blank=True)
-    comments = models.CharField(max_length=200, null=True, blank=True)
+    comments = models.CharField(max_length=2000, null=True, blank=True)
     sound = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     img = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     # список словоформ по родам на кириллице и латыни
@@ -115,6 +115,10 @@ class MorphemeNumber(models.Model):
 
     def __str__(self):
         return self.morph_number
+
+    @classmethod
+    def gloss(cls):
+        return cls.objects.exclude(morph_number__iregex=r'N\d+').order_by('morph_number')
 
 
 # модель управления

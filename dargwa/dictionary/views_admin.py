@@ -4,7 +4,7 @@ import pandas as pd
 import zipfile
 
 from django.contrib import admin, messages
-from django.db.models import Q
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, FormView
@@ -185,46 +185,47 @@ class ImportDictionaryView(TemplateView):
     def post(self, request):
         excel_file = request.FILES['excel_file']
         excel_reader = pd.ExcelFile(excel_file)
-        for sheet in excel_reader.sheet_names:
-            df = excel_reader.parse(sheet)
-            df = df.fillna('')
-            idiom = sheet.split('_')[0]
-            for indx, word in enumerate(df.get('ENTRY_CYR')):
-                if word:
-                    entry_lat = self.get_field('ENTRY_LAT', df, indx)
-                    if entry_lat:
-                        entry_lat = entry_lat.replace('с', 'c')
-                    class_words_cyr, class_words_lat = make_gender_words(
-                        word,
-                        entry_lat,
-                    )
-                    word_obj = Word.objects.create(
-                        entry_cyr=word,
-                        link_cyr=self.get_field('LINK_CYR', df, indx),
-                        entry_lat=entry_lat,
-                        meaning_rus=self.get_field('MEANING_RUS', df, indx),
-                        meaning_eng=self.get_field('MEANING_ENG', df, indx),
-                        gloss=self.get_field('GLOSS', df, indx),
-                        comments=self.get_field('COMMENTS', df, indx),
-                        class_words_cyr=class_words_cyr,
-                        class_words_lat=class_words_lat,
-                        sound=self.get_field('SOUND', df, indx),
-                        # img=self.get_field('img', df, indx),
-                        pos=self.get_pos(df, indx),
-                        idiom=self.get_idiom(idiom),
-                        syntactic_class=self.get_syntactic_class(df, indx),
-                        gender=self.get_gender(df, indx),
-                        case_frame=self.get_case_frame(df, indx),
-                        structure=self.get_structure(df, indx),
-                        source=self.get_source(df, indx),
-                        irregularities=self.get_irregularities(df, indx),
-                        origin=self.get_origin(df, indx),
-                        polysemy=self.get_polysemy(df, indx),
-                    )
-                    self.create_morphemes(df, indx, word_obj)
-                    self.create_wordforms(df, indx, word_obj)
+        with transaction.atomic():
+            for sheet in excel_reader.sheet_names:
+                df = excel_reader.parse(sheet)
+                df = df.fillna('')
+                idiom = sheet.split('_')[0]
+                for indx, word in enumerate(df.get('ENTRY_CYR')):
+                    if word:
+                        entry_lat = self.get_field('ENTRY_LAT', df, indx)
+                        if entry_lat:
+                            entry_lat = entry_lat.replace('с', 'c')
+                        class_words_cyr, class_words_lat = make_gender_words(
+                            word,
+                            entry_lat,
+                        )
+                        word_obj = Word.objects.create(
+                            entry_cyr=word,
+                            link_cyr=self.get_field('LINK_CYR', df, indx),
+                            entry_lat=entry_lat,
+                            meaning_rus=self.get_field('MEANING_RUS', df, indx),
+                            meaning_eng=self.get_field('MEANING_ENG', df, indx),
+                            gloss=self.get_field('GLOSS', df, indx),
+                            comments=self.get_field('COMMENTS', df, indx),
+                            class_words_cyr=class_words_cyr,
+                            class_words_lat=class_words_lat,
+                            sound=self.get_field('SOUND', df, indx),
+                            # img=self.get_field('img', df, indx),
+                            pos=self.get_pos(df, indx),
+                            idiom=self.get_idiom(idiom),
+                            syntactic_class=self.get_syntactic_class(df, indx),
+                            gender=self.get_gender(df, indx),
+                            case_frame=self.get_case_frame(df, indx),
+                            structure=self.get_structure(df, indx),
+                            source=self.get_source(df, indx),
+                            irregularities=self.get_irregularities(df, indx),
+                            origin=self.get_origin(df, indx),
+                            polysemy=self.get_polysemy(df, indx),
+                        )
+                        self.create_morphemes(df, indx, word_obj)
+                        self.create_wordforms(df, indx, word_obj)
 
-        messages.success(request, 'Словарь загружен')
+            messages.success(request, 'Словарь загружен')
         return redirect('admin:dictionary_word_changelist')
 
     def create_morphemes(self, sheet, indx, word):

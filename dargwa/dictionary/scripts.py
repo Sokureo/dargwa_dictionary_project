@@ -325,7 +325,7 @@ def make_gender_words(word, transcription):
         elif letter not in ['1', '(', ')', ' ']:
             cyr_letters.append(letter)
         indx += 1
-    if word[-1] not in cyr_letters[-1]:
+    if cyr_letters and word[-1] not in cyr_letters[-1]:
         cyr_letters.append(word[-1])
 
     orth_words = [transcr(z.replace('-', '')) for z in class_words_tr]

@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Idiom, PartOfSpeech
+from .models import Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 
 
 class IdiomPosForm(forms.Form):
@@ -30,12 +30,32 @@ class IdiomPosForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    search_word = forms.CharField()
+    search_word = forms.CharField(required=False)
+    morph_type = forms.ModelMultipleChoiceField(
+        label=_('Тип морфемы'),
+        queryset=MorphemeType.objects.exclude(morph_type=MorphemeType.root()).order_by('morph_type'),
+        required=False,
+        widget=forms.SelectMultiple(),
+    )
+    morph_gloss = forms.ModelMultipleChoiceField(
+        label=_('Глосса'),
+        queryset=MorphemeNumber.gloss(),
+        required=False,
+        widget=forms.SelectMultiple(),
+    )
+    morpheme = forms.CharField(required=False)
+    # morpheme = forms.ModelChoiceField(
+    #     label=_('Морфема'),
+    #     queryset=Morpheme.objects.all().order_by('morpheme').distinct(),
+    #     required=False,
+    #     widget=forms.Select(),
+    # )
     search_type = forms.ChoiceField(
         choices=(
             ('0', u'Искать слово'),
             ('1', u'Искать синонимы'),
-            # ('2', u'Искать семантическое поле'),
+            ('2', u'Искать морфемы'),
+            # ('3', u'Искать семантическое поле'),
         ),
     )
 

@@ -21,7 +21,8 @@ class StartPageView(FormView):
 class SearchView(FormView):
     template_name = 'search.html'
     form_class = SearchForm
-    meaning_regex = r'(\(.+\))*(^|[ ,)]){}([ ,;]|$)'
+    meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
+    meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
     # meaning_regex = r'(?:\(.+?\))*?(?:^|[ ,)]){}(?:[ ,;]|$)'
 
     def post(self, request, *args, **kwargs):
@@ -31,6 +32,9 @@ class SearchView(FormView):
             search_type = form.cleaned_data.get('search_type')
             idiom = form.cleaned_data.get('idiom')
             pos = form.cleaned_data.get('pos')
+            morph_type = form.cleaned_data.get('morph_type')
+            morph_gloss = form.cleaned_data.get('morph_gloss')
+            morpheme = form.cleaned_data.get('morpheme')
 
             q = Q(idiom__in=idiom) & Q(pos__in=pos)
             if search_type == '0':
@@ -38,12 +42,23 @@ class SearchView(FormView):
                     Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
                     Q(class_words_cyr__contains=search_word) | Q(class_words_lat__contains=search_word)
                 )
+                words = Word.objects.filter(q)
             elif search_type == '1':
                 q &= Q(
                     Q(meaning_rus__iregex=self.meaning_regex.format(search_word)) |
-                    Q(meaning_eng__iregex=self.meaning_regex.format(search_word))
+                    Q(meaning_rus__iregex=self.meaning_regex2.format(search_word)) |
+                    Q(meaning_eng__iregex=self.meaning_regex.format(search_word)) |
+                    Q(meaning_eng__iregex=self.meaning_regex2.format(search_word))
                 )
-            words = Word.objects.filter(q)
+                words = Word.objects.filter(q)
+            elif search_type == '2':
+                q_morph = Q(morphemes__morph_type__in=morph_type)
+                if morph_gloss:
+                    q_morph &= Q(morphemes__morph_number__in=morph_gloss)
+                if morpheme:
+                    q_morph &= Q(morphemes__morpheme=morpheme)
+                words = Word.objects.prefetch_related('morphemes').filter(q_morph)
+                words = words.filter(q)
             return render(request, 'result_list.html', {'result_list': words})
         else:
             return self.form_invalid(form)
@@ -78,14 +93,36 @@ class SearchCognatesView(TemplateView):
 
 class SearchSynonymsView(TemplateView):
     template_name = 'result_list.html'
-    meaning_regex = r'(\(.+\))*(^|[ ,)]){}([ ,;]|$)'
+    meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
+    meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
 
     def get_context_data(self, **kwargs):
         context = super(SearchSynonymsView, self).get_context_data(**kwargs)
         word = Word.objects.filter(id=kwargs['word_id']).first()
-        synonyms = Word.objects.filter(
-            Q(meaning_rus__iregex=self.meaning_regex.format(word.meaning_rus)) |
-            Q(meaning_eng__iregex=self.meaning_regex.format(word.meaning_eng))
-        )
+        trans_ru = word.meaning_rus.split(', ')
+        trans_eng = word.meaning_eng.split(', ')
+        q = Q()
+        for trans in trans_ru:
+            q |= Q(meaning_rus__iregex=self.meaning_regex.format(trans))
+            q |= Q(meaning_rus__iregex=self.meaning_regex2.format(trans))
+        for trans in trans_eng:
+            q |= Q(meaning_rus__iregex=self.meaning_regex.format(trans))
+            q |= Q(meaning_rus__iregex=self.meaning_regex2.format(trans))
+        # synonyms = Word.objects.filter(
+        #     Q(meaning_rus__iregex=self.meaning_regex.format(word.meaning_rus)) |
+        #     Q(meaning_eng__iregex=self.meaning_regex.format(word.meaning_eng))
+        # )
+        synonyms = Word.objects.filter(q)
         context['result_list'] = synonyms
+        return context
+
+
+class SearchMorphemesView(TemplateView):
+    template_name = 'result_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchMorphemesView, self).get_context_data(**kwargs)
+        morpheme = Morpheme.objects.filter(id=kwargs['morpheme_id']).first().morpheme
+        words = Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme)
+        context['result_list'] = words
         return context

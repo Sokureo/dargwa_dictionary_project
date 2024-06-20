@@ -113,7 +113,7 @@ class Migration(migrations.Migration):
                 ('meaning_rus', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
                 ('meaning_eng', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
                 ('gloss', models.CharField(blank=True, db_index=True, max_length=45, null=True)),
-                ('comments', models.CharField(blank=True, max_length=200, null=True)),
+                ('comments', models.CharField(blank=True, max_length=2000, null=True)),
                 ('sound', models.CharField(blank=True, max_length=50, null=True)),
                 ('img', models.CharField(blank=True, max_length=50, null=True)),
                 ('class_words_cyr', models.CharField(blank=True, max_length=256, null=True)),

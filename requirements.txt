@@ -1,3 +1,5 @@
+# Requirements file for python modules, to be used with pip (pip3 install -r requirements.txt).
+
 Django==3.2.18
 django-mysql==4.8.0
 mysqlclient==2.1.1

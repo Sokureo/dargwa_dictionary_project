@@ -10,8 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from environs import Env
 from pathlib import Path
 import os
+
+Env.read_env()
+env = Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
@@ -99,13 +103,18 @@ WSGI_APPLICATION = 'dargwa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DB_NAME = env.str('DB_NAME', default='dar')
+DB_USER = env.str('DB_USER', default='esokur')
+DB_PASSWORD = env.str('PASSWORD', default='esokur11')
+HOST = env.str('HOST', default='localhost')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dar',
-        'USER': 'esokur',
-        'PASSWORD': 'esokur11',
-        'HOST': 'localhost',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': HOST,
         'PORT': '3306',
         'TEST': {
             'CHARSET': 'utf8',

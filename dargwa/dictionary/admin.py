@@ -2,7 +2,6 @@ from django import forms
 from django.conf.urls import url
 from django.contrib import admin, messages
 from django.db import models
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -37,7 +36,12 @@ admin.site.site_header = 'Лексикографическая база дарг
 
 
 class LinkAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        'word__link_cyr',
+        'word__entry_cyr',
+        'link_word__link_cyr',
+        'link_word__entry_cyr',
+    )
 
 
 admin.site.register(Link, LinkAdmin)
@@ -94,11 +98,12 @@ class WordAdmin(admin.ModelAdmin):
         super(WordAdmin, self).save_model(request, obj, form, change)
 
     def update_links(self, request):
-        words = Word.objects.filter(link_word_str__isnull=False)
+        words = Word.objects.filter(link_cyr__isnull=False)
         for word in words:
             link_word = Word.objects.filter(
-                Q(word=word.link_word_str) | Q(transcription=word.link_word_str)). \
-                filter(pos=word.pos, idiom=word.idiom).first()
+                entry_cyr=word.link_cyr,
+                idiom=word.idiom,
+            ).exclude(id=word.id).first()
             if link_word and not Link.objects.filter(word=word, link_word=link_word).exists():
                 Link.objects.create(word=word, link_word=link_word)
         messages.success(request, 'Ссылки обновлены')
@@ -237,14 +242,18 @@ admin.site.register(WordForm, WordFormAdmin)
 
 
 class MorphemeTypeAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        'morph_type',
+    )
 
 
 admin.site.register(MorphemeType, MorphemeTypeAdmin)
 
 
 class MorphemeNumberAdmin(admin.ModelAdmin):
-    pass
+    search_fields = (
+        'morph_number',
+    )
 
 
 admin.site.register(MorphemeNumber, MorphemeNumberAdmin)

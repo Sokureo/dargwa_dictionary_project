@@ -21,7 +21,7 @@ class Word(models.Model):
     comments = models.CharField(max_length=2000, null=True, blank=True)
     sound = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     img = models.CharField(max_length=50, null=True, blank=True, db_index=True)
-    # список словоформ по родам на кириллице и латыни
+    # список словоформ по родам на кириллице и латыни, сгенерированные автоматически
     class_words_cyr = models.CharField(max_length=256, null=True, blank=True, db_index=True)
     class_words_lat = models.CharField(max_length=256, null=True, blank=True, db_index=True)
 
@@ -32,11 +32,70 @@ class Word(models.Model):
     def omonyms(self):
         return Word.objects.filter(
             polysemy__isnull=False,
-            polysemy=self.polysemy
+            polysemy=self.polysemy,
+            pos=self.pos,
+            idiom=self.idiom,
         ).distinct().values_list('meaning_rus', flat=True).order_by('meaning_rus')
 
     def roots(self):
         return self.morphemes.filter(morph_type=MorphemeType.root())
+
+    def inf_ipfv_cyr(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='infinitive_ipfv_cyr').first()
+
+    def inf_ipfv_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='infinitive_ipfv_lat').first()
+
+    def pret_pfv_cyr(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='pret_pfv_cyr').first()
+
+    def pret_ipfv_cyr(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='pret_ipfv_cyr').first()
+
+    def cvb_ipfv_cyr(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='cvb_ipfv_cyr').first()
+
+    def cvb_ipfv_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='cvb_ipfv_lat').first()
+
+    def pret_pfv_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='pret_pfv_lat').first()
+
+    def pret_ipfv_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='pret_ipfv_lat').first()
+
+    def imp_pfv(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='imp_pfv').first()
+
+    def imp_ipfv(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='imp_ipfv').first()
+
+    def stem_pfv(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='stem_pfv').first()
+
+    def stem_ipfv(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='stem_ipfv').first()
+
+    def proh(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='proh').first()
+
+    def abs_pl_cyr(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='abs_pl_cyr').first()
+
+    def abs_pl_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='abs_pl_lat').first()
+
+    def erg_sg_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='erg_sg_lat').first()
+
+    def gen_sg_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='gen_sg_lat').first()
+
+    def dat_sg_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='dat_sg_lat').first()
+
+    def loc_sg_lat(self):
+        return WordForm.objects.filter(word=self, grammem__grammem='loc_sg_lat').first()
 
 
 class Link(models.Model):
@@ -49,6 +108,7 @@ class Link(models.Model):
 
 class Idiom(models.Model):
     idiom = models.CharField(max_length=45, unique=True)
+    rus = models.CharField(max_length=45, null=True, blank=True)
 
     def __str__(self):
         return self.idiom

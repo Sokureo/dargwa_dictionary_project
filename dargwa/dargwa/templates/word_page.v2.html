@@ -1,0 +1,146 @@
+{% extends "dar_base.html" %}
+
+{% block content %}
+
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="row margin-50"></div>
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+                <div class="col-xs-6">
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
+                    </ul>
+                </div>
+            </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="container">
+       <div class="row pad-sm">
+          <div class="col-sm-4">
+            <a href="{% url 'dictionary:search' %}"><button type="submit" class="btn btn-primary btn-lg">Вернуться к поиску</button></a>
+
+        </div>
+        </div>
+  <section>
+    <h2 style="color: black;">{{ word.idiom.rus }} <span class="entry-english">{{ word.idiom }}</span></h2>
+      <br>
+    <div class="page-grid">
+      <div class="main-column">
+        <table class="paradigm">
+          <tr>
+            <td class="name-paradigm">Inf pfv</td>
+            <td class="entry-paradigm">{{ word.entry_cyr|default:"" }}</td>
+            <td class="entry-paradigm entry-english">{{ word.entry_lat|default:"" }}</td>
+          </tr>
+          <tr>
+            <td class="name-paradigm">Inf ipfv</td>
+            <td class="entry-paradigm">{{ word.inf_ipfv_cyr|default:"" }}</td>
+            <td class="entry-paradigm entry-english">{{ word.inf_ipfv_lat|default:"" }}</td>
+          </tr>
+          <tr>
+            <td class="white-space"></td>
+            <td></td>
+            <td></td>
+          </tr>
+                      <tr>
+            <td class="name-paradigm">Cvb (ipfv)</td>
+            <td class="entry-paradigm small-paradigm">{{ word.cvb_ipfv_cyr|default:"" }}</td>
+            <td class="entry-paradigm entry-english small-paradigm">{{ word.cvb_ipfv_lat|default:"" }}</td>
+          </tr>
+          <tr>
+            <td class="name-paradigm">Pret (pfv)</td>
+            <td class="entry-paradigm small-paradigm">{{ word.pret_pfv_cyr|default:"" }}</td>
+            <td class="entry-paradigm entry-english small-paradigm">{{ word.pret_pfv_lat|default:"" }}</td>
+          </tr>
+          <tr>
+            <td class="name-paradigm">Pret (ipfv)</td>
+            <td class="entry-paradigm small-paradigm">{{ word.pret_ipfv_cyr|default:"" }}</td>
+              <td class="entry-paradigm entry-english small-paradigm">{{ word.pret_ipfv_lat|default:"" }}</td>
+          </tr>
+            <tr>
+            <td class="name-paradigm">Imp (pfv)</td>
+            <td class="entry-paradigm small-paradigm">{{ word.imp_pfv|default:"" }}</td>
+              <td class="entry-paradigm entry-english small-paradigm"></td>
+          </tr>
+            <tr>
+            <td class="name-paradigm">Imp (ipfv)</td>
+            <td class="entry-paradigm small-paradigm">{{ word.imp_ipfv|default:"" }}</td>
+              <td class="entry-paradigm entry-english small-paradigm"></td>
+          </tr>
+            <tr>
+            <td class="name-paradigm">Stem (pfv)</td>
+            <td class="entry-paradigm small-paradigm"></td>
+              <td class="entry-paradigm entry-english small-paradigm">{{ word.stem_pfv|default:"" }}</td>
+          </tr>
+            <tr>
+            <td class="name-paradigm">Stem (ipfv)</td>
+            <td class="entry-paradigm small-paradigm"></td>
+              <td class="entry-paradigm entry-english small-paradigm">{{ word.stem_ipfv|default:"" }}</td>
+          </tr>
+            <tr>
+            <td class="name-paradigm">Proh</td>
+            <td class="entry-paradigm small-paradigm">{{ word.proh|default:"" }}</td>
+              <td class="entry-paradigm entry-english small-paradigm"></td>
+          </tr>
+          <tr>
+            <td class="white-space"></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="white-space"></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="etymology" colspan="3">{{ word.origin|default:" " }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+
+          <tr>
+            <td class="translation-num"></td>
+            <td class="translation">{{ word.meaning_rus }}</td>
+            <td class="translation entry-english">{{ word.meaning_eng }}</td>
+          </tr>
+          <tr>
+            <td class="translation-num"></td>
+            <td class="translation-prop" colspan="2">{{ word.pos }}</td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+      <div class="side-column">
+        <table class="cognates">
+          <tr>
+            <td>Cognates</td>
+          </tr>
+          <tr>
+            <td>Other words with <span class="entry-english">taˤħ</span></td>
+          </tr>
+          <tr>
+            <td>Other words with <span class="entry-english">CL-uq/CL-ulq</span></td>
+            <td>Synonyms</td>
+          </tr>
+        </table>
+        <p class="copyright">{{ word.source }}</p>
+      </div>
+    </div>
+  </section>
+        </div>
+</body>
+
+{% endblock %}

@@ -11,6 +11,127 @@
 /* ==========================================================================
    Global styles
    ========================================================================== */
+
+:root {
+  --keyColor: rgba(84, 107, 201, 1);
+  --textMaxWidth: 900px;
+  --textColor: #282828;
+  --linkColor: var(--textColor); /* Красим ссылки в цвет текста */
+  --linkUnderlineColor: color-mix(
+    in srgb,
+    var(--keyColor) 50%,
+    rgba(255, 255, 255, 0)
+  );
+  --maxHeight: 20rem;
+}
+
+body {
+  font-family: "PT Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* .translation-num, .name-paradigm {
+  text-align: right;
+} */
+
+.page-grid {
+  display: grid;
+  margin: 0;
+}
+
+/* .cognates {
+  background-color: #bfbfbf;
+} */
+
+.translation-prop {
+  font-variant: small-caps;
+  color: var(--keyColor);
+}
+
+.page-grid {
+  /*   display: grid; */
+  grid-template-columns: 60% 40%;
+  /*   margin: 0; */
+}
+
+@media screen and (max-width: 768px) {
+  .page-grid {
+    display: grid;
+    grid-template-columns: 100%;
+    margin: 0;
+  }
+  .text {
+    max-width: 500px;
+  }
+  .main-column > p {
+    max-width: 100%;
+  }
+}
+
+.paradigm {
+  display: grid;
+  /*   align-items: baseline; */
+}
+
+.name-paradigm {
+  font-style: italic;
+  padding-right: 10px;
+}
+
+.entry-paradigm {
+  font-size: 1.5em;
+  font-weight: 700;
+  padding-right: 10px;
+}
+
+.entry-english {
+  color: var(--keyColor);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.small-paradigm {
+  font-size: 1em;
+}
+
+.white-space {
+  height: 10px;
+}
+
+.copyright {
+  color: #7c7c7c;
+}
+
+.etymology {
+  background: var(--keyColor);
+  color: white;
+  font-size: 0.8em;
+  font-variant: small-caps;
+}
+
+.illustration {
+  width: 100%;
+  margin: 0;
+}
+
+.illustration img {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 0 9px;
+}
+
+table {
+  margin-bottom: 10px;
+}
+
 h1, h2, h3, h4, h5, h6, p, .btn, .navbar-nav a, .form-control, .list-inline, small, #pricing {
   font-family: 'Montserrat', sans-serif;
 }
@@ -604,7 +725,6 @@ footer {
 .form-control {
     background-color: #FFFFFF;
     background-image: none;
-    border: 0px solid transparent;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     color: #929496;

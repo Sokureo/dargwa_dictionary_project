@@ -30,38 +30,56 @@
         <div class="col-sm-11 col-sm-offset-1 text-center margin-30"><h1>Форма поиска</h1></div>
           <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
          <form method="POST" role="form">
+             {% csrf_token %}
             <div class="input-group">
                 <div class="input-group-prepend">
                      <div class="form-row-align-items-center">
                         <div class="form-group col-md-6">
                             <div class="input-group-text">
                                 {% csrf_token %}
-                                {{ form }}
+                                {{ form.search_word }}
                             </div>
                         </div>
                         <div class="form-group col-md-4">
                             <div class="form-inline align-items-center">
+                                {{ form.search_type }}
                             </div>
                         </div>
-                        <div class="form-group col-md-2">
+                            <div class="form-group col-md-2">
                             <button type="submit" class="btn btn-primary btn-lg">Искать</button>
-
                         </div>
-                     </div>
-
-                    <div class="form-row-align-items-center">
-
-                            <div class="form-group col-md-4">
-                                <h3>
-                                </h3>
+                         <div class="form-group col-md-6">
+                            <div class="input-group-text">
+                                <label style="">{{ form.idiom.label }}</label>
+                                {{ form.idiom }}
                             </div>
+                        </div>
                         <div class="form-group col-md-4">
-                                <h3>
-                                </h3>
+                            <div class="form-inline align-items-center">
+                                <label>{{ form.pos.label }}</label>
+                                {{ form.pos }}
                             </div>
-
+                        </div>
+                         <div class="form-group col-md-4">
+                            <div class="input-group-text">
+                                <label>{{ form.morpheme.label }}</label>
+                                {{ form.morpheme }}
                             </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="form-inline align-items-center">
+                                <label>{{ form.morph_type.label }}</label>
+                                {{ form.morph_type }}
+                            </div>
+                        </div>
+                         <div class="form-group col-md-3">
+                            <div class="form-inline align-items-center">
+                                <label>{{ form.morph_gloss.label }}</label>
+                                {{ form.morph_gloss }}
+                            </div>
+                        </div>
 
+                     </div>
                             </div>
 
                      </div>

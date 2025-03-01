@@ -1,0 +1,44 @@
+services:
+        dargwa:
+                image: dargwa_dictionary
+                container_name: dargwa_dictionary
+                build: .
+                command: sh -c "python3 manage.py migrate && python3 manage.py createsuperuser && python3 manage.py runserver 0.0.0.0:8000"
+                #command: sh -c "echo 'Sleeping...' && sleep 1h"
+                volumes:
+                        - ./dargwa:/dargwa
+                        - ./.env:/dargwa/.env
+                networks:
+                        - dargwa_dictionary_network
+                depends_on:
+                        mysql:
+                                condition: service_healthy
+                environment:
+                        - PUID=1012
+                        - PGID=1012
+                restart: 'unless-stopped'
+                ports:
+                        - "12501:8000"
+        
+        mysql:
+                image: mysql:8.0-bookworm
+                container_name: dargwa_mysql
+                hostname: ${HOST}
+                networks:
+                        - dargwa_dictionary_network
+                environment:
+                        MYSQL_DATABASE: ${DB_NAME}
+                        MYSQL_USER: ${DB_USER}
+                        MYSQL_PASSWORD: ${DB_PASSWORD}
+                        MYSQL_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+                healthcheck:
+                        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+
+networks:
+        dargwa_dictionary_network:
+                driver: bridge
+                
+

@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-5b(w$3#8vi-)0-xrj=45(=%e7b$r5xaswj@q6@g+zj2w5e5*0n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'dargwa.wsgi.application'
 
 DB_NAME = env.str('DB_NAME', default='dar')
 DB_USER = env.str('DB_USER', default='esokur')
-DB_PASSWORD = env.str('PASSWORD', default='esokur11')
+DB_PASSWORD = env.str('DB_PASSWORD', default='esokur11')
 HOST = env.str('HOST', default='localhost')
 
 DATABASES = {

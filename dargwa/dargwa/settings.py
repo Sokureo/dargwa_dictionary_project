@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from environs import Env
 from pathlib import Path
 import os
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
 
 Env.read_env()
 env = Env()
@@ -160,10 +162,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'collectstatic/')
 STATIC_URL = URL_PREFIX + 'static/'
 STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, 'static/'),
+  os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type

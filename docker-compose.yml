@@ -3,7 +3,7 @@ services:
                 image: dargwa_dictionary
                 container_name: dargwa_dictionary
                 build: .
-                command: sh -c "python3 manage.py migrate && python3 manage.py createsuperuser && python3 manage.py runserver 0.0.0.0:8000"
+                command: sh -c "python3 manage.py migrate && python3 manage.py createsuperuser && python3 manage.py collectstatic --noinput && python3 manage.py runserver 0.0.0.0:8000"
                 #command: sh -c "echo 'Sleeping...' && sleep 1h"
                 volumes:
                         - ./dargwa:/dargwa

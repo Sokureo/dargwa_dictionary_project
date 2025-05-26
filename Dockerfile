@@ -9,3 +9,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 RUN rm requirements.txt
 
+RUN python3 manage.py createsuperuser \
+        --noinput \
+        --username $DJANGO_SUPERUSER_USERNAME \
+        --email $DJANGO_SUPERUSER_EMAIL

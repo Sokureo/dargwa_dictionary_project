@@ -175,3 +175,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # NOTIFY_EMAIL = "dargwadictionary@yandex.ru"
+
+DJANGO_SUPERUSER_USERNAME=env.str('DJANGO_SUPERUSER_USERNAME', default=None)
+DJANGO_SUPERUSER_PASSWORD=env.str('DJANGO_SUPERUSER_PASSWORD', default=None)
+DJANGO_SUPERUSER_EMAIL=env.str('DJANGO_SUPERUSER_EMAIL', default=None)

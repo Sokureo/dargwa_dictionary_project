@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from .forms import IdiomPosForm, SearchForm
-from .models import Word, WordForm, Morpheme, MorphemeType, MorphemeNumber
+from .models import Word, WordForm, Morpheme, MorphemeType, MorphemeNumber, PartOfSpeech, Idiom
 
 
 class StartPageView(TemplateView):
@@ -38,15 +38,16 @@ class SearchView(FormView):
     form_class = SearchForm
     meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
     meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
-    # meaning_regex = r'(?:\(.+?\))*?(?:^|[ ,)]){}(?:[ ,;]|$)'
+    class_regex = "'{}'"
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
+
         if form.is_valid():
             search_word = form.cleaned_data.get('search_word')
             search_type = form.cleaned_data.get('search_type')
-            idiom = form.cleaned_data.get('idiom')
-            pos = form.cleaned_data.get('pos')
+            idiom = form.cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
+            pos = form.cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
             morph_type = form.cleaned_data.get('morph_type')
             morph_gloss = form.cleaned_data.get('morph_gloss')
             morpheme = form.cleaned_data.get('morpheme')
@@ -57,7 +58,8 @@ class SearchView(FormView):
                 if search_word:
                     q &= Q(
                         Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
-                        Q(class_words_cyr__contains=search_word) | Q(class_words_lat__contains=search_word)
+                        Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
+                        Q(class_words_lat__iregex=self.class_regex.format(search_word))
                     )
                     words = Word.objects.filter(q)
             elif search_type == '1':
@@ -129,11 +131,7 @@ class SearchSynonymsView(TemplateView):
         for trans in trans_eng:
             q |= Q(meaning_rus__iregex=self.meaning_regex.format(trans))
             q |= Q(meaning_rus__iregex=self.meaning_regex2.format(trans))
-        # synonyms = Word.objects.filter(
-        #     Q(meaning_rus__iregex=self.meaning_regex.format(word.meaning_rus)) |
-        #     Q(meaning_eng__iregex=self.meaning_regex.format(word.meaning_eng))
-        # )
-        synonyms = Word.objects.filter(q)
+        synonyms = Word.objects.filter(q).exclude(id=word.id)
         context['result_list'] = synonyms
         return context
 
@@ -143,7 +141,8 @@ class SearchMorphemesView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SearchMorphemesView, self).get_context_data(**kwargs)
+        word = Word.objects.filter(id=kwargs['word_id']).first()
         morpheme = Morpheme.objects.filter(id=kwargs['morpheme_id']).first().morpheme
-        words = Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme)
+        words = Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme).exclude(id=word.id)
         context['result_list'] = words
         return context

@@ -12,55 +12,71 @@
           </button>
                 <div class="col-xs-6">
                     <ul class="nav navbar-nav navbar-left">
-                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
+                    <li><a href="{% url 'dictionary:start_page' %}">Главная</a></li>
                     </ul>
                 </div>
             </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
-          </ul>
-        </div>
       </div>
     </div>
     </div>
 
     <div class="container">
        <div class="row pad-sm">
-        <div class="col-sm-11 col-sm-offset-1 text-center margin-30"><h1>Форма поиска</h1></div>
+        <div class="col-sm-10 col-sm-offset-1 text-center margin-30">
+            <h1 style="color: black;">Форма поиска</h1>
+        </div>
           <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
          <form method="POST" role="form">
              {% csrf_token %}
             <div class="input-group">
                 <div class="input-group-prepend">
                      <div class="form-row-align-items-center">
+                        <div class="form-group col-md-12">
+                            <div class="form-inline align-items-center">
+                                <label>Тип поиска</label>
+                                {{ form.search_type }}
+                            </div>
+                        </div><br>
+                         <div class="form-group col-md-6">
+                                <label>{{ form.idiom.label }}</label>
+                                <div class="form-control">
+                                    {% for idiom in form.idiom.field.queryset %}
+                                        <label for="id_idiom_{{ forloop.counter0 }}">
+                                            <input type="checkbox" name="idiom" value="{{ idiom.id }}" id="id_idiom_{{ forloop.counter0 }}" checked>               {{ idiom.idiom }}
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </div>
+                        </div>
                         <div class="form-group col-md-6">
+                            <div class="form-inline align-items-start">
+                                <label>{{ form.pos.label }}</label>
+                                <div class="form-control">
+                                    {% for pos in form.pos.field.queryset %}
+                                        <label for="id_pos_{{ forloop.counter0 }}">
+                                            <input type="checkbox" name="pos" value="{{ pos.id }}" id="id_pos_{{ forloop.counter0 }}" checked>               {{ pos.pos }}
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                     <div class="form-group col-md-12">
+                        <h3 style="color: black; text-align: left;">Поиск по слову</h3>
+                         <i><p style="text-align: left; font-size: 14px">Выберите тип поиска по даргинскому слову или значению.</p></i>
+                     </div>
+                         <div class="form-group col-md-12">
                             <div class="input-group-text">
+                                <label>Слово</label>
                                 {% csrf_token %}
                                 {{ form.search_word }}
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <div class="form-inline align-items-center">
-                                {{ form.search_type }}
-                            </div>
-                        </div>
-                            <div class="form-group col-md-2">
-                            <button type="submit" class="btn btn-primary btn-lg">Искать</button>
-                        </div>
+                     <div class="form-group col-md-12">
+                        <h3 style="color: black; text-align: left;">Поиск по морфеме</h3>
+                         <i><p style="text-align: left; font-size: 14px">Выберите тип поиска по морфеме.</p></i>
+                     </div>
                          <div class="form-group col-md-6">
-                            <div class="input-group-text">
-                                <label style="">{{ form.idiom.label }}</label>
-                                {{ form.idiom }}
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <div class="form-inline align-items-center">
-                                <label>{{ form.pos.label }}</label>
-                                {{ form.pos }}
-                            </div>
-                        </div>
-                         <div class="form-group col-md-4">
                             <div class="input-group-text">
                                 <label>{{ form.morpheme.label }}</label>
                                 {{ form.morpheme }}
@@ -69,20 +85,36 @@
                         <div class="form-group col-md-3">
                             <div class="form-inline align-items-center">
                                 <label>{{ form.morph_type.label }}</label>
-                                {{ form.morph_type }}
+                                <div class="form-control">
+                                    {% for morph_type in form.morph_type.field.queryset %}
+                                        <label for="id_morph_type_{{ forloop.counter0 }}">
+                                            <input type="checkbox" name="morph_type" value="{{ morph_type.id }}" id="id_morph_type_{{ forloop.counter0 }}">               {{ morph_type.morph_type }}
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                          <div class="form-group col-md-3">
                             <div class="form-inline align-items-center">
                                 <label>{{ form.morph_gloss.label }}</label>
-                                {{ form.morph_gloss }}
+                                <div class="form-control">
+                                    {% for morph_gloss in form.morph_gloss.field.queryset %}
+                                        <label for="id_morph_gloss_{{ forloop.counter0 }}">
+                                            <input type="checkbox" name="morph_gloss" value="{{ morph_gloss.id }}" id="id_morph_gloss_{{ forloop.counter0 }}">               {{ morph_gloss.morph_number }}
+                                        </label>
+                                        <br>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-
                      </div>
                             </div>
 
-                     </div>
+                     </div><br>
+             <div class="form-group col-md-12">
+                 <button type="submit" class="btn btn-primary btn-lg">Искать</button>
+             </div>
          </form>
 
 

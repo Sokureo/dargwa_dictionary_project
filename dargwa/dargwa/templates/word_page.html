@@ -41,15 +41,15 @@
           </button>
                 <div class="col-xs-6">
                     <ul class="nav navbar-nav navbar-left">
-                    <li><a href="{% url 'dictionary:start_page' %}">Вернуться на главную страницу</a></li>
+                    <li><a href="{% url 'dictionary:start_page' %}">Главная</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-6">
+                    <ul class="nav navbar-nav navbar-left">
+                    <li><a href="{% url 'dictionary:search' %}">Поиск</a></li>
                     </ul>
                 </div>
             </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="{% url 'admin:index' %}">Страница администратора</a></li>
-          </ul>
-        </div>
       </div>
     </div>
     </div>
@@ -57,15 +57,11 @@
     <div class="container">
    `    <div class="row pad-sm">
           <div class="col-sm-4">
-            <a href="{% url 'dictionary:search' %}"><button type="submit" class="btn btn-primary btn-lg">Вернуться к поиску</button></a>
-
         </div>
         </div>
             <div class="row">
-
+                    <div style="text-align: center;">{{ word.idiom }}</div>
 			        <div class="col-sm-5 wow fadeIn" data-wow-delay="0.4s">
-
-                        {{ word.idiom }}
 
 				        <hr class="line purple">
                      <b> {{ word }}</b>&nbsp<i>{{ word.pos.pos }}</i>&nbsp&nbsp
@@ -96,30 +92,22 @@
                         <br>{{ wordform.grammem }}: {{ wordform }}
                         {% endfor %}
 
+                    </div>
+                <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
+                    <hr class="line blue">
                         {% for morpheme in word.morphemes.all %}
-                        <br><br>Other words with <a style="color:#70cbce" href="{% url 'dictionary:search_morphemes' morpheme.id %}">{{ morpheme }}</a>
+                            <br><a href="{% url 'dictionary:search_morphemes' word.id morpheme.id %}" class="btn btn-primary btn-lg">Другие слова, содержащие {{ morpheme }}</a>
                         {% endfor %}
                         <br>
 
-                        <p><a style="color:#70cbce" href="{% url 'dictionary:search_synonyms' word.id %}">Synonyms</a></p>
+                        <p><br><a href="{% url 'dictionary:search_synonyms' word.id %}" class="btn btn-primary btn-lg">Синонимы</a></p>
 
                         {% for root in word.roots.all %}
-                        {% if root.morph_number %}
-                        <br><br><a style="color:#70cbce" href="{% url 'dictionary:search_cognates' word.id root.morph_number.id %}">Cognates for root {{ root }}</a>
-                        {% endif %}
+                            {% if root.morph_number %}
+                                <br><a href="{% url 'dictionary:search_cognates' word.id root.morph_number.id %}" class="btn btn-primary btn-lg">Когнаты для корня {{ root }}</a>
+                            {% endif %}
                         {% endfor %}
-                        <br>
-
-                    </div>
-                        <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
-                            <hr class="line blue">
-                        <img width=200px src="" alt="img">
-                        <br>
-                        <br>
-                        <audio controls>
-                                <source src="">
-                            </audio>
-                        </div>
+                </div>
         </div>
             </div>
     </div>

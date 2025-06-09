@@ -6,9 +6,9 @@ from .models import Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 
 class IdiomPosForm(forms.Form):
     idiom = forms.ModelChoiceField(
-        label='Идиом',
+        label='Язык/диалект',
         queryset=Idiom.objects.all(),
-        empty_label='Все идиомы',
+        empty_label='Все языки/диалекты',
         required=False,
         widget=forms.Select(attrs={
             'style': 'margin: 10px;'
@@ -33,35 +33,37 @@ class SearchForm(forms.Form):
     search_word = forms.CharField(required=False)
     search_type = forms.ChoiceField(
         choices=(
-            ('0', u'Искать слово'),
-            ('1', u'Искать синонимы'),
-            ('2', u'Искать морфемы'),
+            ('0', u'Поиск по даргинскому слову'),
+            ('1', u'Поиск по значению'),
+            ('2', u'Поиск по морфеме'),
             # ('3', u'Искать семантическое поле'),
         ),
     )
     idiom = forms.ModelMultipleChoiceField(
-        label='Идиом',
+        label='Язык/диалект',
         queryset=Idiom.objects.all(),
+        required=False,
         initial=Idiom.objects.all(),
-        widget=forms.SelectMultiple(attrs={'class': "form-control"}),
+        widget=forms.CheckboxSelectMultiple(),
     )
     pos = forms.ModelMultipleChoiceField(
         label='Часть речи',
-        queryset=PartOfSpeech.objects.all(),
-        initial=PartOfSpeech.objects.all(),
-        widget=forms.SelectMultiple(attrs={'class': "form-control"}),
+        queryset=PartOfSpeech.objects.all().exclude(pos='n/adj'),
+        required=False,
+        initial=PartOfSpeech.objects.all().exclude(pos='n/adj'),
+        widget=forms.SelectMultiple(),
     )
     morph_type = forms.ModelMultipleChoiceField(
         label=_('Тип морфемы'),
         queryset=MorphemeType.objects.exclude(morph_type=MorphemeType.root).order_by('morph_type'),
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': "form-control"}),
+        widget=forms.SelectMultiple(),
     )
     morph_gloss = forms.ModelMultipleChoiceField(
         label=_('Глосса'),
         queryset=MorphemeNumber.gloss(),
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': "form-control"}),
+        widget=forms.SelectMultiple(),
     )
     morpheme = forms.CharField(required=False, label=_('Морфема'))
 

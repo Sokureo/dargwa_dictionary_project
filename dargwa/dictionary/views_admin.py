@@ -260,6 +260,8 @@ class ImportDictionaryView(TemplateView):
                 else:
                     morph_type_obj = None
                 if morph_number:
+                    if ' ' in morph_number:
+                        morph_number = morph_number.split(' ')[0]
                     morph_number_obj, _ = MorphemeNumber.objects.get_or_create(morph_number=morph_number)
                 else:
                     morph_number_obj = None

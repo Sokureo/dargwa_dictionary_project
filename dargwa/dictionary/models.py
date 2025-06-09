@@ -37,6 +37,41 @@ class Word(models.Model):
             idiom=self.idiom,
         ).distinct().values_list('meaning_rus', flat=True).order_by('meaning_rus')
 
+    def syntactic_class_rus(self):
+        values = {
+            'tr': 'перех.',
+            'itr': 'неперех.',
+            'aff': 'аффект.',
+            'tr/itr': 'перех./неперех.',
+            'tr/aff': 'перех./аффект.',
+            'impers': 'безличн.'
+        }
+        return values.get(self.syntactic_class.syntactic_class, None) if self.syntactic_class else None
+
+    def pos_rus(self):
+        values = {
+            'adj': 'прил.',
+            'adv': 'нареч.',
+            'conj': 'союз',
+            'cop': 'связка',
+            'coverb': 'коверб',
+            'question word': 'вопр. слово',
+            'loc adv': 'локат. наречие',
+            'n': 'сущ.',
+            'n/adj': 'сущ./прил.',
+            'idiom (np)': 'имен. сл.-соч.',
+            'num': 'числ.',
+            'numeral': 'числ.',
+            'particle': 'част.',
+            'postposition': 'послелог',
+            'pronoun': 'мест.',
+            'quantifier': 'квант.',
+            'v': 'глаг.',
+            'verb': 'глаг.',
+            'idiom (vp)': 'глаг. сл.-соч.'
+        }
+        return values.get(self.pos.pos, None) if self.pos else None
+
     def roots(self):
         return self.morphemes.filter(morph_type=MorphemeType.root())
 

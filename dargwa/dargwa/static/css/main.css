@@ -758,6 +758,53 @@ input[type="checkbox"] {
     vertical-align: center;
 }
 
+.morph_table {
+    width: 100%;
+}
+
+.morph_table tr {
+    width: 100%;
+    vertical-align: top;
+    line-height: 30px;
+}
+
+.morph_name_cell {
+    width: 45%;
+}
+
+.morph_cell {
+    width: 55%;
+    padding-bottom: 17px;
+}
+
+.word_page_text {
+    color: black;
+}
+
+.word_info_table {
+    width: 100%;
+}
+
+.word_info_table tr {
+    width: 100%;
+    vertical-align: top;
+    line-height: 20px;
+}
+
+.word_info_name_cell {
+    width: 45%;
+}
+
+.word_info_cell {
+    width: 55%;
+    padding-bottom: 0;
+}
+
+.english-entry {
+    color: var(--keyColor);
+    font-weight: 700;
+}
+
 .form-control::-moz-placeholder {
     color: #d9d9d9;
     font-size: 15px;

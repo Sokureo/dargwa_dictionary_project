@@ -31,8 +31,12 @@
        <div class="row pad-sm">
           <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
         </div>
-
       <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+          <p style="text-align: left;"><b>Ваш запрос:</b></p>
+          <br>
+          {% for key, value in search_params.items %}
+              <p style="text-align: left; line-height: 1%;"><b>{{ key }}:</b> {{ value }}</p><br>
+          {% endfor %}
           {% if not result_list.count %}
        <h3 class="black">К сожалению, по вашему запросу ничего не найдено.</h3><br>
       {% else %}

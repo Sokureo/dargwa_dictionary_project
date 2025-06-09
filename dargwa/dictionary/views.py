@@ -82,9 +82,47 @@ class SearchView(FormView):
                 if q_morph:
                     words = Word.objects.prefetch_related('morphemes').filter(q_morph)
                     words = words.filter(q)
-            return render(request, 'result_list.html', {'result_list': words})
+            return render(
+                request,
+                'result_list.html',
+                {'result_list': words, 'search_params': self.get_used_search_params(form.cleaned_data)}
+            )
         else:
             return self.form_invalid(form)
+
+    def get_used_search_params(self, cleaned_data):
+        params = dict()
+        search_word = cleaned_data.get('search_word')
+        search_type = cleaned_data.get('search_type')
+        idioms = cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
+        poss = cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
+        morph_type = cleaned_data.get('morph_type')
+        morph_gloss = cleaned_data.get('morph_gloss')
+        morpheme = cleaned_data.get('morpheme')
+
+        if search_type:
+            if search_type == '0':
+                search_name = 'Поиск по даргинскому слову'
+            elif search_type == '1':
+                search_name = 'Поиск по значению'
+            elif search_type == '2':
+                search_name = 'Поиск по морфеме'
+            params['Тип поиска'] = search_name
+        if idioms:
+            idioms_list = [idiom.idiom for idiom in idioms]
+            params['Язык/диалект'] = ', '.join(idioms_list)
+        if poss:
+            poss_list = [pos.pos for pos in poss]
+            params['Часть речи'] = ', '.join(poss_list)
+        if search_word:
+            params['Слово/значение'] = search_word
+        if morpheme:
+            params['Морфема'] = morpheme
+        if morph_type:
+            params['Тип морфемы'] = morph_type
+        if morph_gloss:
+            params['Глосса'] = morph_gloss
+        return params
 
 
 class WordPageView(TemplateView):
@@ -111,7 +149,11 @@ class SearchCognatesView(TemplateView):
             morphemes__morph_number=root_id,
         ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
         context['result_list'] = cognates
+        context['search_params'] = self.get_used_search_params(word, root_id)
         return context
+
+    def get_used_search_params(self, word, root_id):
+        return {'Когнаты для корня': Morpheme.objects.filter(word=word, morph_number=root_id).first()}
 
 
 class SearchSynonymsView(TemplateView):
@@ -133,8 +175,11 @@ class SearchSynonymsView(TemplateView):
             q |= Q(meaning_rus__iregex=self.meaning_regex2.format(trans))
         synonyms = Word.objects.filter(q).exclude(id=word.id)
         context['result_list'] = synonyms
+        context['search_params'] = self.get_used_search_params(word)
         return context
 
+    def get_used_search_params(self, word):
+        return {'Синонимы для слова': word}
 
 class SearchMorphemesView(TemplateView):
     template_name = 'result_list.html'
@@ -145,4 +190,8 @@ class SearchMorphemesView(TemplateView):
         morpheme = Morpheme.objects.filter(id=kwargs['morpheme_id']).first().morpheme
         words = Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme).exclude(id=word.id)
         context['result_list'] = words
+        context['search_params'] = self.get_used_search_params(morpheme)
         return context
+
+    def get_used_search_params(self, morpheme):
+        return {'Другие слова, содержащие': morpheme}

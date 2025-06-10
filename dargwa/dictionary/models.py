@@ -213,7 +213,8 @@ class MorphemeNumber(models.Model):
 
     @classmethod
     def gloss(cls):
-        return cls.objects.exclude(morph_number__iregex=r'N\d+').order_by('morph_number')
+        from django.db.models import Q
+        return cls.objects.all().exclude(Q(morph_number__iregex=r'[0-9]')).order_by('morph_number')
 
 
 # модель управления

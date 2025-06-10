@@ -45,33 +45,30 @@ class SearchView(FormView):
 
         if form.is_valid():
             search_word = form.cleaned_data.get('search_word')
-            search_type = form.cleaned_data.get('search_type')
+            search_meaning = form.cleaned_data.get('search_meaning')
             idiom = form.cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
             pos = form.cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
             morph_type = form.cleaned_data.get('morph_type')
             morph_gloss = form.cleaned_data.get('morph_gloss')
             morpheme = form.cleaned_data.get('morpheme')
-
             q = Q(idiom__in=idiom) & Q(pos__in=pos)
             words = list()
-            if search_type == '0':
-                if search_word:
-                    q &= Q(
-                        Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
-                        Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
-                        Q(class_words_lat__iregex=self.class_regex.format(search_word))
-                    )
-                    words = Word.objects.filter(q)
-            elif search_type == '1':
-                if search_word:
-                    q &= Q(
-                        Q(meaning_rus__iregex=self.meaning_regex.format(search_word)) |
-                        Q(meaning_rus__iregex=self.meaning_regex2.format(search_word)) |
-                        Q(meaning_eng__iregex=self.meaning_regex.format(search_word)) |
-                        Q(meaning_eng__iregex=self.meaning_regex2.format(search_word))
-                    )
-                    words = Word.objects.filter(q)
-            elif search_type == '2':
+            if search_word:
+                q &= Q(
+                    Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
+                    Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
+                    Q(class_words_lat__iregex=self.class_regex.format(search_word))
+                )
+                words = Word.objects.filter(q)
+            elif search_meaning:
+                q &= Q(
+                    Q(meaning_rus__iregex=self.meaning_regex.format(search_meaning)) |
+                    Q(meaning_rus__iregex=self.meaning_regex2.format(search_meaning)) |
+                    Q(meaning_eng__iregex=self.meaning_regex.format(search_meaning)) |
+                    Q(meaning_eng__iregex=self.meaning_regex2.format(search_meaning))
+                )
+                words = Word.objects.filter(q)
+            elif morph_type or morph_gloss or morpheme:
                 q_morph = Q()
                 if morph_type:
                     q_morph = Q(morphemes__morph_type__in=morph_type)
@@ -93,35 +90,35 @@ class SearchView(FormView):
     def get_used_search_params(self, cleaned_data):
         params = dict()
         search_word = cleaned_data.get('search_word')
-        search_type = cleaned_data.get('search_type')
+        search_meaning = cleaned_data.get('search_meaning')
         idioms = cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
         poss = cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
-        morph_type = cleaned_data.get('morph_type')
-        morph_gloss = cleaned_data.get('morph_gloss')
+        morph_types = cleaned_data.get('morph_type')
+        morph_glosss = cleaned_data.get('morph_gloss')
         morpheme = cleaned_data.get('morpheme')
 
-        if search_type:
-            if search_type == '0':
-                search_name = _('Поиск по даргинскому слову')
-            elif search_type == '1':
-                search_name = _('Поиск по значению')
-            elif search_type == '2':
-                search_name = _('Поиск по морфеме')
-            params[_('Тип поиска')] = search_name
+        if search_word:
+            params[_('Тип поиска')] = _('Поиск по даргинскому слову')
+            params[_('Даргинское слово')] = search_word
+        elif search_meaning:
+            params[_('Тип поиска')] = _('Поиск по значению')
+            params[_('Значение')] = search_meaning
+        elif morph_types or morph_glosss or morpheme:
+            params[_('Тип поиска')] = _('Поиск по морфеме')
+            if morpheme:
+                params[_('Морфема')] = morpheme
+            if morph_types:
+                morph_type_list = [morph_type.morph_type for morph_type in morph_types]
+                params[_('Тип морфемы')] = ', '.join(morph_type_list)
+            if morph_glosss:
+                morph_gloss_list = [morph_gloss.morph_number for morph_gloss in morph_glosss]
+                params[_('Глосса')] = ', '.join(morph_gloss_list)
         if idioms:
             idioms_list = [idiom.idiom for idiom in idioms]
             params[_('Язык/диалект')] = ', '.join(idioms_list)
         if poss:
             poss_list = [pos.pos for pos in poss]
             params[_('Часть речи')] = ', '.join(poss_list)
-        if search_word:
-            params[_('Слово/значение')] = search_word
-        if morpheme:
-            params[_('Морфема')] = morpheme
-        if morph_type:
-            params[_('Тип морфемы')] = morph_type
-        if morph_gloss:
-            params[_('Глосса')] = morph_gloss
         return params
 
 

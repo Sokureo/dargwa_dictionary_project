@@ -3,7 +3,7 @@
 
 {% block content %}
 <header>
-<form class="form-language-select" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <form class="form-language-select form-control" action="{% url 'set_language' %}" method="post">{% csrf_token %}
     <input name="next" type="hidden" value="{{ redirect_to }}">
     <select class="language-select" name="language">
         {% get_current_language as LANGUAGE_CODE %}
@@ -16,7 +16,7 @@
         {% endfor %}
     </select>
     <input class="language-select-btn" type="submit" value="Apply">
-</form>
+    </form>
     <div class="container">
         <div class="row header-info">
             <div class="col-sm-10 col-sm-offset-1 text-center">
@@ -31,7 +31,7 @@
 </header>
 
 <section id="about" class="pad-xl">
-    <h2 class="black" align="middle">{% trans 'ДарЛинг: Лексикографическая база данных даргинских языков' %}</h2>
+    <h2 class="black" align="middle">{% trans 'ДарЛинг: Лексикографическая база данных' %}<br> {% trans 'даргинских языков' %}</h2>
     <div class="container" style="padding-right: 15px; padding-left: 15px;">
         <div class="row">
             <div class="col-sm-6 wow fadeIn" data-wow-delay="0.4s">

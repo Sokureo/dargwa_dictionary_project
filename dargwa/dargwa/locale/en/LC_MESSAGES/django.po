@@ -396,8 +396,11 @@ msgstr "Meaning search"
 msgid "Поиск по морфеме"
 msgstr "Morpheme search"
 
-msgid "ДарЛинг: Лексикографическая база данных даргинских языков"
+msgid "ДарЛинг: Лексикографическая база данных"
 msgstr "DarLing: a Lexical database of Dargwa"
+
+msgid "даргинских языков"
+msgstr " "
 
 msgid "n"
 msgstr "n"
@@ -521,3 +524,12 @@ msgstr "pfv only"
 
 msgid "Синонимы для слова"
 msgstr "Synonyms for word"
+
+msgid "даргинский"
+msgstr "Dargwa"
+
+msgid "русский или английский"
+msgstr "Russian or English"
+
+msgid "Даргинское слово"
+msgstr "Dargwa word"

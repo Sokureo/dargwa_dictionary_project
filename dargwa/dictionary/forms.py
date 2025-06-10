@@ -31,14 +31,7 @@ class IdiomPosForm(forms.Form):
 
 class SearchForm(forms.Form):
     search_word = forms.CharField(required=False)
-    search_type = forms.ChoiceField(
-        choices=(
-            ('0', _('Поиск по даргинскому слову')),
-            ('1', _('Поиск по значению')),
-            ('2', _('Поиск по морфеме')),
-            # ('3', _('Искать семантическое поле')),
-        ),
-    )
+    search_meaning = forms.CharField(required=False)
     idiom = forms.ModelMultipleChoiceField(
         label=_('Язык/диалект'),
         queryset=Idiom.objects.all(),
@@ -71,10 +64,11 @@ class SearchForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['search_word'].widget.attrs.update({
             'class': "form-control",
-            'placeholder': _('Русский, английский или даргинский'),
+            'placeholder': _('даргинский'),
         })
-        self.fields['search_type'].widget.attrs.update({
+        self.fields['search_meaning'].widget.attrs.update({
             'class': "form-control",
+            'placeholder': _('русский или английский'),
         })
         self.fields['morpheme'].widget.attrs.update({
             'class': "form-control",

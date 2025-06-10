@@ -191,7 +191,7 @@ class ImportDictionaryView(TemplateView):
                 df = df.fillna('')
                 if '_' in sheet:
                     idiom = sheet.split('_')[0]
-                    for indx, word in enumerate(df.get('ENTRY_CYR')):
+                    for indx, word in enumerate(df.get('ENTRY_CYR') or df.get('entry_cyr')):
                         if word:
                             entry_lat = self.get_field('ENTRY_LAT', df, indx)
                             if entry_lat:
@@ -290,7 +290,7 @@ class ImportDictionaryView(TemplateView):
                     )
 
     def get_field(self, field_name, sheet, indx):
-        field = sheet.get(field_name)
+        field = sheet.get(field_name) or sheet.get(field_name.lower())
         return field[indx] if field is not None else None
 
     def get_pos(self, sheet, indx):

@@ -533,3 +533,6 @@ msgstr "Russian or English"
 
 msgid "Даргинское слово"
 msgstr "Dargwa word"
+
+msgid "Apply"
+msgstr "Apply"

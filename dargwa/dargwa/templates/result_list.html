@@ -1,4 +1,5 @@
 {% extends "dar_base.html" %}
+{% load i18n %}
 
 {% block content %}
 <body>
@@ -14,14 +15,28 @@
           </button>
                 <div class="col-xs-6">
                     <ul class="nav navbar-nav navbar-left">
-                    <li><a href="{% url 'dictionary:start_page' %}">Главная</a></li>
+                    <li><a href="{% url 'dictionary:start_page' %}">{% trans 'Главная' %}</a></li>
                     </ul>
                 </div>
                 <div class="col-xs-6">
                     <ul class="nav navbar-nav navbar-left">
-                    <li><a href="{% url 'dictionary:search' %}">Поиск</a></li>
+                    <li><a href="{% url 'dictionary:search' %}">{% trans 'Поиск' %}</a></li>
                     </ul>
                 </div>
+                <form class="form-language-select" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <select class="language-select" name="language">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% get_language_info_list for LANGUAGES as languages %}
+        {% for language in languages %}
+            <option class="language-select-option" value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                {{ language.name_local }}
+            </option>
+        {% endfor %}
+    </select>
+    <input class="language-select-btn" type="submit" value="Apply">
+</form>
             </div>
       </div>
     </div>
@@ -32,24 +47,24 @@
           <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
         </div>
       <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
-          <p style="text-align: left;"><b>Ваш запрос:</b></p>
+          <p style="text-align: left;"><b>{% trans 'Ваш запрос:' %}</b></p>
           <br>
           {% for key, value in search_params.items %}
               <p style="text-align: left; line-height: 1%;"><b>{{ key }}:</b> {{ value }}</p><br>
           {% endfor %}
           {% if not result_list.count %}
-       <h3 class="black">К сожалению, по вашему запросу ничего не найдено.</h3><br>
+       <h3 class="black">{% trans 'К сожалению, по вашему запросу ничего не найдено.' %}</h3><br>
       {% else %}
-        <h3 class="black">По вашему запросу найдено {{ result_list.count }} слов(а)</h3><br>
+        <h3 class="black">{% trans 'Найдены слова:' %}</h3><br>
 
      <div class="table">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col" class="col-sm-3">Слово</th>
-              <th scope="col" class="col-sm-3">Значение</th>
-              <th scope="col" class="col-sm-2">Часть речи</th>
-              <th scope="col" class="col-sm-2">Язык/диалект</th>
+              <th scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
+              <th scope="col" class="col-sm-3">{% trans 'Значение' %}</th>
+              <th scope="col" class="col-sm-2">{% trans 'Часть речи' %}</th>
+              <th scope="col" class="col-sm-2">{% trans 'Язык/диалект' %}</th>
             </tr>
           </thead>
 
@@ -57,10 +72,10 @@
 <tbody>
 {% for word in result_list %}
     <tr>
-        <td class="col-sm-3"><a style="color:#70cbce" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr }}</a></td>
-        <td class="col-sm-3">{{ word.meaning_rus }}</td>
-        <td class="col-sm-2">{{ word.pos }}</td>
-        <td class="col-sm-2">{{ word.idiom }}</td>
+        <td class="col-sm-3"><a style="color:#70cbce" href="{% url 'dictionary:word_page' word.id %}">{% if LANGUAGE_CODE == 'en' %}{{ word.entry_lat|default:"" }}{% else %}{{ word.entry_cyr|default:"" }}{% endif %}</a></td>
+        <td class="col-sm-3">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</td>
+        <td class="col-sm-2">{% if word.pos %}{% trans word.pos.pos %}{% endif %}</td>
+        <td class="col-sm-2">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</td>
     </tr>
 {% endfor %}
             </tbody>

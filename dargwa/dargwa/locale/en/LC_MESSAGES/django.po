@@ -1,0 +1,523 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-10 12:23+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: dargwa/templates/admin/base_site.html:3
+#: dargwa/templates/admin/delete_dict.html:15
+#: dargwa/templates/admin/export_dict.html:16
+#: dargwa/templates/admin/import_dict.html:15
+msgid "Django site admin"
+msgstr ""
+
+#: dargwa/templates/admin/base_site.html:7
+#: dargwa/templates/admin/delete_dict.html:19
+#: dargwa/templates/admin/export_dict.html:20
+#: dargwa/templates/admin/import_dict.html:19
+msgid "Django administration"
+msgstr ""
+
+#: dargwa/templates/admin/delete_dict.html:6
+#: dargwa/templates/admin/export_dict.html:7
+#: dargwa/templates/admin/import_dict.html:6
+msgid "Home"
+msgstr ""
+
+#: dargwa/templates/index.html:23 dargwa/templates/index.html:40
+msgid "ДарЛинг"
+msgstr "DarLing"
+
+#: dargwa/templates/index.html:24
+msgid "Словари языков и диалектов даргинской группы"
+msgstr "a Lexical database of Dargwa"
+
+#: dargwa/templates/index.html:25 dargwa/templates/search.html:117
+msgid "Искать"
+msgstr "Search"
+
+#: dargwa/templates/index.html:27 dargwa/templates/index.html:34
+msgid "О проекте"
+msgstr "Project"
+
+#: dargwa/templates/index.html:40
+msgid ""
+" – это лексикографическая база данных, содержащая лексику нескольких "
+"даргинских языков и диалектов. В базе возможен поиск лексем одного или "
+"нескольких языков по различным типам запросов – по даргинскому слову, по "
+"русскому или английскому переводу. Доступен также поиск синонимов, когнатов "
+"(слов, восходящих к одному источнику) и слов, содержащих определенные "
+"морфемы."
+msgstr ""
+" is a lexical database containing the lexicona of several Dargwa languages "
+"and dialects. The search in the database is possible by different types of "
+"queriesː by a Dargwa word, by Russian or English translation in one or "
+"several languages. Synonyms, cognates (words of the same origin) and words "
+"containing certain morphemes are also available. "
+
+#: dargwa/templates/index.html:41
+msgid ""
+"Даргинские словоформы представлены в кириллической записи (на основе "
+"даргинской орфографии) и в транскрипции. Помимо значения слов, словарные "
+"статьи содержат грамматическую информацию (различные формы слов, модели "
+"управления глаголов, информация о грамматическом классе имен). Для всех слов "
+"приводится информация об источнике данных."
+msgstr ""
+"Word forms of Dargwa are presented in Cyrillic alphabet (based on the "
+"orthography of Literary dargwa) and in transcription. Lexicon entries "
+"contain grammatical information (different forms of words, case frames of "
+"verbs, nominal gender, etc.). For all words, the database provides "
+"information about the source of the data."
+
+#: dargwa/templates/index.html:42
+msgid ""
+"Первая версия лексикографической базы данных была создана в 2018 году. В "
+"2022 году созданная ранее база была реорганизована. В настоящее время в базе "
+"содержится более 2000 компаративных серий, в том числе более 300 глагольных "
+"корней. Для создания и пополнения базы использованы два типа источников "
+"данных: опубликованные словари и грамматики (в том числе онлайн-ресурсы) и "
+"полевые материалы, собранные авторами и их коллегами. Для включения в базу "
+"все данные представлены в едином формате, слова разных языков и диалектов "
+"организованы в компаративные серии."
+msgstr ""
+"The first version of the lexical database was created in 2018. In 2022, the "
+"database was reorganized. Currently, the database contains more than 2000 "
+"comparative series, including more than 300 verb roots. The data in the "
+"database come from two principal sources: published dictionaries and "
+"grammars (including online resources) and field materials collected by the "
+"authors and their colleagues. In the database, all data are presented in a "
+"standard format, with words from different languages and dialects organized "
+"into comparative series."
+
+#: dargwa/templates/index.html:43
+msgid ""
+"В настоящее время в базе доступны словари следующих идиомов: акушинского, "
+"тантынского, ицаринского, муиринского, кадарского, мегебского и кункинского. "
+"База постепенно пополняется новыми данными. В частности, готовится лексикон "
+"урахинского и кубачинского диалектов, а также данные из «Диалектологического "
+"словаря даргинского языка» С. М. Темирбулатовой (2022)."
+msgstr ""
+"Currently, the database contains lexicons of the following languages and "
+"dialects: Aqusha, Itsari, Kadar, Mehweb Muira, Qunqi and Tanti. The database "
+"is gradually being enriched with new data. In particular, we are preparing "
+"lexicons of Urakhi and Kubachi, as well as data from the \"Dialectological "
+"Dictionary of Dargwa\" by S. M. Temirbulatova (2022). "
+
+#: dargwa/templates/index.html:49
+msgid "Над базой работали:"
+msgstr "Out team:"
+
+#: dargwa/templates/index.html:50
+msgid ""
+"Н. Р. Сумбатова (разработка проекта базы и формата словарных статей; "
+"составление компаративных серий; сбор и представление данных)"
+msgstr ""
+"Nina Sumbatova (development of the draft database, lexicon entries; "
+"compilation of comparative series; data collection and presentation)"
+
+#: dargwa/templates/index.html:51
+msgid "Элли Сокур (программирование текущей версии базы)"
+msgstr "Ellie Sokur (programming of the current version of the base)"
+
+#: dargwa/templates/index.html:52
+msgid ""
+"В. А. Позднякова (разработка формата словарных статей для глаголов; "
+"программирование первой версии базы)"
+msgstr ""
+"Victoria Pozdnyakova (development of the lexicon entries for verbs; "
+"programming of the first version of the database)"
+
+#: dargwa/templates/index.html:55
+msgid "Данные по отдельным идиомам:"
+msgstr "Data on individual lects:"
+
+#: dargwa/templates/index.html:56
+msgid ""
+"Акушинский: данные из словника в книге (van den Berg 2001); данные для базы "
+"подготовил А. С. Токмаков."
+msgstr ""
+"Aqusha: lexicon from (van den Berg 2001); the data was prepared by Alexander "
+"Tokmakov."
+
+#: dargwa/templates/index.html:57
+msgid ""
+"Кадарский: словарь, собранный Н. А. Вагизиевой; частично пересекается с "
+"данными в работе (Вагизиева 2018)."
+msgstr ""
+"Kadar: lexicon collected by Naida Vagizieva; partially the data in "
+"(Vagizieva 2018)."
+
+#: dargwa/templates/index.html:58
+msgid ""
+"Кункинский: предварительная версия словаря была собрана в 2007 году "
+"исследовательской группой в следующем составе: Д. С. Ганенков, Н. В. "
+"Сердобольская, Н. Р. Сумбатова, В. Хуршудян. В 2022—2024 гг. Н. Р. Сумбатова "
+"и П. А. Казимова проверили и существенно дополнили словарь."
+msgstr ""
+"Qunqi: a preliminary version of the lexicon was collected in 2007 by Dmitry "
+"Ganenkov, Natalya Serdobolskaya, Nina Sumbatova, and Victoria Khurshudyan. "
+"In 2022–2024, Nina Sumbatova and Patimat Kazimova checked and supplemented "
+"the dictionary."
+
+#: dargwa/templates/index.html:59
+msgid ""
+"Ицаринский: словник из работы (Sumbatova, Mutalov 2003) и словник, собранный "
+"Р. О. Муталовым (не опубликован); данные для базы подготовили И. В. Калякин "
+"и Н. Р. Сумбатова."
+msgstr ""
+"Itsari: lexicon from (Sumbatova, Mutalov 2003) and the dictionary collected "
+"by Rasul Mutalov (unpublished); data for the database were prepared by Ivan "
+"Kalyakin and Nina Sumbatova."
+
+#: dargwa/templates/index.html:60
+msgid ""
+"Мегебский: словарь, собранный в экспедициях НИУ ВШЭ (Musaev, Morozova, "
+"Daniel 2020)."
+msgstr ""
+"Mehweb: data collected in the field trips of the National Research "
+"University Higher School of Economics (Musaev, Morozova, Daniel 2020)."
+
+#: dargwa/templates/index.html:61
+msgid ""
+"Муиринский: полевые данные, собранные в 2018—2021 году в экспедициях РГГУ; "
+"данные для базы подготовили и дополнили Н. Р. Сумбатова и И. В. Калякин."
+msgstr ""
+"Muira: field data collected in 2018–2021 in the field trips of the Russian "
+"State University for the Himanities; data for the database were prepared and "
+"supplemented by Ivan Kalyakin and Nina Sumbatova."
+
+#: dargwa/templates/index.html:62
+msgid "Тантынский: данные из словника в работе (Сумбатова, Ландер 2014)."
+msgstr "Tanti: data from the lexicon in the book (Sumbatova, Lander 2014)."
+
+#: dargwa/templates/index.html:72
+msgid "Страница администратора"
+msgstr "Admin"
+
+#: dargwa/templates/result_list.html:18 dargwa/templates/search.html:16
+#: dargwa/templates/word_page.html:18
+msgid "Главная"
+msgstr "Home"
+
+#: dargwa/templates/result_list.html:23 dargwa/templates/word_page.html:23
+msgid "Поиск"
+msgstr "Search"
+
+#: dargwa/templates/result_list.html:36
+msgid "Ваш запрос:"
+msgstr "Query:"
+
+#: dargwa/templates/result_list.html:42
+msgid "К сожалению, по вашему запросу ничего не найдено."
+msgstr "Unfortunately, nothing was found for your request."
+
+#: dargwa/templates/result_list.html:44
+msgid "Найдены слова:"
+msgstr "Words found:"
+
+#: dargwa/templates/result_list.html:50 dargwa/templates/search.html:71
+msgid "Слово"
+msgstr "Word"
+
+#: dargwa/templates/result_list.html:51
+msgid "Значение"
+msgstr "Meaning"
+
+#: dargwa/templates/result_list.html:52 dictionary/forms.py:18
+#: dictionary/forms.py:50 dictionary/views.py:117
+msgid "Часть речи"
+msgstr "Part of speech"
+
+#: dargwa/templates/result_list.html:53 dictionary/forms.py:9
+#: dictionary/forms.py:43 dictionary/views.py:114
+msgid "Язык/диалект"
+msgstr "Language/dialect"
+
+#: dargwa/templates/search.html:27
+msgid "Форма поиска"
+msgstr "Search"
+
+#: dargwa/templates/search.html:37 dictionary/views.py:111
+msgid "Тип поиска"
+msgstr "Search type"
+
+#: dargwa/templates/search.html:66
+msgid "Поиск по слову"
+msgstr ""
+
+#: dargwa/templates/search.html:67
+msgid "Выберите тип поиска по даргинскому слову или значению."
+msgstr ""
+
+#: dargwa/templates/search.html:78
+msgid "Выберите тип поиска по морфеме."
+msgstr ""
+
+#: dargwa/templates/word_page.html:50
+msgid "инфинитив несов. в."
+msgstr "infinitive ipfv"
+
+#: dargwa/templates/word_page.html:61
+msgid "претерит сов. в."
+msgstr "preterite pfv"
+
+#: dargwa/templates/word_page.html:72
+msgid "претерит несов. в."
+msgstr "preterite ipfv"
+
+#: dargwa/templates/word_page.html:83
+msgid "деепричастие несов. в."
+msgstr "converb ipfv"
+
+#: dargwa/templates/word_page.html:94
+msgid "императив сов. в."
+msgstr "imperative pfv"
+
+#: dargwa/templates/word_page.html:104
+msgid "императив несов. в."
+msgstr "imperative ipfv"
+
+#: dargwa/templates/word_page.html:114
+msgid "основа сов. в."
+msgstr "perfective stem"
+
+#: dargwa/templates/word_page.html:124
+msgid "основа несов. в."
+msgstr "imperfective stem"
+
+#: dargwa/templates/word_page.html:134
+msgid "прохибитив"
+msgstr "prohibitive"
+
+#: dargwa/templates/word_page.html:147
+msgid "множ. ч."
+msgstr "plural"
+
+#: dargwa/templates/word_page.html:158
+msgid "эргатив"
+msgstr "ergative"
+
+#: dargwa/templates/word_page.html:168
+msgid "генитив"
+msgstr "genitive"
+
+#: dargwa/templates/word_page.html:178
+msgid "датив"
+msgstr "dative"
+
+#: dargwa/templates/word_page.html:188
+msgid "локатив"
+msgstr "locative"
+
+#: dargwa/templates/word_page.html:201
+msgid "происхождение"
+msgstr "origin"
+
+#: dargwa/templates/word_page.html:211
+msgid "род"
+msgstr "gender"
+
+#: dargwa/templates/word_page.html:221
+msgid "нерегулярности"
+msgstr "irregularities"
+
+#: dargwa/templates/word_page.html:231
+msgid "модель управления"
+msgstr "case frame"
+
+#: dargwa/templates/word_page.html:241
+msgid "источник"
+msgstr "source"
+
+#: dargwa/templates/word_page.html:253 dictionary/views.py:198
+msgid "Другие слова, содержащие"
+msgstr "Other words with"
+
+#: dargwa/templates/word_page.html:256
+msgid "Синонимы"
+msgstr "Synonyms"
+
+#: dargwa/templates/word_page.html:260 dictionary/views.py:157
+msgid "Когнаты для корня"
+msgstr "Cognate words for root"
+
+#: dictionary/forms.py:11
+#, fuzzy
+#| msgid "Язык/диалект"
+msgid "Все языки/диалекты"
+msgstr "Language/dialect"
+
+#: dictionary/forms.py:20
+#, fuzzy
+#| msgid "Часть речи"
+msgid "Все части речи"
+msgstr "Part of speech"
+
+#: dictionary/forms.py:57 dictionary/views.py:123
+msgid "Тип морфемы"
+msgstr "Morpheme type"
+
+#: dictionary/forms.py:63 dictionary/views.py:125
+msgid "Глосса"
+msgstr "Gloss"
+
+#: dictionary/forms.py:68 dictionary/views.py:121
+msgid "Морфема"
+msgstr "Morpheme"
+
+#: dictionary/forms.py:74
+msgid "Русский, английский или даргинский"
+msgstr "Russian, English or Dargwa"
+
+#: dictionary/views.py:119
+msgid "Слово/значение"
+msgstr "Word/meaning"
+
+msgid "Поиск по даргинскому слову"
+msgstr "Dargwa word search"
+
+msgid "Поиск по значению"
+msgstr "Meaning search"
+
+msgid "Поиск по морфеме"
+msgstr "Morpheme search"
+
+msgid "ДарЛинг: Лексикографическая база данных даргинских языков"
+msgstr "DarLing: a Lexical database of Dargwa"
+
+msgid "n"
+msgstr "n"
+
+msgid "adj"
+msgstr "adj"
+
+msgid "adv"
+msgstr "adv"
+
+msgid "conj"
+msgstr "conj"
+
+msgid "cop"
+msgstr "cop"
+
+msgid "coverb"
+msgstr "coverb"
+
+msgid "question word"
+msgstr "question word"
+
+msgid "loc adv"
+msgstr "loc adv"
+
+msgid "n/adj"
+msgstr "n/adj"
+
+msgid "idiom (np)"
+msgstr "idiom (np)"
+
+msgid "numeral"
+msgstr "numeral"
+
+msgid "particle"
+msgstr "particle"
+
+msgid "postposition"
+msgstr "postposition"
+
+msgid "pronoun"
+msgstr "pronoun"
+
+msgid "quantifier"
+msgstr "quantifier"
+
+msgid "verb"
+msgstr "verb"
+
+msgid "v"
+msgstr "v"
+
+msgid "idiom (vp)"
+msgstr "idiom (vp)"
+
+msgid "Turkic"
+msgstr "Turkic"
+
+msgid "Russian"
+msgstr "Russian"
+
+msgid "Persian"
+msgstr "Persian"
+
+msgid "Arabic"
+msgstr "Arabic"
+
+msgid "F"
+msgstr "F"
+
+msgid "M"
+msgstr "M"
+
+msgid "N"
+msgstr "N"
+
+msgid "HPL"
+msgstr "HPL"
+
+msgid "NPL"
+msgstr "NPL"
+
+msgid "M/F"
+msgstr "M/F"
+
+msgid "N/NPL"
+msgstr "N/NPL"
+
+msgid "tr"
+msgstr "tr"
+
+msgid "itr"
+msgstr "itr"
+
+msgid "aff"
+msgstr "aff"
+
+msgid "tr/itr"
+msgstr "tr/itr"
+
+msgid "tr/aff"
+msgstr "tr/aff"
+
+msgid "impers"
+msgstr "impers"
+
+msgid "irreg pl"
+msgstr "irreg pl"
+
+msgid "pl tantum"
+msgstr "pl tantum"
+
+msgid "sg tantum"
+msgstr "sg tantum"
+
+msgid "ipfv only"
+msgstr "ipfv only"
+
+msgid "pfv only"
+msgstr "pfv only"
+
+msgid "Синонимы для слова"
+msgstr "Synonyms for word"

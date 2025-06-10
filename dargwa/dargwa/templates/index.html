@@ -1,38 +1,66 @@
 {% extends "dar_base.html" %}
+{% load i18n %}
 
 {% block content %}
 <header>
+<form class="form-language-select" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <select class="language-select" name="language">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% get_language_info_list for LANGUAGES as languages %}
+        {% for language in languages %}
+            <option class="language-select-option" value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                {{ language.name_local }}
+            </option>
+        {% endfor %}
+    </select>
+    <input class="language-select-btn" type="submit" value="Apply">
+</form>
     <div class="container">
         <div class="row header-info">
             <div class="col-sm-10 col-sm-offset-1 text-center">
-                <h1 class="wow fadeIn" style="font-size: 65px;">ДарЛинг</h1><br />
-                <p class="lead wow fadeIn" data-wow-delay="0.5s" style="font-size: 25px;">Словари языков и диалектов даргинской группы</p>
-                <a href="{% url 'dictionary:search' %}" class="btn btn-primary btn-lg" style="padding: 30px 44px; font-size: 17px; font-weight: bolder;">Искать</a>
+                <h1 class="wow fadeIn" style="font-size: 65px;">{% trans 'ДарЛинг' %}</h1><br />
+                <p class="lead wow fadeIn" data-wow-delay="0.5s" style="font-size: 25px;">{% trans 'Словари языков и диалектов даргинской группы' %}</p>
+                <a href="{% url 'dictionary:search' %}" class="btn btn-primary btn-lg" style="padding: 30px 44px; font-size: 17px; font-weight: bolder;">{% trans 'Искать' %}</a>
                 <br><br>
-                <a href="#about" class="btn btn-secondary btn-lg scroll" style="padding: 23px 40px;">О проекте</a>
+                <a href="#about" class="btn btn-secondary btn-lg scroll" style="padding: 23px 40px;">{% trans 'О проекте' %}</a>
             </div>
         </div>
     </div>
 </header>
 
 <section id="about" class="pad-xl">
-    <h2 class="black" align="middle">О проекте</h2>
+    <h2 class="black" align="middle">{% trans 'ДарЛинг: Лексикографическая база данных даргинских языков' %}</h2>
     <div class="container" style="padding-right: 15px; padding-left: 15px;">
         <div class="row">
-            <div class="col-sm-4 wow fadeIn" data-wow-delay="0.4s">
+            <div class="col-sm-6 wow fadeIn" data-wow-delay="0.4s">
                 <hr class="line purple">
                 <h3></h3>
-                <p>Проект выполнен при поддержке гранта РНФ №22-28-01648</p>
+                <p style="text-align: justify"><b>{% trans 'ДарЛинг' %}</b>{% trans ' – это лексикографическая база данных, содержащая лексику нескольких даргинских языков и диалектов. В базе возможен поиск лексем одного или нескольких языков по различным типам запросов – по даргинскому слову, по русскому или английскому переводу. Доступен также поиск синонимов, когнатов (слов, восходящих к одному источнику) и слов, содержащих определенные морфемы.' %}</p>
+<p style="text-align: justify">{% trans 'Даргинские словоформы представлены в кириллической записи (на основе даргинской орфографии) и в транскрипции. Помимо значения слов, словарные статьи содержат грамматическую информацию (различные формы слов, модели управления глаголов, информация о грамматическом классе имен). Для всех слов приводится информация об источнике данных.' %}</p>
+                <p style="text-align: justify">{% trans 'Первая версия лексикографической базы данных была создана в 2018 году. В 2022 году созданная ранее база была реорганизована. В настоящее время в базе содержится более 2000 компаративных серий, в том числе более 300 глагольных корней. Для создания и пополнения базы использованы два типа источников данных: опубликованные словари и грамматики (в том числе онлайн-ресурсы) и полевые материалы, собранные авторами и их коллегами. Для включения в базу все данные представлены в едином формате, слова разных языков и диалектов организованы в компаративные серии.' %}</p>
+<p style="text-align: justify">{% trans 'В настоящее время в базе доступны словари следующих идиомов: акушинского, тантынского, ицаринского, муиринского, кадарского, мегебского и кункинского. База постепенно пополняется новыми данными. В частности, готовится лексикон урахинского и кубачинского диалектов, а также данные из «Диалектологического словаря даргинского языка» С. М. Темирбулатовой (2022).' %}</p>
+
             </div>
-            <div class="col-sm-4 wow fadeIn" data-wow-delay="0.8s">
+            <div class="col-sm-6 wow fadeIn" data-wow-delay="1.2s">
                 <hr class="line blue">
                 <h3></h3>
-                <p></p>
-            </div>
-            <div class="col-sm-4 wow fadeIn" data-wow-delay="1.2s">
-                <hr class="line yellow">
-                <h3></h3>
-                <p></p>
+                <p style="text-align: justify"><b>{% trans 'Над базой работали:' %}</b>
+                    <br>{% trans 'Н. Р. Сумбатова (разработка проекта базы и формата словарных статей; составление компаративных серий; сбор и представление данных)' %}
+                    <br>{% trans 'Элли Сокур (программирование текущей версии базы)' %}
+                    <br>{% trans 'В. А. Позднякова (разработка формата словарных статей для глаголов; программирование первой версии базы)' %}
+                </p>
+
+                <p style="text-align: justify"><b>{% trans 'Данные по отдельным идиомам:' %}</b>
+                    <br>{% trans 'Акушинский: данные из словника в книге (van den Berg 2001); данные для базы подготовил А. С. Токмаков.' %}
+                    <br>{% trans 'Кадарский: словарь, собранный Н. А. Вагизиевой; частично пересекается с данными в работе (Вагизиева 2018).' %}
+                    <br>{% trans 'Кункинский: предварительная версия словаря была собрана в 2007 году исследовательской группой в следующем составе: Д. С. Ганенков, Н. В. Сердобольская, Н. Р. Сумбатова, В. Хуршудян. В 2022—2024 гг. Н. Р. Сумбатова и П. А. Казимова проверили и существенно дополнили словарь.' %}
+                    <br>{% trans 'Ицаринский: словник из работы (Sumbatova, Mutalov 2003) и словник, собранный Р. О. Муталовым (не опубликован); данные для базы подготовили И. В. Калякин и Н. Р. Сумбатова.' %}
+                    <br>{% trans 'Мегебский: словарь, собранный в экспедициях НИУ ВШЭ (Musaev, Morozova, Daniel 2020).' %}
+                    <br>{% trans 'Муиринский: полевые данные, собранные в 2018—2021 году в экспедициях РГГУ; данные для базы подготовили и дополнили Н. Р. Сумбатова и И. В. Калякин.' %}
+                    <br>{% trans 'Тантынский: данные из словника в работе (Сумбатова, Ландер 2014).' %}
+                </p>
             </div>
         </div>
     </div>
@@ -41,7 +69,7 @@
 
 {% block footer %}
     <div class="footer">
-        <a href="{% url 'admin:index' %}">Страница администратора</a>
+        <a href="{% url 'admin:index' %}">{% trans 'Страница администратора' %}</a>
     </div>
 {% endblock %}
 

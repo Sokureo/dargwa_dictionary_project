@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 from .forms import IdiomPosForm, SearchForm
 from .models import Word, WordForm, Morpheme, MorphemeType, MorphemeNumber, PartOfSpeech, Idiom
@@ -102,26 +102,26 @@ class SearchView(FormView):
 
         if search_type:
             if search_type == '0':
-                search_name = 'Поиск по даргинскому слову'
+                search_name = _('Поиск по даргинскому слову')
             elif search_type == '1':
-                search_name = 'Поиск по значению'
+                search_name = _('Поиск по значению')
             elif search_type == '2':
-                search_name = 'Поиск по морфеме'
-            params['Тип поиска'] = search_name
+                search_name = _('Поиск по морфеме')
+            params[_('Тип поиска')] = search_name
         if idioms:
             idioms_list = [idiom.idiom for idiom in idioms]
-            params['Язык/диалект'] = ', '.join(idioms_list)
+            params[_('Язык/диалект')] = ', '.join(idioms_list)
         if poss:
             poss_list = [pos.pos for pos in poss]
-            params['Часть речи'] = ', '.join(poss_list)
+            params[_('Часть речи')] = ', '.join(poss_list)
         if search_word:
-            params['Слово/значение'] = search_word
+            params[_('Слово/значение')] = search_word
         if morpheme:
-            params['Морфема'] = morpheme
+            params[_('Морфема')] = morpheme
         if morph_type:
-            params['Тип морфемы'] = morph_type
+            params[_('Тип морфемы')] = morph_type
         if morph_gloss:
-            params['Глосса'] = morph_gloss
+            params[_('Глосса')] = morph_gloss
         return params
 
 
@@ -153,7 +153,7 @@ class SearchCognatesView(TemplateView):
         return context
 
     def get_used_search_params(self, word, root_id):
-        return {'Когнаты для корня': Morpheme.objects.filter(word=word, morph_number=root_id).first()}
+        return {_('Когнаты для корня'): Morpheme.objects.filter(word=word, morph_number=root_id).first()}
 
 
 class SearchSynonymsView(TemplateView):
@@ -179,7 +179,7 @@ class SearchSynonymsView(TemplateView):
         return context
 
     def get_used_search_params(self, word):
-        return {'Синонимы для слова': word}
+        return {_('Синонимы для слова'): word}
 
 class SearchMorphemesView(TemplateView):
     template_name = 'result_list.html'
@@ -194,4 +194,4 @@ class SearchMorphemesView(TemplateView):
         return context
 
     def get_used_search_params(self, morpheme):
-        return {'Другие слова, содержащие': morpheme}
+        return {_('Другие слова, содержащие'): morpheme}

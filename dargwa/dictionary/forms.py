@@ -6,18 +6,18 @@ from .models import Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 
 class IdiomPosForm(forms.Form):
     idiom = forms.ModelChoiceField(
-        label='Язык/диалект',
+        label=_('Язык/диалект'),
         queryset=Idiom.objects.all(),
-        empty_label='Все языки/диалекты',
+        empty_label=_('Все языки/диалекты'),
         required=False,
         widget=forms.Select(attrs={
             'style': 'margin: 10px;'
         })
     )
     pos = forms.ChoiceField(
-        label='Часть речи',
+        label=_('Часть речи'),
         choices=[
-            ('', 'Все части речи'),
+            ('', _('Все части речи')),
             ('n', 'nouns'),
             ('v', 'verbs'),
             ('other', 'other'),
@@ -33,21 +33,21 @@ class SearchForm(forms.Form):
     search_word = forms.CharField(required=False)
     search_type = forms.ChoiceField(
         choices=(
-            ('0', u'Поиск по даргинскому слову'),
-            ('1', u'Поиск по значению'),
-            ('2', u'Поиск по морфеме'),
-            # ('3', u'Искать семантическое поле'),
+            ('0', _('Поиск по даргинскому слову')),
+            ('1', _('Поиск по значению')),
+            ('2', _('Поиск по морфеме')),
+            # ('3', _('Искать семантическое поле')),
         ),
     )
     idiom = forms.ModelMultipleChoiceField(
-        label='Язык/диалект',
+        label=_('Язык/диалект'),
         queryset=Idiom.objects.all(),
         required=False,
         initial=Idiom.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
     )
     pos = forms.ModelMultipleChoiceField(
-        label='Часть речи',
+        label=_('Часть речи'),
         queryset=PartOfSpeech.objects.all().exclude(pos='n/adj'),
         required=False,
         initial=PartOfSpeech.objects.all().exclude(pos='n/adj'),

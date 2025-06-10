@@ -758,6 +758,26 @@ input[type="checkbox"] {
     vertical-align: center;
 }
 
+.form-language-select {
+    box-shadow: none;
+    float: right;
+    background: none;
+    border: none;
+    height: 60px;
+    width: 200px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    margin-top: 5px;
+    display: inline;
+    vertical-align: top;
+}
+
+.language-select {
+    height: 40px;
+    width: 100px;
+    text-align: center;
+}
+
 .morph_table {
     width: 100%;
 }

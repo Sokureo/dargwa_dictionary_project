@@ -26,14 +26,16 @@
 }
 
 body {
+  min-height: 100vh;
   font-family: "PT Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  display: flex;
+  flex-direction: column;
 }
 
 section {
-  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -436,7 +438,7 @@ header {
   left: 0;
   right: 0;
   margin-left: 0px;
-  margin-bottom: 12%;
+  margin-bottom: 22%;
   
 }
 
@@ -593,10 +595,19 @@ hr.line {
   padding-right: 20px;
 }
 
-footer {
-  background: #ffffff;
-  padding: 40px 0px;
-  
+.footer {
+  background-color: #74cccc;
+  height: 50px;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  font-size: 17px;
+  color: white;
+  padding-left: 30px;
+  float: none;
+  vertical-align: middle;
+  line-height: 50px;
+  margin-top: auto;
 }
 
 .social li a:hover {
@@ -728,12 +739,90 @@ footer {
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     color: #929496;
-    display: block;
     font-size: 15px;
-    height: 60px;
+    height: auto;
     line-height: 1.42857;
     padding: 6px 12px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    overflow: auto;
+    max-height: 145px;
+    min-height: 60px;
+    text-align: left;
+}
+
+input[type="checkbox"] {
+    accent-color: #74cccc;
+    width: 15px;
+    height: 15px;
+    display: inline;
+    vertical-align: center;
+}
+
+.form-language-select {
+    box-shadow: none;
+    float: right;
+    background: none;
+    border: none;
+    height: 60px;
+    width: 240px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    margin-top: 5px;
+    display: inline;
+    vertical-align: top;
+}
+
+.language-select {
+    height: 40px;
+    width: 100px;
+    text-align: center;
+}
+
+.morph_table {
+    width: 100%;
+}
+
+.morph_table tr {
+    width: 100%;
+    vertical-align: top;
+    line-height: 30px;
+}
+
+.morph_name_cell {
+    width: 45%;
+}
+
+.morph_cell {
+    width: 55%;
+    padding-bottom: 17px;
+}
+
+.word_page_text {
+    color: black;
+}
+
+.word_info_table {
+    width: 100%;
+}
+
+.word_info_table tr {
+    width: 100%;
+    vertical-align: top;
+    line-height: 20px;
+}
+
+.word_info_name_cell {
+    width: 45%;
+}
+
+.word_info_cell {
+    width: 55%;
+    padding-bottom: 0;
+}
+
+.english-entry {
+    color: var(--keyColor);
+    font-weight: 700;
 }
 
 .form-control::-moz-placeholder {

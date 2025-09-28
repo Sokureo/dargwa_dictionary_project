@@ -31,11 +31,15 @@ services:
                         MYSQL_USER: ${DB_USER}
                         MYSQL_PASSWORD: ${DB_PASSWORD}
                         MYSQL_ROOT_PASSWORD: ${DB_ROOTPASSWORD}
+                volumes:
+                        - sql_data:/var/lib/mysql
                 healthcheck:
                         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
                         interval: 5s
                         timeout: 5s
                         retries: 5
+volumes:
+        sql_data:
 
 networks:
         dargwa_dictionary_network:

@@ -1,30 +1,60 @@
-{% extends "dar_base.html" %}
+{% load static %}
 {% load i18n %}
+
+{% block head %}
+    <meta charset="utf-8">
+    <title>DargwaDict | Dargwa Dictionary Project</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:site_name" content="">
+    <meta property="og:description" content="">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}" >
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css'%}">
+    <script src="{% static 'js/modernizr-2.7.1.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+{% endblock %}
 
 {% block content %}
 <header>
-    <form class="form-language-select form-control" action="{% url 'set_language' %}" method="post">{% csrf_token %}
-    <input name="next" type="hidden" value="{{ redirect_to }}">
-    <select class="language-select" name="language">
-        {% get_current_language as LANGUAGE_CODE %}
-        {% get_available_languages as LANGUAGES %}
-        {% get_language_info_list for LANGUAGES as languages %}
-        {% for language in languages %}
-            <option class="language-select-option" value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
-                {{ language.name_local }}
-            </option>
-        {% endfor %}
-    </select>
-    <input class="language-select-btn" type="submit" value="{% trans 'Apply' %}">
-    </form>
+
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    {% get_language_info_list for LANGUAGES as languages %}
+    <div class="language-switcher">
+        <form action="{% url 'set_language' %}" class="form-language-select form-control" method="post" id="lang-form">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            {% for language in languages %}
+                <button type="submit" name="language" value="{{ language.code }}">
+                    {{ language.name_local }}
+                </button>
+            {% endfor %}
+        </form>
+    </div>
+
     <div class="container">
         <div class="row header-info">
             <div class="col-sm-10 col-sm-offset-1 text-center">
                 <h1 class="wow fadeIn" style="font-size: 65px;">{% trans 'ДарЛинг' %}</h1><br />
                 <p class="lead wow fadeIn" data-wow-delay="0.5s" style="font-size: 25px;">{% trans 'Словари языков и диалектов даргинской группы' %}</p>
-                <a href="{% url 'dictionary:search' %}" class="btn btn-primary btn-lg" style="padding: 30px 44px; font-size: 17px; font-weight: bolder;">{% trans 'Искать' %}</a>
                 <br><br>
-                <a href="#about" class="btn btn-secondary btn-lg scroll" style="padding: 23px 40px;">{% trans 'О проекте' %}</a>
+                <a href="{% url 'dictionary:search' %}" class="btn btn-primary btn-lg" style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px; margin-right: 10px">{% trans 'Искать' %}</a>
+                <a href="#about" class="btn btn-secondary btn-lg scroll" style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px; margin-left: 10px">{% trans 'О проекте' %}</a>
             </div>
         </div>
     </div>
@@ -74,3 +104,11 @@
 {% endblock %}
 
 {% endblock %}
+
+<!-- Javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>

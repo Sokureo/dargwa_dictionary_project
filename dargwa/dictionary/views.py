@@ -46,11 +46,12 @@ class SearchView(FormView):
         if form.is_valid():
             search_word = form.cleaned_data.get('search_word')
             search_meaning = form.cleaned_data.get('search_meaning')
-            idiom = form.cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
-            pos = form.cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
+            idiom = form.cleaned_data.get('idiom') or Idiom.objects.all()
+            pos = form.cleaned_data.get('pos') or PartOfSpeech.objects.all()
             morph_type = form.cleaned_data.get('morph_type')
             morph_gloss = form.cleaned_data.get('morph_gloss')
             morpheme = form.cleaned_data.get('morpheme')
+
             q = Q(idiom__in=idiom) & Q(pos__in=pos)
             words = list()
             if search_word:
@@ -91,8 +92,8 @@ class SearchView(FormView):
         params = dict()
         search_word = cleaned_data.get('search_word')
         search_meaning = cleaned_data.get('search_meaning')
-        idioms = cleaned_data.get('idiom') or Idiom.objects.all().values_list('id', flat=True)
-        poss = cleaned_data.get('pos') or PartOfSpeech.objects.all().values_list('id', flat=True)
+        idioms = cleaned_data.get('idiom')
+        poss = cleaned_data.get('pos')
         morph_types = cleaned_data.get('morph_type')
         morph_glosss = cleaned_data.get('morph_gloss')
         morpheme = cleaned_data.get('morpheme')

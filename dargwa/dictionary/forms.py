@@ -43,7 +43,6 @@ class SearchForm(forms.Form):
         label=_('Часть речи'),
         queryset=PartOfSpeech.objects.all().exclude(pos='n/adj'),
         required=False,
-        initial=PartOfSpeech.objects.all().exclude(pos='n/adj'),
         widget=forms.SelectMultiple(),
     )
     morph_type = forms.ModelMultipleChoiceField(

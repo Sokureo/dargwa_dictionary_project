@@ -233,6 +233,9 @@ msgstr "Words found:"
 msgid "Слово"
 msgstr "Word"
 
+msgid "Транскрипция"
+msgstr "Transcription"
+
 #: dargwa/templates/result_list.html:51
 msgid "Значение"
 msgstr "Meaning"

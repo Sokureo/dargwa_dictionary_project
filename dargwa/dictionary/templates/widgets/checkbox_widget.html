@@ -1,0 +1,63 @@
+<div class="tags-dropdown-widget" data-name="{{ widget.name }}">
+    <div class="tags-container" id="{{ widget.name }}_tags_container">
+        <div class="tags-list" id="{{ widget.name }}_tags">
+            {% for group in widget.optgroups %}
+                {% for choice in group.1 %}
+                    {% if choice.value in widget.value %}
+                        <span class="tag" data-value="{{ choice.value }}">
+                            {{ choice.label }}
+                            <span class="tag-remove" data-value="{{ choice.value }}">×</span>
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <span class="tags-placeholder" id="{{ widget.name }}_placeholder"
+              style="{% if widget.selected_values %}display: none;{% endif %}color: #999; font-size: 14px;">
+            {{ widget.placeholder_text }}
+        </span>
+    </div>
+
+    <button type="button" class="dropdown-trigger" id="{{ widget.name }}_trigger">
+        ▼
+    </button>
+
+    <div class="dropdown-panel" id="{{ widget.name }}_dropdown" style="display: none;">
+        <div class="dropdown-header">
+            <label class="select-all-option">
+                <input type="checkbox"
+                       class="select-all-checkbox"
+                       id="{{ widget.name }}_select_all"
+                       {% if widget.all_selected %}checked{% endif %}>
+                <span>{{ widget.select_all_text }}</span>
+            </label>
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <div class="dropdown-options">
+            {% for group in widget.optgroups %}
+                {% for choice in group.1 %}
+                    <label class="option-item">
+                        <input type="checkbox"
+                               name="{{ widget.name }}"
+                               value="{{ choice.value }}"
+                               class="option-checkbox"
+                               {% if choice.value in widget.value %}checked{% endif %}>
+                        <span>{{ choice.label }}</span>
+                    </label>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <select multiple name="{{ widget.name }}" style="display: none;">
+        {% for group in widget.optgroups %}
+            {% for choice in group.1 %}
+                <option value="{{ choice.value }}" {% if choice.value in widget.value %}selected{% endif %}>
+                    {{ choice.label }}
+                </option>
+            {% endfor %}
+        {% endfor %}
+    </select>
+</div>

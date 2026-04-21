@@ -22,8 +22,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
-              <th scope="col" class="col-sm-3">{% trans 'Транскрипция' %}</th>
+              <th colspan="2" style="text-align: center;" scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
               <th scope="col" class="col-sm-3">{% trans 'Значение' %}</th>
               <th scope="col" class="col-sm-2">{% trans 'Часть речи' %}</th>
               <th scope="col" class="col-sm-2">{% trans 'Язык/диалект' %}</th>
@@ -34,8 +33,8 @@
 <tbody>
 {% for word in result_list %}
     <tr>
-        <td class="col-sm-3"><a style="color:#4dadb0; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr|default:"" }}</a></td>
-        <td class="col-sm-3"><a style="color:#4dadb0; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_lat|default:"" }}</a></td>
+        <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr|default:"" }}</a></td>
+        <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_lat|default:"" }}</a></td>
         <td class="col-sm-3">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</td>
         <td class="col-sm-2">{% if word.pos %}{% trans word.pos.pos %}{% endif %}</td>
         <td class="col-sm-2">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</td>

@@ -539,3 +539,9 @@ msgstr "Dargwa word"
 
 msgid "Apply"
 msgstr "Apply"
+
+msgid "Выбрать всё"
+msgstr "Select all"
+
+msgid "Все"
+msgstr "All"

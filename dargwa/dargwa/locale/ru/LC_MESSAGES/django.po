@@ -422,6 +422,9 @@ msgstr "связка"
 msgid "coverb"
 msgstr "коверб"
 
+msgid "cov"
+msgstr "коверб"
+
 msgid "question word"
 msgstr "вопр. слово"
 
@@ -434,19 +437,37 @@ msgstr "сущ./прил."
 msgid "idiom (np)"
 msgstr "имен. сл.-соч."
 
+msgid "np"
+msgstr "имен. сл.-соч."
+
 msgid "numeral"
+msgstr "числ."
+
+msgid "num"
 msgstr "числ."
 
 msgid "particle"
 msgstr "част."
 
+msgid "part"
+msgstr "част."
+
 msgid "postposition"
+msgstr "послелог"
+
+msgid "post"
 msgstr "послелог"
 
 msgid "pronoun"
 msgstr "мест."
 
+msgid "pron"
+msgstr "мест."
+
 msgid "quantifier"
+msgstr "квант."
+
+msgid "quant"
 msgstr "квант."
 
 msgid "verb"
@@ -456,6 +477,9 @@ msgid "v"
 msgstr "глаг."
 
 msgid "idiom (vp)"
+msgstr "глаг. сл.-соч."
+
+msgid "vp"
 msgstr "глаг. сл.-соч."
 
 msgid "Turkic"
@@ -538,3 +562,51 @@ msgstr "Даргинское слово"
 
 msgid "Apply"
 msgstr "Применить"
+
+msgid "Выбрать всё"
+msgstr "Выбрать всё"
+
+msgid "Все"
+msgstr "Все"
+
+msgid "Kadar"
+msgstr "кадарский"
+
+msgid "kadar"
+msgstr "кадарский"
+
+msgid "Mehweb"
+msgstr "мегебский"
+
+msgid "mehweb"
+msgstr "мегебский"
+
+msgid "Aqusha"
+msgstr "акушинский"
+
+msgid "aqusha"
+msgstr "акушинский"
+
+msgid "Qunqi"
+msgstr "кункинский"
+
+msgid "qunqi"
+msgstr "кункинский"
+
+msgid "Muira"
+msgstr "муиринский"
+
+msgid "muira"
+msgstr "муиринский"
+
+msgid "Itsari"
+msgstr "ицаринский"
+
+msgid "itsari"
+msgstr "ицаринский"
+
+msgid "Tanti"
+msgstr "тантынский"
+
+msgid "tanti"
+msgstr "тантынский"

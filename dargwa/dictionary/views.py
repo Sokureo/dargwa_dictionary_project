@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, FormView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 
-from .forms import IdiomPosForm, SearchForm
+from .forms import IdiomPosForm, SearchForm, BaseSearchForm
 from .models import Word, WordForm, Morpheme, MorphemeType, MorphemeNumber, PartOfSpeech, Idiom
 
 
@@ -34,8 +34,8 @@ class StartPageView(TemplateView):
 
 
 class SearchView(FormView):
-    template_name = 'search.html'
-    form_class = SearchForm
+    template_name = 'search_word.html'
+    form_class = BaseSearchForm
     meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
     meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
     class_regex = "'{}'"

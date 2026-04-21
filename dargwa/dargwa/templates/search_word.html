@@ -1,0 +1,40 @@
+{% extends "dar_base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container search-page-container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
+                <h1 style="color: black;">{% trans 'Поиск по даргинскому слову' %}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <form method="POST" role="form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.search_word }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.idiom.label }}</label>
+                                {{ form.idiom }}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.pos.label }}</label>
+                                {{ form.pos }}
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px;">{% trans 'Искать' %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

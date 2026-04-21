@@ -750,14 +750,6 @@ hr.line {
     text-align: left;
 }
 
-input[type="checkbox"] {
-    accent-color: #74cccc;
-    width: 15px;
-    height: 15px;
-    display: inline;
-    vertical-align: center;
-}
-
 .form-language-select {
     box-shadow: none;
     float: right;
@@ -908,7 +900,25 @@ input[type="checkbox"] {
 
 }   
 
+.search-page-container {
+    padding-top: 150px;
+}
 
+.form-group .centered-label {
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
+/* Виртуальная клавиатура */
+.virtual-keyboard button {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
-
+.virtual-keyboard button:active {
+    transform: scale(0.95);
+    background: #ddd !important;
+}

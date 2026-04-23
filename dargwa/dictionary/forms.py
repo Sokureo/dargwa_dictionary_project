@@ -5,7 +5,7 @@ from .models import Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 from .widgets import CheckboxSelectMultipleWithSelectAll
 
 
-class IdiomPosForm(forms.Form):
+class IdiomPosAdminForm(forms.Form):
     idiom = forms.ModelChoiceField(
         label=_('Язык/диалект'),
         queryset=Idiom.objects.all(),
@@ -30,54 +30,7 @@ class IdiomPosForm(forms.Form):
     )
 
 
-class SearchForm(forms.Form):
-    search_word = forms.CharField(required=False)
-    search_meaning = forms.CharField(required=False)
-    idiom = forms.ModelMultipleChoiceField(
-        label=_('Язык/диалект'),
-        queryset=Idiom.objects.all(),
-        required=False,
-        initial=Idiom.objects.all(),
-        widget=forms.CheckboxSelectMultiple(),
-    )
-    pos = forms.ModelMultipleChoiceField(
-        label=_('Часть речи'),
-        queryset=PartOfSpeech.objects.all().exclude(pos='n/adj'),
-        required=False,
-        widget=forms.SelectMultiple(),
-    )
-    morph_type = forms.ModelMultipleChoiceField(
-        label=_('Тип морфемы'),
-        queryset=MorphemeType.objects.exclude(morph_type=MorphemeType.root).order_by('morph_type'),
-        required=False,
-        widget=forms.SelectMultiple(),
-    )
-    morph_gloss = forms.ModelMultipleChoiceField(
-        label=_('Глосса'),
-        queryset=MorphemeNumber.gloss(),
-        required=False,
-        widget=forms.SelectMultiple(),
-    )
-    morpheme = forms.CharField(required=False, label=_('Морфема'))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['search_word'].widget.attrs.update({
-            'class': "form-control",
-            'placeholder': _('даргинский'),
-        })
-        self.fields['search_meaning'].widget.attrs.update({
-            'class': "form-control",
-            'placeholder': _('русский или английский'),
-        })
-        self.fields['morpheme'].widget.attrs.update({
-            'class': "form-control",
-        })
-
-
 class BaseSearchForm(forms.Form):
-    search_word = forms.CharField(required=False)
-    search_meaning = forms.CharField(required=False)
     idiom = forms.ModelMultipleChoiceField(
         label=_('Язык/диалект'),
         queryset=Idiom.objects.all(),
@@ -93,14 +46,6 @@ class BaseSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['search_word'].widget.attrs.update({
-            'class': "form-control",
-            'placeholder': _('даргинский'),
-        })
-        self.fields['search_meaning'].widget.attrs.update({
-            'class': "form-control",
-            'placeholder': _('русский или английский'),
-        })
         self.fields['idiom'].choices = [
             (obj.id, _(obj.idiom)) for obj in Idiom.objects.all()
         ]
@@ -109,20 +54,36 @@ class BaseSearchForm(forms.Form):
         ]
 
 
+class SearchForm(BaseSearchForm):
+    search_word = forms.CharField(required=False)
+    search_meaning = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['search_word'].widget.attrs.update({
+            'class': "form-control",
+            'placeholder': _('даргинский'),
+        })
+        self.fields['search_meaning'].widget.attrs.update({
+            'class': "form-control",
+            'placeholder': _('русский или английский'),
+        })
+
+
 class MorphSearchForm(BaseSearchForm):
+    morpheme = forms.CharField(required=False, label=_('Морфема'))
     morph_type = forms.ModelMultipleChoiceField(
         label=_('Тип морфемы'),
         queryset=MorphemeType.objects.exclude(morph_type=MorphemeType.root).order_by('morph_type'),
         required=False,
-        widget=forms.SelectMultiple(),
+        widget=CheckboxSelectMultipleWithSelectAll(),
     )
     morph_gloss = forms.ModelMultipleChoiceField(
         label=_('Глосса'),
         queryset=MorphemeNumber.gloss(),
         required=False,
-        widget=forms.SelectMultiple(),
+        widget=CheckboxSelectMultipleWithSelectAll(),
     )
-    morpheme = forms.CharField(required=False, label=_('Морфема'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

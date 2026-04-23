@@ -211,6 +211,7 @@
                                 </td>
                             </tr>
                         {% endif %}
+                        <br><br><br><br><br><br>
                         {% if word.source %}
                             <tr>
                                 <td class="word_info_name_cell">
@@ -226,7 +227,9 @@
                 <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
                     <hr class="line blue">
                         {% for morpheme in word.morphemes.all %}
-                            <a href="{% url 'dictionary:search_morphemes' word.id morpheme.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Другие слова, содержащие' %} {{ morpheme }}</a><br><br>
+                            {% if not morpheme.morph_type.root %}
+                                <a href="{% url 'dictionary:search_morphemes' word.id morpheme.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Другие слова, содержащие' %} {{ morpheme }}</a><br><br>
+                            {% endif %}
                         {% endfor %}
 
                         <p><a href="{% url 'dictionary:search_synonyms' word.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Синонимы' %}</a></p><br>

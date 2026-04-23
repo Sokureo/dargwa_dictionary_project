@@ -1,0 +1,35 @@
+{% load i18n %}
+
+{% get_current_language as CURRENT_LANG %}
+
+{% if not result_list.count %}
+    <div class="no-results-message">
+        <h3>{% trans 'К сожалению, по вашему запросу ничего не найдено.' %}</h3>
+    </div>
+{% else %}
+    <div class="ajax-results-container">
+        <div class="table-responsive">
+            <table class="table results-table">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="text-align: center;" scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
+                        <th scope="col" class="col-sm-3">{% trans 'Значение' %}</th>
+                        <th scope="col" class="col-sm-2">{% trans 'Часть речи' %}</th>
+                        <th scope="col" class="col-sm-2">{% trans 'Язык/диалект' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for word in result_list %}
+                        <tr>
+                            <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr|default:"" }}</a></td>
+                            <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_lat|default:"" }}</a></td>
+                            <td class="col-sm-3">{% if CURRENT_LANG == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</td>
+                            <td class="col-sm-2">{% if word.pos %}{% trans word.pos.pos %}{% endif %}</td>
+                            <td class="col-sm-2">{% if CURRENT_LANG == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}

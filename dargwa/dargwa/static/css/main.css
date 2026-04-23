@@ -738,7 +738,7 @@ hr.line {
     background-image: none;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    color: #929496;
+    color: black;
     font-size: 15px;
     height: auto;
     line-height: 1.42857;
@@ -921,4 +921,124 @@ hr.line {
 .virtual-keyboard button:active {
     transform: scale(0.95);
     background: #ddd !important;
+}
+
+/* Карточка с параметрами поиска */
+.search-params-card {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+}
+
+.search-params-title {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+.search-params-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.search-param-item {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #555;
+    max-width: calc(50% - 12px);
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.search-param-item b {
+    color: #333;
+    margin-right: 6px;
+}
+
+.search-param-item span {
+    word-break: break-word;
+}
+
+/* Контейнер результатов */
+.ajax-results-container {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.ajax-results-container > div {
+    width: 80%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Таблица результатов */
+.results-table {
+    width: 100%;
+    margin-bottom: 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.results-table thead tr:first-child {
+    background-color: #4dadb0;
+    color: white;
+}
+
+.results-table thead tr:first-child th {
+    padding: 12px 15px;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+.results-table thead tr:last-child {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #4dadb0;
+}
+
+.results-table thead tr:last-child th {
+    padding: 10px 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.results-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.results-table tbody td {
+    padding: 10px 15px;
+    vertical-align: middle;
+    border-top: 1px solid #eee;
+}
+
+.results-table a {
+    color: #3d8a8c;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+.results-table a:hover {
+    color: #2e6769;
+    text-decoration: underline;
+}
+
+.no-results-message {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.no-results-message h3 {
+    color: black;
+    font-size: 18px;
+    font-weight: 500;
 }

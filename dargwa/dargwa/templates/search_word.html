@@ -1,4 +1,5 @@
 {% extends "dar_base.html" %}
+{% load static %}
 {% load i18n %}
 
 {% block content %}
@@ -10,10 +11,13 @@
         </div>
         <div class="row">
             <div class="col-sm-8 col-sm-offset-2">
-                <form method="POST" role="form">
+                <form method="POST" role="form" id="search-form" data-url="{% url 'dictionary:search' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         {{ form.search_word }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.search_meaning }}
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
@@ -31,10 +35,26 @@
                     </div>
                     <br>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary btn-lg" style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px;">{% trans 'Искать' %}</button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="search-btn"
+                                data-original-text="{% trans 'Искать' %}"
+                                data-searching-text="{% trans 'Поиск...' %}"
+                                data-error-text="{% trans 'Ошибка при выполнении поиска' %}"
+                                style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px;">
+                            {% trans 'Искать' %}
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
+
+        <div id="results-container" style="display: none;">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+                <div id="results-content"></div>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/search_ajax.js' %}"></script>
 {% endblock %}

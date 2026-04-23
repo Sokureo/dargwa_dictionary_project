@@ -1,125 +1,74 @@
 {% extends "dar_base.html" %}
+{% load static %}
 {% load i18n %}
 
 {% block content %}
-    <div class="container">
-       <div class="row pad-sm">
-        <div class="col-sm-10 col-sm-offset-1 text-center margin-30">
-            <h1 style="color: black;">{% trans 'Поиск' %}</h1>
+    <div class="container search-page-container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
+                <h1 style="color: black;">{% trans 'Поиск по морфеме' %}</h1>
+            </div>
         </div>
-          <div class="col-sm-8 col-sm-offset-2 text-center margin-30">
-         <form method="POST" role="form">
-             {% csrf_token %}
-            <div class="input-group">
-                <div class="input-group-prepend">
-                     <div class="form-row-align-items-center">
-                         <div class="form-group col-md-6">
-                                <label>{{ form.idiom.label }}</label>
-                                <div class="form-control">
-                                    <label for="id_idiom_all">
-                                        <input type="checkbox" id="id_idiom_all">
-                                        {% if LANGUAGE_CODE == 'en' %}all{% else %}все{% endif %}
-                                    </label>
-                                    <br>
-                                    {% for idiom in form.idiom.field.queryset %}
-                                        <label for="id_idiom_{{ forloop.counter0 }}">
-                                            <input type="checkbox" name="idiom" value="{{ idiom.id }}" id="id_idiom_{{ forloop.counter0 }}">
-                                            {% if LANGUAGE_CODE == 'en' %}{{ idiom|default:"" }}{% else %}{{ idiom.rus|default:"" }}{% endif %}
-                                        </label>
-                                        <br>
-                                    {% endfor %}
-                                </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <div class="form-inline align-items-start">
-                                <label>{{ form.pos.label }}</label>
-                                <div class="form-control">
-                                    <label for="id_pos_all">
-                                        <input type="checkbox" id="id_pos_all">
-                                        {% if LANGUAGE_CODE == 'en' %}all{% else %}все{% endif %}
-                                    </label>
-                                    <br>
-                                    {% for pos in form.pos.field.queryset %}
-                                        <label for="id_pos_{{ forloop.counter0 }}">
-                                            <input type="checkbox" name="pos" value="{{ pos.id }}" id="id_pos_{{ forloop.counter0 }}">
-                                            {% trans pos.pos %}
-                                        </label>
-                                        <br>
-                                    {% endfor %}
-                                </div>
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <form method="POST" role="form" id="search-form" data-url="{% url 'dictionary:search_morph' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="centered-label">{{ form.morpheme.label }}</label>
+                        {{ form.morpheme }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.morph_type.label }}</label>
+                                {{ form.morph_type }}
                             </div>
                         </div>
-                     <div class="form-group col-md-12">
-                        <h3 style="color: black; text-align: left;">{% trans 'Поиск по даргинскому слову' %}</h3>
-                     </div>
-                         <div class="form-group col-md-12">
-                            <div class="input-group-text">
-                                <label>{% trans 'Слово' %}</label>
-                                {% csrf_token %}
-                                {{ form.search_word }}
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.morph_gloss.label }}</label>
+                                {{ form.morph_gloss }}
                             </div>
                         </div>
-                         <div class="form-group col-md-12">
-                        <h3 style="color: black; text-align: left;">{% trans 'Поиск по значению' %}</h3>
-                     </div>
-                         <div class="form-group col-md-12">
-                            <div class="input-group-text">
-                                <label>{% trans 'Значение' %}</label>
-                                {% csrf_token %}
-                                {{ form.search_meaning }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.idiom.label }}</label>
+                                {{ form.idiom }}
                             </div>
                         </div>
-                     <div class="form-group col-md-12">
-                        <h3 style="color: black; text-align: left;">{% trans 'Поиск по морфеме' %}</h3>
-                     </div>
-                         <div class="form-group col-md-6">
-                            <div class="input-group-text">
-                                <label>{{ form.morpheme.label }}</label>
-                                {{ form.morpheme }}
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="centered-label">{{ form.pos.label }}</label>
+                                {{ form.pos }}
                             </div>
                         </div>
-                        <div class="form-group col-md-3">
-                            <div class="form-inline align-items-center">
-                                <label>{{ form.morph_type.label }}</label>
-                                <div class="form-control">
-                                    {% for morph_type in form.morph_type.field.queryset %}
-                                        <label for="id_morph_type_{{ forloop.counter0 }}">
-                                            <input type="checkbox" name="morph_type" value="{{ morph_type.id }}" id="id_morph_type_{{ forloop.counter0 }}">
-                                            {{ morph_type.morph_type }}
-                                        </label>
-                                        <br>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                         <div class="form-group col-md-3">
-                            <div class="form-inline align-items-center">
-                                <label>{{ form.morph_gloss.label }}</label>
-                                <div class="form-control">
-                                    {% for morph_gloss in form.morph_gloss.field.queryset %}
-                                        <label for="id_morph_gloss_{{ forloop.counter0 }}">
-                                            <input type="checkbox" name="morph_gloss" value="{{ morph_gloss.id }}" id="id_morph_gloss_{{ forloop.counter0 }}">
-                                            {{ morph_gloss.morph_number }}
-                                        </label>
-                                        <br>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                     </div>
-                            </div>
+                    </div>
+                    <br>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" id="search-btn"
+                                data-original-text="{% trans 'Искать' %}"
+                                data-searching-text="{% trans 'Поиск...' %}"
+                                data-error-text="{% trans 'Ошибка при выполнении поиска' %}"
+                                style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px;">
+                            {% trans 'Искать' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                     </div><br>
-             <div class="form-group col-md-12">
-                 <button type="submit" class="btn btn-primary btn-lg" style="padding: 23px 40px; font-size: 17px; font-weight: bolder; width: 200px; margin-right: 10px">{% trans 'Искать' %}</button>
-             </div>
-         </form>
-
-
+        <div id="results-container" style="display: none;">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1" style="float: none; margin: 0 auto;">
+                    <div id="results-content"></div>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-        <div class="container">
-</div>
-</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/search_ajax.js' %}"></script>
 {% endblock %}

@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, FormView
 
-from .forms import IdiomPosForm
+from .forms import IdiomPosAdminForm
 from .serializers import NounSerializer, VerbSerializer, OtherSerializer
 from .models import (
     Word,
@@ -62,7 +62,7 @@ wordforms = {
 
 class DeleteDictionaryView(FormView):
     template_name = 'admin/delete_dict.html'
-    form_class = IdiomPosForm
+    form_class = IdiomPosAdminForm
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -97,7 +97,7 @@ class DeleteDictionaryView(FormView):
 
 class ExportDictionaryView(FormView):
     template_name = 'admin/export_dict.html'
-    form_class = IdiomPosForm
+    form_class = IdiomPosAdminForm
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()

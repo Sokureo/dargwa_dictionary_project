@@ -2,54 +2,49 @@
 {% load i18n %}
 
 {% block content %}
-<body>
+    <body>
     <div class="container">
-       <div class="row pad-sm">
-          <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+        <div class="row pad-sm">
+            <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
+                <div class="search-params-card">
+                    <p class="search-params-title"><b>{% trans 'Ваш запрос:' %}</b></p>
+                    <div class="search-params-list">
+                        {% for key, value in search_params.items %}
+                            <div class="search-param-item">
+                                <b>{{ key }}:</b> <span>{{ value }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if not result_list.count %}
+                    <h3 class="black">{% trans 'К сожалению, по вашему запросу ничего не найдено.' %}</h3><br>
+                {% else %}
+                    <div class="table">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th colspan="2" style="text-align: center;" scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
+                                <th scope="col" class="col-sm-3">{% trans 'Значение' %}</th>
+                                <th scope="col" class="col-sm-2">{% trans 'Часть речи' %}</th>
+                                <th scope="col" class="col-sm-2">{% trans 'Язык/диалект' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for word in result_list %}
+                                <tr>
+                                    <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr|default:"" }}</a></td>
+                                    <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_lat|default:"" }}</a></td>
+                                    <td class="col-sm-3">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</td>
+                                    <td class="col-sm-2">{% if word.pos %}{% trans word.pos.pos %}{% endif %}</td>
+                                    <td class="col-sm-2">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      <div class="col-sm-8 col-sm-offset-2 text-center margin-30 wow fadeIn" data-wow-delay="0.6s">
-          <p style="text-align: left;"><b>{% trans 'Ваш запрос:' %}</b></p>
-          <br>
-          {% for key, value in search_params.items %}
-              <p style="text-align: left; margin: 0;"><b>{{ key }}:</b> {{ value }}</p><br>
-          {% endfor %}
-          {% if not result_list.count %}
-       <h3 class="black">{% trans 'К сожалению, по вашему запросу ничего не найдено.' %}</h3><br>
-      {% else %}
-        <h3 class="black">{% trans 'Найдены слова:' %}</h3><br>
-
-     <div class="table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th colspan="2" style="text-align: center;" scope="col" class="col-sm-3">{% trans 'Слово' %}</th>
-              <th scope="col" class="col-sm-3">{% trans 'Значение' %}</th>
-              <th scope="col" class="col-sm-2">{% trans 'Часть речи' %}</th>
-              <th scope="col" class="col-sm-2">{% trans 'Язык/диалект' %}</th>
-            </tr>
-          </thead>
-
-
-<tbody>
-{% for word in result_list %}
-    <tr>
-        <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_cyr|default:"" }}</a></td>
-        <td class="col-sm-3"><a style="color:#3d8a8c; font-weight: bolder;" href="{% url 'dictionary:word_page' word.id %}">{{ word.entry_lat|default:"" }}</a></td>
-        <td class="col-sm-3">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</td>
-        <td class="col-sm-2">{% if word.pos %}{% trans word.pos.pos %}{% endif %}</td>
-        <td class="col-sm-2">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</td>
-    </tr>
-{% endfor %}
-            </tbody>
-        </table>
-
     </div>
-
-</div>
-       {% endif %}
-    </div>
-</div>
-</section>
-</body>
-
+    </body>
 {% endblock %}

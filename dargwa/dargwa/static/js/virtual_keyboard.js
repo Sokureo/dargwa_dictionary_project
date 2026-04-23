@@ -1,8 +1,10 @@
 class VirtualKeyboard {
-    constructor(inputElement, configUrl = '/static/js/keyboard_config.json') {
+    constructor(inputElement, configUrl = '/static/js/keyboard_config.json', options = {}) {
         this.input = inputElement;
         this.config = null;
-        this.currentLayout = 'cyrillic';
+        this.currentLayout = options.defaultLayout || 'cyrillic';
+        this.layoutType = options.layoutType || 'full'; // 'full' или 'simple'
+        this.latinOnly = options.latinOnly || false;
         this.shiftActive = false;
         this.keyboardContainer = null;
         this.lastCursorPosition = 0;
@@ -19,6 +21,14 @@ class VirtualKeyboard {
             this.attachEvents();
         } else {
             console.error('Keyboard config not loaded');
+        }
+    }
+
+    getLayoutName() {
+        if (this.currentLayout === 'cyrillic') {
+            return this.layoutType === 'simple' ? 'cyrillic_simple' : 'cyrillic';
+        } else {
+            return this.layoutType === 'simple' ? 'latin_simple' : 'latin';
         }
     }
 
@@ -75,41 +85,45 @@ class VirtualKeyboard {
         closeBtn.onclick = () => this.hide();
         this.keyboardContainer.appendChild(closeBtn);
 
-        const layoutSwitcher = document.createElement('div');
-        layoutSwitcher.style.cssText = `
-            text-align: center;
-            margin-bottom: 10px;
-        `;
+        if (!this.latinOnly) {
+            const layoutSwitcher = document.createElement('div');
+            layoutSwitcher.style.cssText = `
+                text-align: center;
+                margin-bottom: 10px;
+            `;
 
-        const cyrillicBtn = document.createElement('button');
-        cyrillicBtn.textContent = 'Рус';
-        cyrillicBtn.style.cssText = `
-            padding: 5px 15px;
-            margin: 0 5px;
-            border: 1px solid #ccc;
-            background: ${this.currentLayout === 'cyrillic' ? '#4dadb0' : 'white'};
-            color: ${this.currentLayout === 'cyrillic' ? 'white' : '#333'};
-            cursor: pointer;
-            border-radius: 4px;
-        `;
-        cyrillicBtn.onclick = () => this.switchLayout('cyrillic');
+            const cyrillicBtn = document.createElement('button');
+            cyrillicBtn.textContent = 'Рус';
+            cyrillicBtn.style.cssText = `
+                padding: 5px 15px;
+                margin: 0 5px;
+                border: 1px solid #ccc;
+                background: ${this.currentLayout === 'cyrillic' ? '#4dadb0' : 'white'};
+                color: ${this.currentLayout === 'cyrillic' ? 'white' : '#333'};
+                cursor: pointer;
+                border-radius: 4px;
+            `;
+            cyrillicBtn.onclick = () => this.switchLayout('cyrillic');
 
-        const latinBtn = document.createElement('button');
-        latinBtn.textContent = 'En';
-        latinBtn.style.cssText = `
-            padding: 5px 15px;
-            margin: 0 5px;
-            border: 1px solid #ccc;
-            background: ${this.currentLayout === 'latin' ? '#4dadb0' : 'white'};
-            color: ${this.currentLayout === 'latin' ? 'white' : '#333'};
-            cursor: pointer;
-            border-radius: 4px;
-        `;
-        latinBtn.onclick = () => this.switchLayout('latin');
+            const latinBtn = document.createElement('button');
+            latinBtn.textContent = 'En';
+            latinBtn.style.cssText = `
+                padding: 5px 15px;
+                margin: 0 5px;
+                border: 1px solid #ccc;
+                background: ${this.currentLayout === 'latin' ? '#4dadb0' : 'white'};
+                color: ${this.currentLayout === 'latin' ? 'white' : '#333'};
+                cursor: pointer;
+                border-radius: 4px;
+            `;
+            latinBtn.onclick = () => this.switchLayout('latin');
 
-        layoutSwitcher.appendChild(cyrillicBtn);
-        layoutSwitcher.appendChild(latinBtn);
-        this.keyboardContainer.appendChild(layoutSwitcher);
+            layoutSwitcher.appendChild(cyrillicBtn);
+            layoutSwitcher.appendChild(latinBtn);
+            this.keyboardContainer.appendChild(layoutSwitcher);
+
+            this.layoutSwitcherBtns = { cyrillic: cyrillicBtn, latin: latinBtn };
+        }
 
         this.keysContainer = document.createElement('div');
         this.keysContainer.style.cssText = `
@@ -121,8 +135,6 @@ class VirtualKeyboard {
 
         document.body.appendChild(this.keyboardContainer);
 
-        this.layoutSwitcherBtns = { cyrillic: cyrillicBtn, latin: latinBtn };
-
         this.renderKeys();
     }
 
@@ -131,13 +143,15 @@ class VirtualKeyboard {
         this.shiftActive = false;
         this.renderKeys();
 
-        for (const [key, btn] of Object.entries(this.layoutSwitcherBtns)) {
-            if (key === layout) {
-                btn.style.background = '#4dadb0';
-                btn.style.color = 'white';
-            } else {
-                btn.style.background = 'white';
-                btn.style.color = '#333';
+        if (this.layoutSwitcherBtns) {
+            for (const [key, btn] of Object.entries(this.layoutSwitcherBtns)) {
+                if (key === layout) {
+                    btn.style.background = '#4dadb0';
+                    btn.style.color = 'white';
+                } else {
+                    btn.style.background = 'white';
+                    btn.style.color = '#333';
+                }
             }
         }
         this.input.focus();
@@ -148,7 +162,8 @@ class VirtualKeyboard {
         if (!this.config || !this.keysContainer) return;
 
         this.keysContainer.innerHTML = '';
-        const layout = this.config[this.currentLayout];
+        const layoutName = this.getLayoutName();
+        const layout = this.config[layoutName];
         if (!layout) return;
 
         const rows = this.shiftActive ? layout.shift : layout.rows;
@@ -188,6 +203,7 @@ class VirtualKeyboard {
             this.keysContainer.appendChild(rowDiv);
         });
 
+        // Служебные клавиши
         const controlRow = document.createElement('div');
         controlRow.style.cssText = `
             display: flex;
@@ -196,6 +212,7 @@ class VirtualKeyboard {
             margin-top: 5px;
         `;
 
+        // Shift
         const shiftBtn = document.createElement('button');
         shiftBtn.textContent = this.shiftActive ? '⇧' : 'Shift';
         shiftBtn.style.cssText = `
@@ -217,6 +234,7 @@ class VirtualKeyboard {
         };
         controlRow.appendChild(shiftBtn);
 
+        // Пробел
         const spaceBtn = document.createElement('button');
         spaceBtn.textContent = 'Пробел';
         spaceBtn.style.cssText = `
@@ -233,6 +251,7 @@ class VirtualKeyboard {
         };
         controlRow.appendChild(spaceBtn);
 
+        // Backspace
         const backspaceBtn = document.createElement('button');
         backspaceBtn.textContent = '⌫';
         backspaceBtn.style.cssText = `
@@ -340,8 +359,28 @@ class VirtualKeyboard {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.querySelector('#id_search_word');
-    if (searchInput) {
-        window.virtualKeyboard = new VirtualKeyboard(searchInput);
+    const searchWordInput = document.querySelector('#id_search_word');
+    if (searchWordInput) {
+        window.virtualKeyboardWord = new VirtualKeyboard(searchWordInput, '/static/js/keyboard_config.json', {
+            defaultLayout: 'cyrillic',
+            layoutType: 'full'
+        });
+    }
+
+    const searchMeaningInput = document.querySelector('#id_search_meaning');
+    if (searchMeaningInput) {
+        window.virtualKeyboardMeaning = new VirtualKeyboard(searchMeaningInput, '/static/js/keyboard_config.json', {
+            defaultLayout: 'cyrillic',
+            layoutType: 'simple'
+        });
+    }
+
+    const morphemeInput = document.querySelector('#id_morpheme');
+    if (morphemeInput) {
+        window.virtualKeyboardMorpheme = new VirtualKeyboard(morphemeInput, '/static/js/keyboard_config.json', {
+            defaultLayout: 'latin',
+            layoutType: 'full',
+            latinOnly: true
+        });
     }
 });

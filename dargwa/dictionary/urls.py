@@ -20,6 +20,7 @@ from django.urls import path
 from .views import (
     StartPageView,
     SearchView,
+    SearchMorphView,
     WordPageView,
     SearchCognatesView,
     SearchMorphemesView,
@@ -31,6 +32,7 @@ app_name = 'dictionary'
 urlpatterns = [
     path('', StartPageView.as_view(), name='start_page'),
     path('search/', SearchView.as_view(), name='search'),
+    path('morph_search/', SearchMorphView.as_view(), name='search_morph'),
     url(r'^word/(?P<word_id>\d+)/$', WordPageView.as_view(), name='word_page'),
     url(r'^search/cognates/(?P<word_id>\d+)/(?P<root_id>\d+)/$', SearchCognatesView.as_view(), name='search_cognates'),
     url(r'^search/synonyms/(?P<word_id>\d+)/$', SearchSynonymsView.as_view(), name='search_synonyms'),

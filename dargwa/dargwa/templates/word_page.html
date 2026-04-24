@@ -2,246 +2,252 @@
 {% load i18n %}
 
 {% block content %}
-
 <body>
-
     <div class="container">
-       <div class="row pad-sm">
-          <div class="col-sm-4">
+        <div class="row pad-sm">
+            <div class="col-sm-4"></div>
         </div>
-        </div>
-            <div class="row">
-                <div style="display: inline;"><p class="word_page_text" style="text-align: left; margin-left: 16px; font-size: 30px; display:inline;">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</p></div><br>
-			        <div class="col-sm-5 wow fadeIn" data-wow-delay="0.4s">
-                    <hr class="line purple">
-                    <p class="word_page_text"><b>{{ word }}</b><i style="color: red; margin-left: 25px;">{% trans word.pos.pos|default:"" %}</i><i style="margin-left: 25px;">{% trans word.syntactic_class.syntactic_class|default:"" %}</i></p>
-                    <p class="word_page_text english-entry">{{ word.entry_lat|default:"" }}</p>
-                    <br><br><p class="word_page_text">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</p><br><br>
-                    {% if word.pos.pos == 'v' %}
-
-                        <table class="morph_table">
-                            {% if word.inf_ipfv_cyr %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'инфинитив несов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.inf_ipfv_cyr }}</p>
-                                        <p class="word_page_text english-entry">{{ word.inf_ipfv_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.pret_pfv_cyr %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'претерит сов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.pret_pfv_cyr }}</p>
-                                        <p class="word_page_text english-entry">{{ word.pret_pfv_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.pret_ipfv_cyr %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'претерит несов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.pret_ipfv_cyr }}</p>
-                                        <p class="word_page_text english-entry">{{ word.pret_ipfv_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.cvb_ipfv_cyr %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'деепричастие несов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.cvb_ipfv_cyr }}</p>
-                                        <p class="word_page_text english-entry">{{ word.cvb_ipfv_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.imp_pfv %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'императив сов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.imp_pfv }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.imp_ipfv %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'императив несов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.imp_ipfv }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.stem_pfv %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'основа сов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.stem_pfv }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.stem_ipfv %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'основа несов. в.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.stem_ipfv }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.proh %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'прохибитив' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.proh }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </table>
-                    {% elif word.pos.pos == 'n' %}
-                        <table class="morph_table">
-                            {% if word.abs_pl_cyr %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'множ. ч.' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text">{{ word.abs_pl_cyr }}</p>
-                                        <p class="word_page_text english-entry">{{ word.abs_pl_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.erg_sg_lat %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'эргатив' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.erg_sg_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.gen_sg_lat %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'генитив' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.gen_sg_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.dat_sg_lat %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'датив' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.dat_sg_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if word.loc_sg_lat %}
-                                <tr>
-                                    <td class="morph_name_cell">
-                                        <p class="word_page_text">{% trans 'локатив' %}</p>
-                                    </td>
-                                    <td class="morph_cell">
-                                        <p class="word_page_text english-entry">{{ word.loc_sg_lat }}</p>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </table>
-                    {% endif %}
-                    <table class="word_info_table">
-                        {% if word.origin %}
+        <div class="row">
+            {% if word.sound_url %}
+                <i class="fa fa-volume-up play-sound"
+                   data-sound-url="{{ word.sound_url }}"
+                   style="font-size: 22px; cursor: pointer; color: #4dadb0; margin-left: 15px; vertical-align: middle;">
+                </i>
+            {% endif %}
+            <div style="display: inline;">
+                    {% if word.img_url %}
+        <img src="{{ word.img_url }}"
+             alt="{{ word }}"
+             style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+    {% endif %}
+                <p class="word_page_text" style="text-align: left; margin-left: 16px; font-size: 30px; display:inline;">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</p></div><br>
+            <div class="col-sm-5 wow fadeIn" data-wow-delay="0.4s">
+                <hr class="line purple">
+                <p class="word_page_text"><b>{{ word }}</b><i style="color: red; margin-left: 25px;">{% trans word.pos.pos|default:"" %}</i><i style="margin-left: 25px;">{% trans word.syntactic_class.syntactic_class|default:"" %}</i></p>
+                <p class="word_page_text english-entry">{{ word.entry_lat|default:"" }}</p>
+                <br><br>
+                <p class="word_page_text">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</p><br><br>
+                {% if word.pos.pos == 'v' %}
+                    <table class="morph_table">
+                        {% if word.inf_ipfv_cyr %}
                             <tr>
-                                <td class="word_info_name_cell">
-                                    <p>{% trans 'происхождение' %}</p>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'инфинитив несов. в.' %}</p>
                                 </td>
-                                <td class="word_info_cell">
-                                    <p>{% trans word.origin.origin %}</p>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.inf_ipfv_cyr }}</p>
+                                    <p class="word_page_text english-entry">{{ word.inf_ipfv_lat }}</p>
                                 </td>
                             </tr>
                         {% endif %}
-                        {% if word.gender %}
+                        {% if word.pret_pfv_cyr %}
                             <tr>
-                                <td class="word_info_name_cell">
-                                    <p>{% trans 'род' %}</p>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'претерит сов. в.' %}</p>
                                 </td>
-                                <td class="word_info_cell">
-                                    <p>{% trans word.gender.gender %}</p>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.pret_pfv_cyr }}</p>
+                                    <p class="word_page_text english-entry">{{ word.pret_pfv_lat }}</p>
                                 </td>
                             </tr>
                         {% endif %}
-                        {% if word.irregularities %}
+                        {% if word.pret_ipfv_cyr %}
                             <tr>
-                                <td class="word_info_name_cell">
-                                    <p>{% trans 'нерегулярности' %}</p>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'претерит несов. в.' %}</p>
                                 </td>
-                                <td class="word_info_cell">
-                                    <p>{% trans word.irregularities.irregularity %}</p>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.pret_ipfv_cyr }}</p>
+                                    <p class="word_page_text english-entry">{{ word.pret_ipfv_lat }}</p>
                                 </td>
                             </tr>
                         {% endif %}
-                        {% if word.case_frame %}
+                        {% if word.cvb_ipfv_cyr %}
                             <tr>
-                                <td class="word_info_name_cell">
-                                    <p>{% trans 'модель управления' %}</p>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'деепричастие несов. в.' %}</p>
                                 </td>
-                                <td class="word_info_cell">
-                                    <p>{{ word.case_frame }}</p>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.cvb_ipfv_cyr }}</p>
+                                    <p class="word_page_text english-entry">{{ word.cvb_ipfv_lat }}</p>
                                 </td>
                             </tr>
                         {% endif %}
-                        <br><br><br><br><br><br>
-                        {% if word.source %}
+                        {% if word.imp_pfv %}
                             <tr>
-                                <td class="word_info_name_cell">
-                                    <p>{% trans 'источник' %}</p>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'императив сов. в.' %}</p>
                                 </td>
-                                <td class="word_info_cell">
-                                    <p>{{ word.source }}</p>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.imp_pfv }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.imp_ipfv %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'императив несов. в.' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.imp_ipfv }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.stem_pfv %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'основа сов. в.' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.stem_pfv }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.stem_ipfv %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'основа несов. в.' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.stem_ipfv }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.proh %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'прохибитив' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.proh }}</p>
                                 </td>
                             </tr>
                         {% endif %}
                     </table>
-                    </div>
-                <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
-                    <hr class="line blue">
-                        {% for morpheme in word.morphemes.all %}
-                            {% if not morpheme.morph_type.root %}
-                                <a href="{% url 'dictionary:search_morphemes' word.id morpheme.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Другие слова, содержащие' %} {{ morpheme }}</a><br><br>
-                            {% endif %}
-                        {% endfor %}
-
-                        <p><a href="{% url 'dictionary:search_synonyms' word.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Синонимы' %}</a></p><br>
-
-                        {% for root in word.roots.all %}
-                            {% if root.morph_number %}
-                                <a href="{% url 'dictionary:search_cognates' word.id root.morph_number.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Когнаты для корня' %} {{ root }}</a><br><br>
-                            {% endif %}
-                        {% endfor %}
-                </div>
-        </div>
+                {% elif word.pos.pos == 'n' %}
+                    <table class="morph_table">
+                        {% if word.abs_pl_cyr %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'множ. ч.' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text">{{ word.abs_pl_cyr }}</p>
+                                    <p class="word_page_text english-entry">{{ word.abs_pl_lat }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.erg_sg_lat %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'эргатив' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.erg_sg_lat }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.gen_sg_lat %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'генитив' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.gen_sg_lat }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.dat_sg_lat %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'датив' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.dat_sg_lat }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if word.loc_sg_lat %}
+                            <tr>
+                                <td class="morph_name_cell">
+                                    <p class="word_page_text">{% trans 'локатив' %}</p>
+                                </td>
+                                <td class="morph_cell">
+                                    <p class="word_page_text english-entry">{{ word.loc_sg_lat }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                {% endif %}
+                <table class="word_info_table">
+                    {% if word.origin %}
+                        <tr>
+                            <td class="word_info_name_cell">
+                                <p>{% trans 'происхождение' %}</p>
+                            </td>
+                            <td class="word_info_cell">
+                                <p>{% trans word.origin.origin %}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if word.gender %}
+                        <tr>
+                            <td class="word_info_name_cell">
+                                <p>{% trans 'род' %}</p>
+                            </td>
+                            <td class="word_info_cell">
+                                <p>{% trans word.gender.gender %}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if word.irregularities %}
+                        <tr>
+                            <td class="word_info_name_cell">
+                                <p>{% trans 'нерегулярности' %}</p>
+                            </td>
+                            <td class="word_info_cell">
+                                <p>{% trans word.irregularities.irregularity %}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if word.case_frame %}
+                        <tr>
+                            <td class="word_info_name_cell">
+                                <p>{% trans 'модель управления' %}</p>
+                            </td>
+                            <td class="word_info_cell">
+                                <p>{{ word.case_frame }}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <br><br><br><br><br><br>
+                    {% if word.source %}
+                        <tr>
+                            <td class="word_info_name_cell">
+                                <p>{% trans 'источник' %}</p>
+                            </td>
+                            <td class="word_info_cell">
+                                <p>{{ word.source }}</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
             </div>
+            <div class="col-sm-3 wow fadeIn" data-wow-delay="0.4s">
+                <hr class="line blue">
+                {% for morpheme in word.morphemes.all %}
+                    {% if not morpheme.morph_type.root %}
+                        <a href="{% url 'dictionary:search_morphemes' word.id morpheme.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Другие слова, содержащие' %} {{ morpheme }}</a><br><br>
+                    {% endif %}
+                {% endfor %}
+                <p><a href="{% url 'dictionary:search_synonyms' word.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Синонимы' %}</a></p><br>
+                {% for root in word.roots.all %}
+                    {% if root.morph_number %}
+                        <a href="{% url 'dictionary:search_cognates' word.id root.morph_number.id %}" class="btn btn-primary btn-lg" style="padding: 12px 26px; font-size: 12px; background-color: #0c5460;">{% trans 'Когнаты для корня' %} {{ root }}</a><br><br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </body>
-
 {% endblock %}

@@ -37,6 +37,18 @@ class Word(models.Model):
             idiom=self.idiom,
         ).distinct().values_list('meaning_rus', flat=True).order_by('meaning_rus')
 
+    @property
+    def sound_url(self):
+        if self.sound and self.idiom and self.pos:
+            return f"/media/sound/{self.idiom}/{self.pos}/{self.sound}"
+        return None
+
+    @property
+    def img_url(self):
+        if self.img and self.idiom and self.pos:
+            return f"/media/image/{self.idiom}/{self.pos}/{self.img}"
+        return None
+
     def syntactic_class_rus(self):
         values = {
             'tr': 'перех.',

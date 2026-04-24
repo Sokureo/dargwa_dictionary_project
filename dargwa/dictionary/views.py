@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.generic import TemplateView, FormView
 from django.utils.translation import gettext as _
@@ -163,13 +164,19 @@ class SearchMorphView(FormView):
 class WordPageView(TemplateView):
     template_name = 'word_page.html'
 
+    def get(self, request, *args, **kwargs):
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        if word:
+            return super().get(request, *args, **kwargs)
+        else:
+            return render(request, 'error.html')
+
     def get_context_data(self, **kwargs):
         context = super(WordPageView, self).get_context_data(**kwargs)
         word = Word.objects.filter(id=kwargs['word_id']).first()
         if word:
             context['word'] = word
-            return context
-        # else:
+        return context
 
 
 class SearchCognatesView(TemplateView):
@@ -230,3 +237,7 @@ class SearchMorphemesView(TemplateView):
 
     def get_used_search_params(self, morpheme):
         return {_('Другие слова, содержащие'): morpheme}
+
+
+def error_handler(request, exception=None):
+    return render(request, 'error.html')

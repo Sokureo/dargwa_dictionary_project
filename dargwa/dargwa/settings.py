@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = 'django-insecure-5b(w$3#8vi-)0-xrj=45(=%e7b$r5xaswj@q6@g+zj2w5e5*0n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -171,6 +171,9 @@ STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'static'),
 )
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -184,3 +187,22 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 DJANGO_SUPERUSER_USERNAME=env.str('DJANGO_SUPERUSER_USERNAME', default=None)
 DJANGO_SUPERUSER_PASSWORD=env.str('DJANGO_SUPERUSER_PASSWORD', default=None)
 DJANGO_SUPERUSER_EMAIL=env.str('DJANGO_SUPERUSER_EMAIL', default=None)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}

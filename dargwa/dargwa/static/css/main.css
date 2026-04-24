@@ -1042,3 +1042,17 @@ hr.line {
     font-size: 18px;
     font-weight: 500;
 }
+
+/* Кнопка проигрывания звука */
+.play-sound {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.play-sound:hover {
+    transform: scale(1.1);
+    color: #2e6769 !important;
+}
+
+.play-sound:active {
+    transform: scale(0.95);
+}

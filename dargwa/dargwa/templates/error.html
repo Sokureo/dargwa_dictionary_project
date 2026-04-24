@@ -1,0 +1,20 @@
+{% extends "dar_base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container" style="min-height: 70vh; display: flex; align-items: center; justify-content: center; padding-top: 80px;">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 text-center">
+            <div style="margin-bottom: 30px;">
+                <h2 style="color: black;">{% trans 'Что-то пошло не так!' %}</h2>
+                <p style="color: #666; font-size: 18px; margin-top: 20px;">
+                    {% trans 'Извините.' %}
+                </p>
+            </div>
+            <a href="{% url 'dictionary:start_page' %}" class="btn btn-primary btn-lg" style="padding: 15px 30px; font-size: 16px; background-color: #4dadb0; border: none;">
+                {% trans 'Вернуться на главную' %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

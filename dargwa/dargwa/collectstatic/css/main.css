@@ -738,7 +738,7 @@ hr.line {
     background-image: none;
     border-radius: 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    color: #929496;
+    color: black;
     font-size: 15px;
     height: auto;
     line-height: 1.42857;
@@ -748,14 +748,6 @@ hr.line {
     max-height: 145px;
     min-height: 60px;
     text-align: left;
-}
-
-input[type="checkbox"] {
-    accent-color: #74cccc;
-    width: 15px;
-    height: 15px;
-    display: inline;
-    vertical-align: center;
 }
 
 .form-language-select {
@@ -908,7 +900,270 @@ input[type="checkbox"] {
 
 }   
 
+.search-page-container {
+    padding-top: 150px;
+}
 
+.form-group .centered-label {
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
+/* Виртуальная клавиатура */
+.virtual-keyboard button {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
+.virtual-keyboard button:active {
+    transform: scale(0.95);
+    background: #ddd !important;
+}
 
+/* Карточка с параметрами поиска */
+.search-params-card {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+}
+
+.search-params-title {
+    margin: 0 0 10px 0;
+    font-size: 15px;
+    color: #333;
+    font-weight: 600;
+}
+
+.search-params-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.search-param-item {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #555;
+    max-width: calc(50% - 12px);
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.search-param-item b {
+    color: #333;
+    margin-right: 6px;
+}
+
+.search-param-item span {
+    word-break: break-word;
+}
+
+/* Контейнер результатов */
+.ajax-results-container {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.ajax-results-container > div {
+    width: 80%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Таблица результатов */
+.results-table {
+    width: 100%;
+    margin-bottom: 80px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.results-table thead tr:first-child {
+    background-color: #4dadb0;
+    color: white;
+}
+
+.results-table thead tr:first-child th {
+    padding: 12px 15px;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+.results-table thead tr:last-child {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #4dadb0;
+}
+
+.results-table thead tr:last-child th {
+    padding: 10px 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.results-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.results-table tbody td {
+    padding: 10px 15px;
+    vertical-align: middle;
+    border-top: 1px solid #eee;
+}
+
+.results-table a {
+    color: #3d8a8c;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+.results-table a:hover {
+    color: #2e6769;
+    text-decoration: underline;
+}
+
+.no-results-message {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.no-results-message h3 {
+    color: black;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Кнопка проигрывания звука */
+.play-sound {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.play-sound:hover {
+    transform: scale(1.1);
+    color: #2e6769 !important;
+}
+
+.play-sound:active {
+    transform: scale(0.95);
+}
+
+/* Контактная форма */
+.contact-container {
+    padding-top: 10%;
+}
+
+.contact-header {
+    margin-bottom: 30px;
+}
+
+.contact-header h1 {
+    color: black;
+    margin-bottom: 10px;
+}
+
+.contact-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.contact-form label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.contact-form textarea {
+    min-height: 250px;
+}
+
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-submit-btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    background-color: #4dadb0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+.contact-submit-btn:hover {
+    background-color: #3d8a8c;
+    transform: translateY(-2px);
+}
+
+.contact-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Алерты */
+.contact-alert {
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.contact-alert.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.contact-alert.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.contact-alert .close {
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.contact-alert .close:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        padding-top: 60px;
+    }
+
+    .contact-header h1 {
+        font-size: 28px;
+    }
+
+    .contact-submit-btn {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}

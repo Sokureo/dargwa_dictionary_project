@@ -1,0 +1,89 @@
+{% extends "dar_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<div class="container contact-container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 text-center contact-header">
+            <h1>{% trans 'Напишите нам' %}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="contact-alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" class="contact-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <small class="text-danger">{{ form.email.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.subject.label_tag }}
+                    {{ form.subject }}
+                    {% if form.subject.errors %}
+                        <small class="text-danger">{{ form.subject.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.message.label_tag }}
+                    {{ form.message }}
+                    {% if form.message.errors %}
+                        <small class="text-danger">{{ form.message.errors.0 }}</small>
+                    {% endif %}
+                </div>
+
+                {{ form.honeypot }}
+
+                <div class="form-group text-center">
+                    <button type="submit" class="contact-submit-btn" id="submit-btn">
+                        {% trans 'Отправить' %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+
+    if (form && submitBtn) {
+        form.addEventListener('submit', function() {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '{% trans "Отправка..." %}';
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.querySelectorAll('.contact-alert .close');
+    closeButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const alert = this.closest('.contact-alert');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

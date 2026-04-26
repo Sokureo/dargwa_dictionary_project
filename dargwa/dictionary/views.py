@@ -1,37 +1,18 @@
-from django.conf import settings
 from django.contrib import messages
-from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.generic import TemplateView, FormView
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 
-from .forms import SearchForm, MorphSearchForm
-from .models import Word, Morpheme, MorphemeType, MorphemeNumber, PartOfSpeech, Idiom
+from .forms import ContactForm, SearchForm, MorphSearchForm
+from .models import Word, Morpheme, MorphemeType, MorphemeNumber, PartOfSpeech, Idiom, ContactMessage
 
 
 class StartPageView(TemplateView):
     template_name = 'index.html'
-#     success_url = reverse_lazy('dictionary:start_page')
-#     success_message = _('Сообщение отправлено!')
-#     form_class = ContactForm
-#
-#     def form_valid(self, form):
-#         email = form.cleaned_data.get('email')
-#         subject = form.cleaned_data.get('message_subject')
-#         message = form.cleaned_data.get('message_text')
-#
-#         send_mail(
-#             subject=subject,
-#             message=message,
-#             from_email=email,
-#             recipient_list=[settings.NOTIFY_EMAIL],
-#             fail_silently=False,
-#         )
-#         messages.success(self.request, message=_('Сообщение отправлено!'))
-#         return super(StartPageView, self).form_valid(form)
 
 
 class SearchView(FormView):
@@ -52,6 +33,7 @@ class SearchView(FormView):
 
                 q = Q(idiom__in=idiom) & Q(pos__in=pos)
                 if search_word:
+                    search_word = search_word.replace('|', '1').replace('I', '1')
                     q &= Q(
                         Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
                         Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
@@ -237,6 +219,29 @@ class SearchMorphemesView(TemplateView):
 
     def get_used_search_params(self, morpheme):
         return {_('Другие слова, содержащие'): morpheme}
+
+
+class ContactView(FormView):
+    template_name = 'contact.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('dictionary:contact')
+
+    def form_valid(self, form):
+        ContactMessage.objects.create(
+            email=form.cleaned_data['email'],
+            subject=form.cleaned_data['subject'],
+            message=form.cleaned_data['message']
+        )
+
+        messages.success(self.request, _('Спасибо! Ваше сообщение отправлено.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{form.fields[field].label}: {error}')
+
+        return super().form_invalid(form)
 
 
 def error_handler(request, exception=None):

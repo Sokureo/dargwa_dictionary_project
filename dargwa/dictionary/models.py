@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Word(models.Model):
@@ -8,16 +9,16 @@ class Word(models.Model):
     meaning_rus = models.CharField(max_length=250, null=True, blank=True, db_index=True)
     meaning_eng = models.CharField(max_length=250, null=True, blank=True, db_index=True)
     gloss = models.CharField(max_length=45, null=True, blank=True, db_index=True)
-    polysemy = models.ForeignKey('Polysemy', on_delete=models.CASCADE, null=True, blank=True)
-    structure = models.ForeignKey('Structure', on_delete=models.CASCADE, null=True, blank=True)
-    origin = models.ForeignKey('Origin', on_delete=models.CASCADE, null=True, blank=True)
-    pos = models.ForeignKey('PartOfSpeech', on_delete=models.CASCADE, related_name='word_class', null=True, blank=True)
+    polysemy = models.ForeignKey('Polysemy', on_delete=models.SET_NULL, null=True, blank=True)
+    structure = models.ForeignKey('Structure', on_delete=models.SET_NULL, null=True, blank=True)
+    origin = models.ForeignKey('Origin', on_delete=models.SET_NULL, null=True, blank=True)
+    pos = models.ForeignKey('PartOfSpeech', on_delete=models.SET_NULL, related_name='word_class', null=True, blank=True)
     idiom = models.ForeignKey('Idiom', on_delete=models.CASCADE)
-    syntactic_class = models.ForeignKey('SyntacticClass', on_delete=models.CASCADE, null=True, blank=True)
-    gender = models.ForeignKey('Gender', on_delete=models.CASCADE, null=True, blank=True)
-    irregularities = models.ForeignKey('Irregularities', on_delete=models.CASCADE, null=True, blank=True)
-    case_frame = models.ForeignKey('CaseFrame', on_delete=models.CASCADE, null=True, blank=True)
-    source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True, blank=True)
+    syntactic_class = models.ForeignKey('SyntacticClass', on_delete=models.SET_NULL, null=True, blank=True)
+    gender = models.ForeignKey('Gender', on_delete=models.SET_NULL, null=True, blank=True)
+    irregularities = models.ForeignKey('Irregularities', on_delete=models.SET_NULL, null=True, blank=True)
+    case_frame = models.ForeignKey('CaseFrame', on_delete=models.SET_NULL, null=True, blank=True)
+    source = models.ForeignKey('Source', on_delete=models.SET_NULL, null=True, blank=True)
     comments = models.CharField(max_length=2000, null=True, blank=True)
     sound = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     img = models.CharField(max_length=50, null=True, blank=True, db_index=True)
@@ -41,13 +42,11 @@ class Word(models.Model):
     def sound_url(self):
         if self.sound and self.idiom and self.pos:
             return f"/media/sound/{self.idiom}/{self.pos}/{self.sound}"
-        return None
 
     @property
     def img_url(self):
-        if self.img and self.idiom and self.pos:
-            return f"/media/image/{self.idiom}/{self.pos}/{self.img}"
-        return None
+        if self.img:
+            return f"/media/image/{self.img}"
 
     def syntactic_class_rus(self):
         values = {
@@ -198,8 +197,8 @@ class Gender(models.Model):
 class Morpheme(models.Model):
     morpheme = models.CharField(max_length=45, db_index=True)
     order_id = models.IntegerField(db_index=True)
-    morph_type = models.ForeignKey('MorphemeType', on_delete=models.CASCADE, null=True, blank=True)
-    morph_number = models.ForeignKey('MorphemeNumber', on_delete=models.CASCADE, null=True, blank=True)
+    morph_type = models.ForeignKey('MorphemeType', on_delete=models.SET_NULL, null=True, blank=True)
+    morph_number = models.ForeignKey('MorphemeNumber', on_delete=models.SET_NULL, null=True, blank=True)
     word = models.ForeignKey('Word', on_delete=models.CASCADE, related_name='morphemes')
 
     def __str__(self):
@@ -279,3 +278,19 @@ class Source(models.Model):
 
     def __str__(self):
         return self.source
+
+
+class ContactMessage(models.Model):
+    email = models.EmailField(verbose_name=_('Email'))
+    subject = models.CharField(max_length=200, verbose_name=_('Тема'))
+    message = models.TextField(verbose_name=_('Сообщение'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата создания'))
+    is_read = models.BooleanField(default=False, verbose_name=_('Прочитано'))
+
+    class Meta:
+        verbose_name = _('Сообщение из контактной формы')
+        verbose_name_plural = _('Сообщения из контактной формы')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.subject} - {self.email}"

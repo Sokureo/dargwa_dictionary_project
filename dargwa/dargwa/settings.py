@@ -74,6 +74,7 @@ ADMIN_REORDER = (
         'dictionary.Polysemy',
         'dictionary.Root',
         'dictionary.Source',
+        'dictionary.ContactMessage',
     )},
     {'app': 'auth', 'models': ('auth.User', )},
 )

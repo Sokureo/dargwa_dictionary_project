@@ -4,6 +4,7 @@ from django.contrib import admin, messages
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from .views_admin import (
     DeleteDictionaryView,
@@ -28,6 +29,7 @@ from .models import (
     Morpheme,
     MorphemeType,
     MorphemeNumber,
+    ContactMessage,
 )
 from .scripts import make_gender_words
 
@@ -35,6 +37,7 @@ from .scripts import make_gender_words
 admin.site.site_header = 'Лексикографическая база даргинских идиомов'
 
 
+@admin.register(Link)
 class LinkAdmin(admin.ModelAdmin):
     search_fields = (
         'word__link_cyr',
@@ -42,9 +45,6 @@ class LinkAdmin(admin.ModelAdmin):
         'link_word__link_cyr',
         'link_word__entry_cyr',
     )
-
-
-admin.site.register(Link, LinkAdmin)
 
 
 class WordInline(admin.TabularInline):
@@ -62,6 +62,7 @@ class WordFormsInline(WordInline):
     model = WordForm
 
 
+@admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
     list_display = (
         'entry_cyr',
@@ -133,86 +134,62 @@ class WordAdmin(admin.ModelAdmin):
         return my_urls + urls
 
 
-admin.site.register(Word, WordAdmin)
-
-
+@admin.register(Idiom)
 class IdiomAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Idiom, IdiomAdmin)
-
-
+@admin.register(PartOfSpeech)
 class PartOfSpeechAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(PartOfSpeech, PartOfSpeechAdmin)
-
-
+@admin.register(SyntacticClass)
 class SyntacticClassAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(SyntacticClass, SyntacticClassAdmin)
-
-
+@admin.register(Gender)
 class GenderAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Gender, GenderAdmin)
-
-
+@admin.register(Grammems)
 class GrammemsAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Grammems, GrammemsAdmin)
-
-
+@admin.register(CaseFrame)
 class CaseFrameAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(CaseFrame, CaseFrameAdmin)
-
-
+@admin.register(Structure)
 class StructureAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Structure, StructureAdmin)
-
-
+@admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Source, SourceAdmin)
-
-
+@admin.register(Irregularities)
 class IrregularitiesAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Irregularities, IrregularitiesAdmin)
-
-
+@admin.register(Origin)
 class OriginAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Origin, OriginAdmin)
-
-
+@admin.register(Polysemy)
 class PolysemyAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Polysemy, PolysemyAdmin)
-
-
+@admin.register(Morpheme)
 class MorphemeAdmin(admin.ModelAdmin):
     search_fields = (
         'morpheme',
@@ -231,29 +208,46 @@ class MorphemeAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(Morpheme, MorphemeAdmin)
-
-
+@admin.register(WordForm)
 class WordFormAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(WordForm, WordFormAdmin)
-
-
+@admin.register(MorphemeType)
 class MorphemeTypeAdmin(admin.ModelAdmin):
     search_fields = (
         'morph_type',
     )
 
 
-admin.site.register(MorphemeType, MorphemeTypeAdmin)
-
-
+@admin.register(MorphemeNumber)
 class MorphemeNumberAdmin(admin.ModelAdmin):
     search_fields = (
         'morph_number',
     )
 
 
-admin.site.register(MorphemeNumber, MorphemeNumberAdmin)
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'email', 'created_at', 'is_read')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('email', 'subject', 'message')
+    list_editable = ('is_read',)
+    readonly_fields = ('created_at',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('-created_at')
+
+    actions = ['mark_as_read', 'mark_as_unread']
+
+    def mark_as_read(self, request, queryset):
+        queryset.update(is_read=True)
+        self.message_user(request, f'{queryset.count()} сообщений отмечено как прочитанные.')
+
+    mark_as_read.short_description = _('Отметить как прочитанные')
+
+    def mark_as_unread(self, request, queryset):
+        queryset.update(is_read=False)
+        self.message_user(request, f'{queryset.count()} сообщений отмечено как непрочитанные.')
+
+    mark_as_unread.short_description = _('Отметить как непрочитанные')

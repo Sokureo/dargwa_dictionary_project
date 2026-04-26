@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
+from .models import ContactMessage, Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 from .widgets import CheckboxSelectMultipleWithSelectAll
 
 
@@ -92,19 +92,38 @@ class MorphSearchForm(BaseSearchForm):
         })
 
 
-# class ContactForm(forms.Form):
-#     email = forms.EmailField(label='')
-#     message_subject = forms.CharField(label='')
-#     message_text = forms.CharField(label='', widget=forms.Textarea)
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['email'].widget.attrs.update({
-#             'placeholder': _('Ваш адрес электронной почты'),
-#         })
-#         self.fields['message_subject'].widget.attrs.update({
-#             'placeholder': _('Тема письма'),
-#         })
-#         self.fields['message_text'].widget.attrs.update({
-#             'placeholder': _('Напишите ваше сообщение'),
-#         })
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['email', 'subject', 'message']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'your@email.com',
+                'required': True
+            }),
+            'subject': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': _('Тема сообщения'),
+                'required': True
+            }),
+            'message': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 6,
+                'placeholder': _('Введите ваше сообщение...'),
+                'required': True
+            })
+        }
+
+    # защита от спама
+    honeypot = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(),
+        label=''
+    )
+
+    def clean_honeypot(self):
+        value = self.cleaned_data.get('honeypot')
+        if value:
+            raise forms.ValidationError('Spam!')
+        return value

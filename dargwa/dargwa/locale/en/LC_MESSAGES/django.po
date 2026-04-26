@@ -545,3 +545,33 @@ msgstr "Select all"
 
 msgid "Все"
 msgstr "All"
+
+msgid "Что-то пошло не так!"
+msgstr "Something went wrong!"
+
+msgid "Извините."
+msgstr "We are sorry."
+
+msgid "Напишите нам"
+msgstr "Contact us"
+
+msgid "Отправить"
+msgstr "Submit"
+
+msgid "Отправка..."
+msgstr "Submitting..."
+
+msgid "Тема сообщения"
+msgstr "Subject"
+
+msgid "Введите ваше сообщение..."
+msgstr "Your message..."
+
+msgid "Тема"
+msgstr "Subject"
+
+msgid "Сообщение"
+msgstr "Message"
+
+msgid "Спасибо! Ваше сообщение отправлено."
+msgstr "Thank you! Your message has been sent."

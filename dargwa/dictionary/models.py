@@ -59,30 +59,6 @@ class Word(models.Model):
         }
         return values.get(self.syntactic_class.syntactic_class, None) if self.syntactic_class else None
 
-    def pos_rus(self):
-        values = {
-            'adj': 'прил.',
-            'adv': 'нареч.',
-            'conj': 'союз',
-            'cop': 'связка',
-            'coverb': 'коверб',
-            'question word': 'вопр. слово',
-            'loc adv': 'локат. наречие',
-            'n': 'сущ.',
-            'n/adj': 'сущ./прил.',
-            'idiom (np)': 'имен. сл.-соч.',
-            'num': 'числ.',
-            'numeral': 'числ.',
-            'particle': 'част.',
-            'postposition': 'послелог',
-            'pronoun': 'мест.',
-            'quantifier': 'квант.',
-            'v': 'глаг.',
-            'verb': 'глаг.',
-            'idiom (vp)': 'глаг. сл.-соч.'
-        }
-        return values.get(self.pos.pos, None) if self.pos else None
-
     def roots(self):
         return self.morphemes.filter(morph_type=MorphemeType.root())
 
@@ -207,6 +183,8 @@ class Morpheme(models.Model):
 
 class MorphemeType(models.Model):
     morph_type = models.CharField(max_length=20, unique=True)
+    name_ru = models.CharField(max_length=50, verbose_name='Название (рус)', null=True, blank=True)
+    name_en = models.CharField(max_length=50, verbose_name='Название (англ)', null=True, blank=True)
 
     def __str__(self):
         return self.morph_type
@@ -260,6 +238,8 @@ class Polysemy(models.Model):
 
 class PartOfSpeech(models.Model):
     pos = models.CharField(max_length=20, unique=True)
+    name_ru = models.CharField(max_length=50, verbose_name='Название (рус)', null=True, blank=True)
+    name_en = models.CharField(max_length=50, verbose_name='Название (англ)', null=True, blank=True)
 
     def __str__(self):
         return self.pos

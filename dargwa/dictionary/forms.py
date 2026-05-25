@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language, gettext_lazy as _
 
 from .models import ContactMessage, Idiom, MorphemeNumber, MorphemeType, PartOfSpeech
 from .widgets import CheckboxSelectMultipleWithSelectAll
@@ -46,11 +46,14 @@ class BaseSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        lang = get_language()
         self.fields['idiom'].choices = [
-            (obj.id, _(obj.idiom)) for obj in Idiom.objects.all()
+            (obj.id, obj.rus if lang == 'ru' and obj.rus else obj.idiom)
+            for obj in Idiom.objects.all()
         ]
         self.fields['pos'].choices = [
-            (obj.id, _(obj.pos)) for obj in PartOfSpeech.objects.all().exclude(pos='n/adj')
+            (obj.id, (obj.name_en or obj.pos) if lang == 'en' else (obj.name_ru or obj.pos))
+            for obj in PartOfSpeech.objects.all().exclude(pos='n/adj')
         ]
 
 
@@ -87,6 +90,11 @@ class MorphSearchForm(BaseSearchForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        lang = get_language()
+        self.fields['morph_type'].choices = [
+            (obj.id, (obj.name_en or obj.morph_type) if lang == 'en' else (obj.name_ru or obj.morph_type))
+            for obj in MorphemeType.objects.exclude(morph_type=MorphemeType.root).order_by('morph_type')
+        ]
         self.fields['morpheme'].widget.attrs.update({
             'class': "form-control",
         })

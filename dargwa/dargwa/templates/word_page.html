@@ -23,7 +23,7 @@
                 <p class="word_page_text" style="text-align: left; margin-left: 16px; font-size: 30px; display:inline;">{% if LANGUAGE_CODE == 'en' %}{{ word.idiom|default:"" }}{% else %}{{ word.idiom.rus|default:"" }}{% endif %}</p></div><br>
             <div class="col-sm-5 wow fadeIn" data-wow-delay="0.4s">
                 <hr class="line purple">
-                <p class="word_page_text"><b>{{ word }}</b><i style="color: red; margin-left: 25px;">{% trans word.pos.pos|default:"" %}</i><i style="margin-left: 25px;">{% trans word.syntactic_class.syntactic_class|default:"" %}</i></p>
+                <p class="word_page_text"><b>{{ word }}</b><i style="color: red; margin-left: 25px;">{% if LANGUAGE_CODE == 'en' %}{{ word.pos.name_en|default:word.pos }}{% else %}{{ word.pos.name_ru|default:word.pos }}{% endif %}</i><i style="margin-left: 25px;">{% trans word.syntactic_class.syntactic_class|default:"" %}</i></p>
                 <p class="word_page_text english-entry">{{ word.entry_lat|default:"" }}</p>
                 <br><br>
                 <p class="word_page_text">{% if LANGUAGE_CODE == 'en' %}{{ word.meaning_eng|default:"" }}{% else %}{{ word.meaning_rus|default:"" }}{% endif %}</p><br><br>

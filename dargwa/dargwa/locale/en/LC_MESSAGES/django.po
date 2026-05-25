@@ -260,7 +260,7 @@ msgstr "Search type"
 
 #: dargwa/templates/search.html:66
 msgid "Поиск по слову"
-msgstr ""
+msgstr "Word search"
 
 #: dargwa/templates/search.html:67
 msgid "Выберите тип поиска по даргинскому слову или значению."

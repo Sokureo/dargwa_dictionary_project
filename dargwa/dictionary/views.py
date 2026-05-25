@@ -31,22 +31,24 @@ class SearchView(FormView):
                 idiom = form.cleaned_data.get('idiom') or Idiom.objects.all()
                 pos = form.cleaned_data.get('pos') or PartOfSpeech.objects.all()
 
-                q = Q(idiom__in=idiom) & Q(pos__in=pos)
-                if search_word:
-                    search_word = search_word.replace('|', '1').replace('I', '1')
-                    q &= Q(
-                        Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
-                        Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
-                        Q(class_words_lat__iregex=self.class_regex.format(search_word))
-                    )
-                if search_meaning:
-                    q &= Q(
-                        Q(meaning_rus__iregex=self.meaning_regex.format(search_meaning)) |
-                        Q(meaning_rus__iregex=self.meaning_regex2.format(search_meaning)) |
-                        Q(meaning_eng__iregex=self.meaning_regex.format(search_meaning)) |
-                        Q(meaning_eng__iregex=self.meaning_regex2.format(search_meaning))
-                    )
-                words = Word.objects.filter(q)
+                words = list()
+                if search_word or search_meaning:
+                    q = Q(idiom__in=idiom) & Q(pos__in=pos)
+                    if search_word:
+                        search_word = search_word.replace('|', '1').replace('I', '1')
+                        q &= Q(
+                            Q(entry_cyr=search_word) | Q(entry_lat=search_word) |
+                            Q(class_words_cyr__iregex=self.class_regex.format(search_word)) |
+                            Q(class_words_lat__iregex=self.class_regex.format(search_word))
+                        )
+                    if search_meaning:
+                        q &= Q(
+                            Q(meaning_rus__iregex=self.meaning_regex.format(search_meaning)) |
+                            Q(meaning_rus__iregex=self.meaning_regex2.format(search_meaning)) |
+                            Q(meaning_eng__iregex=self.meaning_regex.format(search_meaning)) |
+                            Q(meaning_eng__iregex=self.meaning_regex2.format(search_meaning))
+                        )
+                    words = Word.objects.filter(q)
 
                 html = render_to_string('result_list_ajax.html', {
                     'result_list': words,

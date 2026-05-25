@@ -1,6 +1,10 @@
+from datetime import datetime
+import pandas as pd
+from io import BytesIO
+
 from django.contrib import messages
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.generic import TemplateView, FormView
@@ -50,41 +54,21 @@ class SearchView(FormView):
                         )
                     words = Word.objects.filter(q)
 
+                if request.POST.get('export_format'):
+                    return export_results(words, request.POST.get('export_format'))
+
                 html = render_to_string('result_list_ajax.html', {
                     'result_list': words,
-                    'search_params': self.get_used_search_params(form.cleaned_data),
                 }, request=request)
 
                 return JsonResponse({'html': str(html)})
             else:
                 return self.form_invalid(form)
 
-    def get_used_search_params(self, cleaned_data):
-        params = dict()
-        search_word = cleaned_data.get('search_word')
-        search_meaning = cleaned_data.get('search_meaning')
-        idioms = cleaned_data.get('idiom')
-        poss = cleaned_data.get('pos')
-
-        if search_word:
-            params[_('Даргинское слово')] = search_word
-        if search_meaning:
-            params[_('Значение')] = search_meaning
-        if idioms and len(idioms) < len(Idiom.objects.all()):
-            idioms_list = [idiom.idiom for idiom in idioms]
-            params[_('Язык/диалект')] = ', '.join(idioms_list)
-        if poss and len(poss) < len(PartOfSpeech.objects.all()):
-            poss_list = [pos.pos for pos in poss]
-            params[_('Часть речи')] = ', '.join(poss_list)
-        return params
-
 
 class SearchMorphView(FormView):
     template_name = 'search_morph.html'
     form_class = MorphSearchForm
-    meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
-    meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
-    class_regex = "'{}'"
 
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
@@ -110,39 +94,16 @@ class SearchMorphView(FormView):
                         words = Word.objects.prefetch_related('morphemes').filter(q_morph)
                         words = words.filter(q)
 
+                if request.POST.get('export_format'):
+                    return export_results(words, request.POST.get('export_format'))
+
                 html = render_to_string('result_list_ajax.html', {
                     'result_list': words,
-                    'search_params': self.get_used_search_params(form.cleaned_data),
                 }, request=request)
 
                 return JsonResponse({'html': str(html)})
             else:
                 return self.form_invalid(form)
-
-    def get_used_search_params(self, cleaned_data):
-        params = dict()
-        idioms = cleaned_data.get('idiom')
-        poss = cleaned_data.get('pos')
-        morph_types = cleaned_data.get('morph_type')
-        morph_glosss = cleaned_data.get('morph_gloss')
-        morpheme = cleaned_data.get('morpheme')
-
-        if morph_types or morph_glosss or morpheme:
-            if morpheme:
-                params[_('Морфема')] = morpheme
-            if morph_types:
-                morph_type_list = [morph_type.morph_type for morph_type in morph_types]
-                params[_('Тип морфемы')] = ', '.join(morph_type_list)
-            if morph_glosss:
-                morph_gloss_list = [morph_gloss.morph_number for morph_gloss in morph_glosss]
-                params[_('Глосса')] = ', '.join(morph_gloss_list)
-        if idioms and len(idioms) < len(Idiom.objects.all()):
-            idioms_list = [idiom.idiom for idiom in idioms]
-            params[_('Язык/диалект')] = ', '.join(idioms_list)
-        if poss and len(poss) < len(PartOfSpeech.objects.all()):
-            poss_list = [pos.pos for pos in poss]
-            params[_('Часть речи')] = ', '.join(poss_list)
-        return params
 
 
 class WordPageView(TemplateView):
@@ -166,19 +127,31 @@ class WordPageView(TemplateView):
 class SearchCognatesView(TemplateView):
     template_name = 'result_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(SearchCognatesView, self).get_context_data(**kwargs)
-        word = Word.objects.filter(id=kwargs['word_id']).first()
-        root_id = MorphemeNumber.objects.filter(id=kwargs['root_id']).first()
+    def get_cognates(self, word_id, root_id):
+        word = Word.objects.filter(id=word_id).first()
+        root_id = MorphemeNumber.objects.filter(id=root_id).first()
         cognates = Word.objects.prefetch_related('morphemes').filter(
             morphemes__morph_type=MorphemeType.root(),
             morphemes__morph_number=root_id,
         ).exclude(idiom=word.idiom).order_by('-structure', 'entry_cyr')
-        context['result_list'] = cognates
-        context['search_params'] = self.get_used_search_params(word, root_id)
+        return cognates
+
+    def post(self, request, *args, **kwargs):
+        cognates = self.get_cognates(kwargs['word_id'], kwargs['root_id'])
+        export_format = request.POST.get('export_format')
+        if export_format:
+            return export_results(cognates, export_format)
+
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchCognatesView, self).get_context_data(**kwargs)
+        context['result_list'] = self.get_cognates(kwargs['word_id'], kwargs['root_id'])
+        context['search_params'] = self.get_used_search_params(kwargs['word_id'], kwargs['root_id'])
         return context
 
-    def get_used_search_params(self, word, root_id):
+    def get_used_search_params(self, word_id, root_id):
+        word = Word.objects.filter(id=word_id).first()
         return {_('Когнаты для корня'): Morpheme.objects.filter(word=word, morph_number=root_id).first()}
 
 
@@ -187,9 +160,7 @@ class SearchSynonymsView(TemplateView):
     meaning_regex = r'(\(.+\))*(^|[,)]){}([ ,;]|$)'
     meaning_regex2 = r'(\(.+\))*(^|[ ,)]){}([,;]|$)'
 
-    def get_context_data(self, **kwargs):
-        context = super(SearchSynonymsView, self).get_context_data(**kwargs)
-        word = Word.objects.filter(id=kwargs['word_id']).first()
+    def get_synonyms(self, word):
         trans_ru = word.meaning_rus.split(', ')
         trans_eng = word.meaning_eng.split(', ')
         q = Q()
@@ -199,23 +170,48 @@ class SearchSynonymsView(TemplateView):
         for trans in trans_eng:
             q |= Q(meaning_rus__iregex=self.meaning_regex.format(trans))
             q |= Q(meaning_rus__iregex=self.meaning_regex2.format(trans))
-        synonyms = Word.objects.filter(q).exclude(id=word.id)
-        context['result_list'] = synonyms
+        return Word.objects.filter(q).exclude(id=word.id)
+
+    def post(self, request, *args, **kwargs):
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        synonyms = self.get_synonyms(word)
+        export_format = request.POST.get('export_format')
+        if export_format:
+            return export_results(synonyms, export_format)
+
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchSynonymsView, self).get_context_data(**kwargs)
+        word = Word.objects.filter(id=kwargs['word_id']).first()
+        context['result_list'] = self.get_synonyms(word)
         context['search_params'] = self.get_used_search_params(word)
         return context
 
     def get_used_search_params(self, word):
         return {_('Синонимы для слова'): word}
 
+
 class SearchMorphemesView(TemplateView):
     template_name = 'result_list.html'
 
+    def get_morphemes(self, word_id, morpheme_id):
+        word = Word.objects.filter(id=word_id).first()
+        morpheme = Morpheme.objects.filter(id=morpheme_id).first().morpheme
+        return Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme).exclude(id=word.id)
+
+    def post(self, request, *args, **kwargs):
+        morphemes = self.get_morphemes(kwargs['word_id'], kwargs['morpheme_id'])
+        export_format = request.POST.get('export_format')
+        if export_format:
+            return export_results(morphemes, export_format)
+
+        return self.get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(SearchMorphemesView, self).get_context_data(**kwargs)
-        word = Word.objects.filter(id=kwargs['word_id']).first()
         morpheme = Morpheme.objects.filter(id=kwargs['morpheme_id']).first().morpheme
-        words = Word.objects.prefetch_related('morphemes').filter(morphemes__morpheme=morpheme).exclude(id=word.id)
-        context['result_list'] = words
+        context['result_list'] = self.get_morphemes(kwargs['word_id'], kwargs['morpheme_id'])
         context['search_params'] = self.get_used_search_params(morpheme)
         return context
 
@@ -244,6 +240,40 @@ class ContactView(FormView):
                 messages.error(self.request, f'{form.fields[field].label}: {error}')
 
         return super().form_invalid(form)
+
+
+def export_results(words, export_format='xlsx'):
+    data = []
+    for word in words:
+        row = {
+            'word_id': word.id,
+            'word': word.entry_cyr or '',
+            'transcription': word.entry_lat or '',
+            'meaning_rus': word.meaning_rus or '',
+            'meaning_eng': word.meaning_eng or '',
+            'pos': word.pos.pos if word.pos else '',
+            'idiom': word.idiom.idiom if word.idiom else '',
+        }
+        data.append(row)
+
+    df = pd.DataFrame(data)
+
+    if export_format == 'csv':
+        csv_content = df.to_csv(index=False, sep='\t', encoding='utf-8-sig')
+        response = HttpResponse(csv_content, content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="results_{datetime.now().strftime("%d.%m.%Y")}.csv"'
+        return response
+    else:
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Результаты поиска', index=False)
+
+        response = HttpResponse(
+            output.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename="results_{datetime.now().strftime("%d.%m.%Y")}.xlsx"'
+        return response
 
 
 def error_handler(request, exception=None):

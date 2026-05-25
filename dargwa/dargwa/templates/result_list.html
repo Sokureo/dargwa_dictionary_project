@@ -19,6 +19,14 @@
                 {% if not result_list.count %}
                     <h3 class="black">{% trans 'К сожалению, по вашему запросу ничего не найдено.' %}</h3><br>
                 {% else %}
+                    <div class="export-buttons" style="margin-bottom: 20px; text-align: right;">
+                        <button type="button" class="btn btn-sm export-btn" data-format="xlsx" style="background-color: #4dadb0; color: white; margin-right: 10px;">
+                            {% trans 'Скачать Excel' %}
+                        </button>
+                        <button type="button" class="btn btn-sm export-btn" data-format="csv" style="background-color: #6c757d; color: white;">
+                            {% trans 'Скачать CSV' %}
+                        </button>
+                    </div>
                     <div class="table">
                         <table class="table">
                             <thead>
@@ -47,4 +55,32 @@
         </div>
     </div>
     </body>
+
+    <script>
+        document.querySelectorAll('.export-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var format = this.getAttribute('data-format');
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = window.location.href;
+
+                var csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                form.appendChild(csrfInput);
+
+                var formatInput = document.createElement('input');
+                formatInput.type = 'hidden';
+                formatInput.name = 'export_format';
+                formatInput.value = format;
+                form.appendChild(formatInput);
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            });
+        });
+    </script>
+
 {% endblock %}

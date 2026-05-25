@@ -575,3 +575,9 @@ msgstr "Message"
 
 msgid "Спасибо! Ваше сообщение отправлено."
 msgstr "Thank you! Your message has been sent."
+
+msgid "Скачать Excel"
+msgstr "Download Excel"
+
+msgid "Скачать CSV"
+msgstr "Download CSV"

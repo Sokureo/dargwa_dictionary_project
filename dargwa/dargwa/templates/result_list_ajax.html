@@ -8,6 +8,15 @@
     </div>
 {% else %}
     <div class="ajax-results-container">
+        <div class="export-buttons" style="margin-bottom: 20px; text-align: right;">
+            <button type="button" class="btn btn-sm export-btn" data-format="xlsx" style="background-color: #4dadb0; color: white; margin-right: 10px;">
+                {% trans 'Скачать Excel' %}
+            </button>
+            <button type="button" class="btn btn-sm export-btn" data-format="csv" style="background-color: #6c757d; color: white;">
+                {% trans 'Скачать CSV' %}
+            </button>
+        </div>
+
         <div class="table-responsive">
             <table class="table results-table">
                 <thead>
@@ -33,3 +42,18 @@
         </div>
     </div>
 {% endif %}
+
+<script>
+    document.querySelectorAll('.export-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var format = this.getAttribute('data-format');
+            var form = document.getElementById('search-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'export_format';
+            hiddenInput.value = format;
+            form.appendChild(hiddenInput);
+            form.submit();
+        });
+    });
+</script>

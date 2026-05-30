@@ -1,5 +1,5 @@
 class VirtualKeyboard {
-    constructor(inputElement, configUrl = '/static/js/keyboard_config.json', options = {}) {
+    constructor(inputElement, configUrl = null, options = {}) {
         this.input = inputElement;
         this.config = null;
         this.currentLayout = options.defaultLayout || 'cyrillic';
@@ -8,10 +8,18 @@ class VirtualKeyboard {
         this.shiftActive = false;
         this.keyboardContainer = null;
         this.lastCursorPosition = 0;
-        this.configUrl = configUrl;
+        this.configUrl = configUrl || this.getConfigUrl();
         this.isVisible = false;
 
         this.init();
+    }
+
+    getConfigUrl() {
+        let prefix = window.URL_PREFIX || '';
+        if (prefix && prefix.endsWith('/')) {
+            prefix = prefix.slice(0, -1);
+        }
+        return `${prefix}/static/js/keyboard_config.json`;
     }
 
     async init() {

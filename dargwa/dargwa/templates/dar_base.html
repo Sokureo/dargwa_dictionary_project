@@ -28,6 +28,9 @@
     <script src="{% static 'js/modernizr-2.7.1.js' %}"></script>
     <script src="{% static 'js/checkbox_widget.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        window.URL_PREFIX = "{{ URL_PREFIX }}";
+    </script>
     <script src="{% static 'js/virtual_keyboard.js' %}"></script>
 {% endblock %}
 
@@ -82,6 +85,3 @@
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/audio_player.js' %}"></script>
-<script>
-    window.URL_PREFIX = "{{ URL_PREFIX }}";
-</script>

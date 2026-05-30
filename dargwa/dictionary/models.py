@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -41,12 +42,12 @@ class Word(models.Model):
     @property
     def sound_url(self):
         if self.sound and self.idiom and self.pos:
-            return f"/media/sound/{self.idiom}/{self.pos}/{self.sound}"
+            return f"{settings.MEDIA_URL}sound/{self.idiom}/{self.pos}/{self.sound}"
 
     @property
     def img_url(self):
         if self.img:
-            return f"/media/image/{self.img}"
+            return f"{settings.MEDIA_URL}image/{self.img}"
 
     def syntactic_class_rus(self):
         values = {

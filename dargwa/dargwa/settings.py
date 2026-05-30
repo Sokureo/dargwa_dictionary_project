@@ -106,9 +106,9 @@ WSGI_APPLICATION = 'dargwa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DB_NAME = env.str('DB_NAME', default='dar')
-DB_USER = env.str('DB_USER', default='esokur')
-DB_PASSWORD = env.str('DB_PASSWORD', default='esokur11')
+DB_NAME = env.str('DB_NAME', default='')
+DB_USER = env.str('DB_USER', default='')
+DB_PASSWORD = env.str('DB_PASSWORD', default='')
 HOST = env.str('HOST', default='localhost')
 
 DATABASES = {
@@ -167,12 +167,12 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'collectstatic/')
-STATIC_URL = URL_PREFIX + 'static/'
+STATIC_URL = f'{URL_PREFIX}static/'
 STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'static'),
 )
 
-MEDIA_URL = '/media/'
+MEDIA_URL = f'{URL_PREFIX}media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

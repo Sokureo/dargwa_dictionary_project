@@ -8,7 +8,7 @@ class VirtualKeyboard {
         this.shiftActive = false;
         this.keyboardContainer = null;
         this.lastCursorPosition = 0;
-        this.configUrl = configUrl || window.KEYBOARD_CONFIG_URL || '/static/js/keyboard_config.json';
+        this.configUrl = window.KEYBOARD_CONFIG_URL || configUrl || '/static/js/keyboard_config.json';
         this.isVisible = false;
 
         this.init();

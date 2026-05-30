@@ -29,7 +29,7 @@
     <script src="{% static 'js/checkbox_widget.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        window.URL_PREFIX = "{{ URL_PREFIX }}";
+        window.KEYBOARD_CONFIG_URL = "{% static 'js/keyboard_config.json' %}";
     </script>
     <script src="{% static 'js/virtual_keyboard.js' %}"></script>
 {% endblock %}
